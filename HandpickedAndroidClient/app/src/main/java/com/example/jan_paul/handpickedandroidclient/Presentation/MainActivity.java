@@ -1,7 +1,9 @@
-package com.example.jan_paul.handpickedandroidclient;
+package com.example.jan_paul.handpickedandroidclient.Presentation;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.example.jan_paul.handpickedandroidclient.R;
 
 public class MainActivity extends AppCompatActivity {
 

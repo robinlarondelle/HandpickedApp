@@ -26,6 +26,8 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
     private ProductAdapter productAdapter;
     private ArrayAdapter<String> categoryAdapter;
 
+    private GetProductsTask getProductsTask;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +40,16 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
         productAdapter = new ProductAdapter(getApplicationContext(),
                 getLayoutInflater(), availableProducts);
         productSelectionView.setAdapter(productAdapter);
+
+        getProductsTask = new GetProductsTask(this);
+        getProductsTask.execute("api call that returns some products of the selected category here...");
+    }
+
+    public void changedCategory(){
+        availableProducts.clear();
+        productAdapter.notifyDataSetChanged();
+        //show some kind of animation here into the new products
+        getProductsTask.execute("api call that returns some products of the selected category here...");
     }
 
     @Override

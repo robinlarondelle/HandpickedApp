@@ -6,8 +6,8 @@
     android:layout_height="match_parent"
     tools:context="com.example.jan_paul.handpickedandroidclient.Presentation.MainActivity">
 
-    <ScrollView
-        android:id="@+id/product_selection_view"
+    <GridView
+        android:id="@+id/product_grid"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="8dp"
@@ -17,19 +17,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/guideline"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" >
-
-            <GridView
-                android:id="@+id/product_grid"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </LinearLayout>
-    </ScrollView>
+        app:layout_constraintTop_toTopOf="parent"
+        android:numColumns="auto_fit"/>
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline"
@@ -38,8 +27,8 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.3" />
 
-    <ScrollView
-        android:id="@+id/product_category_view"
+    <ListView
+        android:id="@+id/category_list"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="8dp"
@@ -49,17 +38,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" >
-
-            <ListView
-                android:id="@+id/category_list"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </LinearLayout>
-    </ScrollView>
 </android.support.constraint.ConstraintLayout>

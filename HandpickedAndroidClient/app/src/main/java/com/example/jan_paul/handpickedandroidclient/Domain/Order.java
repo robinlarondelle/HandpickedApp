@@ -100,4 +100,17 @@ public class Order {
     public void setClientID(String clientID) {
         this.clientID = clientID;
     }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "products=" + products +
+                ", isOrdered=" + isOrdered +
+                ", orderDate='" + orderDate + '\'' +
+                ", vergaderRuimte=" + vergaderRuimte +
+                ", clientID='" + clientID + '\'' +
+                ", message='" + message + '\'' +
+                ", ID=" + ID +
+                '}';
+    }
 }

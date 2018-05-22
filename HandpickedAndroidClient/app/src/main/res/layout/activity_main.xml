@@ -7,6 +7,7 @@
     tools:context="com.example.jan_paul.handpickedandroidclient.Presentation.MainActivity">
 
     <ScrollView
+        android:id="@+id/product_selection_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="8dp"
@@ -21,7 +22,13 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" />
+            android:orientation="vertical" >
+
+            <GridView
+                android:id="@+id/product_grid"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
     </ScrollView>
 
     <android.support.constraint.Guideline
@@ -32,6 +39,7 @@
         app:layout_constraintGuide_percent="0.3" />
 
     <ScrollView
+        android:id="@+id/product_category_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="8dp"
@@ -46,6 +54,12 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" />
+            android:orientation="vertical" >
+
+            <ListView
+                android:id="@+id/category_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
     </ScrollView>
 </android.support.constraint.ConstraintLayout>

@@ -7,7 +7,10 @@ import android.widget.GridView;
 import android.widget.ListView;
 
 import com.example.jan_paul.handpickedandroidclient.DataAccess.GetProductsTask;
+import com.example.jan_paul.handpickedandroidclient.Domain.Category;
 import com.example.jan_paul.handpickedandroidclient.Domain.Product;
+import com.example.jan_paul.handpickedandroidclient.Domain.Type;
+import com.example.jan_paul.handpickedandroidclient.Logic.CategoryAdapter;
 import com.example.jan_paul.handpickedandroidclient.Logic.ProductAdapter;
 import com.example.jan_paul.handpickedandroidclient.R;
 
@@ -18,13 +21,13 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements GetProductsTask.OnProductAvailable {
 
     private ArrayList<Product> availableProducts;
-    private ArrayList<Product> availableCategories;
+    private ArrayList<Category> availableCategories;
 
-    private GridView productSelectionView;
-    private ListView productCategoryView;
+    private GridView productSelectionGrid;
+    private ListView productCategoryList;
 
     private ProductAdapter productAdapter;
-    private ArrayAdapter<String> categoryAdapter;
+    private CategoryAdapter categoryAdapter;
 
     private GetProductsTask getProductsTask;
 
@@ -34,12 +37,28 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
         setContentView(R.layout.activity_main);
 
         availableProducts = new ArrayList<>();
-        productSelectionView = findViewById(R.id.product_grid);
-        productCategoryView = findViewById(R.id.category_list);
+        availableCategories = new ArrayList<>();
 
-        productAdapter = new ProductAdapter(getApplicationContext(),
-                getLayoutInflater(), availableProducts);
-        productSelectionView.setAdapter(productAdapter);
+        productSelectionGrid = findViewById(R.id.product_grid);
+        productCategoryList = findViewById(R.id.category_list);
+
+        productAdapter = new ProductAdapter(getApplicationContext(), getLayoutInflater(), availableProducts);
+        productSelectionGrid.setAdapter(productAdapter);
+
+        categoryAdapter = new CategoryAdapter(getApplicationContext(), getLayoutInflater(), availableCategories);
+        productCategoryList.setAdapter(categoryAdapter);
+
+        availableProducts.add(new Product(new Category("", Type.WARM), "coffie", ""));
+        availableProducts.add(new Product(new Category("", Type.WARM), "coffie", ""));
+        availableProducts.add(new Product(new Category("", Type.WARM), "coffie", ""));
+        availableProducts.add(new Product(new Category("", Type.WARM), "coffie", ""));
+
+        availableCategories.add(new Category("", Type.WARM));
+        availableCategories.add(new Category("", Type.KOUD));
+        availableCategories.add(new Category("", Type.ALCOHOLISCHE_DRANKEN));
+        availableCategories.add(new Category("", Type.WATER));
+
+        //CLICK LISTENER FOR CATEGORY LIST THAT
 
         getProductsTask = new GetProductsTask(this);
         getProductsTask.execute("api call that returns some products of the selected category here...");

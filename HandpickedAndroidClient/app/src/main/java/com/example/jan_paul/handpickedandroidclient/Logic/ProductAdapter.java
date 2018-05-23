@@ -57,7 +57,7 @@ public class ProductAdapter extends BaseAdapter {
             convertView = mInflator.inflate(R.layout.product_grid_item, null);
 
             viewHolder = new ViewHolder();
-            viewHolder.productImage = (ImageView) convertView.findViewById(R.id.front_image);
+            viewHolder.productImage = (ImageView) convertView.findViewById(R.id.category_image);
             viewHolder.productName = (TextView) convertView.findViewById(R.id.product_name);
 
             convertView.setTag(viewHolder);
@@ -68,12 +68,13 @@ public class ProductAdapter extends BaseAdapter {
         Product Product = (Product) ProductArrayList.get(position);
 
         viewHolder.productName.setText(Product.getName());
-
+/*
         Picasso.get()
                 .load(Product.getFrontImage())
                 .resize(viewHolder.productImage.getLayoutParams().width, viewHolder.productImage.getLayoutParams().height)
                 .centerCrop()
                 .into(viewHolder.productImage);
+                */
         return convertView;
     }
 

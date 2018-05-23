@@ -5,7 +5,7 @@ package com.example.jan_paul.handpickedandroidclient.Domain;
  */
 
 public class Product {
-    private Category category = Category.HOT;
+    private Category category;
     private String name;
     private String frontImage;
 

@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.example.jan_paul.handpickedandroidclient.Domain.Category;
 import com.example.jan_paul.handpickedandroidclient.Domain.Product;
+import com.example.jan_paul.handpickedandroidclient.Domain.Type;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -96,7 +97,7 @@ public class GetProductsTask extends AsyncTask<String, Void, String> {
                 String name = product.getString("name");
                 String frontImage = product.getString("frontImage");
 
-                Product p = new Product(Category.valueOf(category), name, frontImage);
+                Product p = new Product(new Category("", Type.WARM), name, frontImage);
 
                 listener.onProductAvailable(p);
             }

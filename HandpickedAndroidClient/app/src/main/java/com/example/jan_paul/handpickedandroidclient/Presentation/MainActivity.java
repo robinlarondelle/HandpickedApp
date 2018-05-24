@@ -1,8 +1,15 @@
 package com.example.jan_paul.handpickedandroidclient.Presentation;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ListView;
 
@@ -62,6 +69,18 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
 
         getProductsTask = new GetProductsTask(this);
         getProductsTask.execute("api call that returns some products of the selected category here...");
+    }
+
+    public void sendPushNotification(String title, String text) {
+        Log.i("MainActivity", "sendPushNotification called");
+        NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+        Notification notify = new Notification.Builder(getApplicationContext())
+                .setContentTitle(title)
+                .setContentText(text)
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .build();
+        notify.flags |= Notification.FLAG_AUTO_CANCEL;
+        notificationManager.notify(0, notify);
     }
 
     public void changedCategory(){

@@ -1,7 +1,11 @@
 package com.example.jan_paul.handpickedandroidclient.Domain;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Created by jan-paul on 5/22/2018.
@@ -16,8 +20,8 @@ public class Order {
     private String message;
     private int ID;
 
-    public Order(HashMap<String, Integer> products, Boolean isOrdered, String orderDate, int vergaderRuimte, String clientID, String message, int ID) {
-        this.products = products;
+    public Order(Boolean isOrdered, String orderDate, int vergaderRuimte, String clientID, String message, int ID) {
+        this.products = new HashMap<>();
         this.isOrdered = isOrdered;
         this.orderDate = orderDate;
         this.vergaderRuimte = vergaderRuimte;
@@ -26,8 +30,8 @@ public class Order {
         this.ID = ID;
     }
 
-    public Order(HashMap<String, Integer> products, Boolean isOrdered, String orderDate, int vergaderRuimte, String clientID, int ID) {
-        this.products = products;
+    public Order(Boolean isOrdered, String orderDate, int vergaderRuimte, String clientID, int ID) {
+        this.products = new HashMap<>();
         this.isOrdered = isOrdered;
         this.orderDate = orderDate;
         this.vergaderRuimte = vergaderRuimte;
@@ -38,11 +42,23 @@ public class Order {
 
     public void addOrRemoveProduct(Product product, int amount){
         if (products.containsKey(product.getName())){
-            products.put(product.getName(), products.get(product.getName()) + amount);
+            products.put(product.getName(), products.get(product.getName()).intValue() + amount);
         }
         else {
             products.put(product.getName(), amount);
         }
+    }
+
+    public int getTotalProducts(){
+        HashMap<String, Integer> tempHash = new HashMap<>(products);
+        int totalProducts = 0;
+        Iterator it = tempHash.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry pair = (Map.Entry)it.next();
+            totalProducts = totalProducts + Integer.parseInt(pair.getValue().toString());
+            it.remove(); // avoids a ConcurrentModificationException
+        }
+        return totalProducts;
     }
 
     public String getMessage() {

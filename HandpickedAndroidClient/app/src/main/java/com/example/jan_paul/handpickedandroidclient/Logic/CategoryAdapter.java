@@ -1,6 +1,8 @@
 package com.example.jan_paul.handpickedandroidclient.Logic;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +23,15 @@ public class CategoryAdapter  extends BaseAdapter {
     private Context mContext;
     private LayoutInflater mInflator;
     private ArrayList CategoryArrayList;
+    private int selectedCategory;
+
+    public int getSelectedCategory() {
+        return selectedCategory;
+    }
+
+    public void setSelectedCategory(int selectedCategory) {
+        this.selectedCategory = selectedCategory;
+    }
 
     public CategoryAdapter(Context context, LayoutInflater layoutInflater, ArrayList<Category> CategoryArrayList)
     {
@@ -53,6 +64,8 @@ public class CategoryAdapter  extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         CategoryAdapter.ViewHolder viewHolder;
 
+        Log.i("log", "selected " + selectedCategory);
+
         if(convertView == null) {
             convertView = mInflator.inflate(R.layout.category_list_item, null);
 
@@ -63,6 +76,13 @@ public class CategoryAdapter  extends BaseAdapter {
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (CategoryAdapter.ViewHolder) convertView.getTag();
+        }
+
+        if (position == selectedCategory){
+            convertView.setBackgroundColor(ContextCompat.getColor(convertView.getContext(), R.color.selectedCategory));
+        }
+        else {
+            convertView.setBackgroundColor(ContextCompat.getColor(convertView.getContext(), R.color.nonSelectedCategory));
         }
 
         Category category = (Category) CategoryArrayList.get(position);

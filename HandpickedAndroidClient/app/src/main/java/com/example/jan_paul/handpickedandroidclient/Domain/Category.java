@@ -28,4 +28,12 @@ public class Category {
     public void setImage(String image) {
         this.image = image;
     }
+
+    @Override
+    public String toString() {
+        return "Category{" +
+                "type=" + type +
+                ", image='" + image + '\'' +
+                '}';
+    }
 }

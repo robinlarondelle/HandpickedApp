@@ -38,4 +38,13 @@ public class Product {
     public void setFrontImage(String frontImage) {
         this.frontImage = frontImage;
     }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "category=" + category +
+                ", name='" + name + '\'' +
+                ", frontImage='" + frontImage + '\'' +
+                '}';
+    }
 }

@@ -6,6 +6,41 @@
     android:layout_height="match_parent"
     tools:context="com.example.jan_paul.handpickedandroidclient.Presentation.MainActivity">
 
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@android:color/darker_gray"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/order_icon"
+            android:layout_width="84dp"
+            android:layout_height="0dp"
+            android:layout_margin="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
+            android:padding="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@android:color/holo_blue_bright" />
+
+        <TextView
+            android:id="@+id/order_size_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textSize="40sp"
+            app:layout_constraintBottom_toBottomOf="@+id/order_icon"
+            app:layout_constraintEnd_toEndOf="@+id/order_icon"
+            tools:text="0" />
+
+    </android.support.constraint.ConstraintLayout>
+
     <GridView
         android:id="@+id/product_grid"
         android:layout_width="0dp"
@@ -14,11 +49,11 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:numColumns="auto_fit"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/guideline"
-        app:layout_constraintTop_toTopOf="parent"
-        android:numColumns="auto_fit"/>
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline"
@@ -38,6 +73,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
 
 </android.support.constraint.ConstraintLayout>

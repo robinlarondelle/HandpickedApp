@@ -55,10 +55,10 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
         categoryAdapter = new CategoryAdapter(getApplicationContext(), getLayoutInflater(), availableCategories);
         productCategoryList.setAdapter(categoryAdapter);
 
-        availableProducts.add(new Product(new Category("", Type.WARM), "coffie", ""));
-        availableProducts.add(new Product(new Category("", Type.WARM), "coffie", ""));
-        availableProducts.add(new Product(new Category("", Type.WARM), "coffie", ""));
-        availableProducts.add(new Product(new Category("", Type.WARM), "coffie", ""));
+        availableProducts.add(new Product(new Category("", Type.WARM), "koffie", ""));
+        availableProducts.add(new Product(new Category("", Type.WARM), "koffie", ""));
+        availableProducts.add(new Product(new Category("", Type.WARM), "koffie", ""));
+        availableProducts.add(new Product(new Category("", Type.WARM), "koffie", ""));
 
         availableCategories.add(new Category("", Type.WARM));
         availableCategories.add(new Category("", Type.KOUD));

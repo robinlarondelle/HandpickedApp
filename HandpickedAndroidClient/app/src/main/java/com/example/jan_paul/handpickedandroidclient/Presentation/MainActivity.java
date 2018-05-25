@@ -1,5 +1,8 @@
 package com.example.jan_paul.handpickedandroidclient.Presentation;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Debug;
 import android.support.v7.app.AppCompatActivity;
@@ -105,10 +108,10 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
             }
         });
 
-        availableProducts.add(new Product(new Category("", Type.WARM), "coffie", ""));
-        availableProducts.add(new Product(new Category("", Type.WARM), "coffie", ""));
-        availableProducts.add(new Product(new Category("", Type.WARM), "coffie", ""));
-        availableProducts.add(new Product(new Category("", Type.WARM), "coffie", ""));
+        availableProducts.add(new Product(new Category("", Type.WARM), "koffie", ""));
+        availableProducts.add(new Product(new Category("", Type.WARM), "koffie", ""));
+        availableProducts.add(new Product(new Category("", Type.WARM), "koffie", ""));
+        availableProducts.add(new Product(new Category("", Type.WARM), "koffie", ""));
 
         availableCategories.add(new Category("", Type.WARM));
         availableCategories.add(new Category("", Type.KOUD));
@@ -150,6 +153,18 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
         String result = Integer.toString(main.getCurrentOrder().getTotalProducts());
         orderSizeNumber.setText(result);
         categoryAdapter.setSelectedCategory(selectedCategory);
+    }
+
+    public void sendPushNotification(String title, String text) {
+        Log.i("MainActivity", "sendPushNotification called");
+        NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+        Notification notify = new Notification.Builder(getApplicationContext())
+                .setContentTitle(title)
+                .setContentText(text)
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .build();
+        notify.flags |= Notification.FLAG_AUTO_CANCEL;
+        notificationManager.notify(0, notify);
     }
 
     public void changedCategory(){

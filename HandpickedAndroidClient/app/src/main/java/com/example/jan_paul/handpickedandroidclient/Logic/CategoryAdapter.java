@@ -22,8 +22,13 @@ public class CategoryAdapter  extends BaseAdapter {
 
     private Context mContext;
     private LayoutInflater mInflator;
-    private ArrayList CategoryArrayList;
+    private ArrayList categoryArrayList;
     private int selectedCategory;
+
+    public void updateCategoryArrayList(ArrayList list){
+        categoryArrayList = list;
+        notifyDataSetChanged();
+    }
 
     public int getSelectedCategory() {
         return selectedCategory;
@@ -33,26 +38,26 @@ public class CategoryAdapter  extends BaseAdapter {
         this.selectedCategory = selectedCategory;
     }
 
-    public CategoryAdapter(Context context, LayoutInflater layoutInflater, ArrayList<Category> CategoryArrayList)
+    public CategoryAdapter(Context context, LayoutInflater layoutInflater, ArrayList<Category> categoryArrayList)
     {
         mContext = context;
         mInflator = layoutInflater;
-        this.CategoryArrayList = CategoryArrayList;
+        this.categoryArrayList = categoryArrayList;
     }
 
     public void clearData(){
-        CategoryArrayList.clear();
+        categoryArrayList.clear();
     }
 
     @Override
     public int getCount() {
-        int size = CategoryArrayList.size();
+        int size = categoryArrayList.size();
         return size;
     }
 
     @Override
     public Object getItem(int position) {
-        return CategoryArrayList.get(position);
+        return categoryArrayList.get(position);
     }
 
     @Override
@@ -85,9 +90,9 @@ public class CategoryAdapter  extends BaseAdapter {
             convertView.setBackgroundColor(ContextCompat.getColor(convertView.getContext(), R.color.nonSelectedCategory));
         }
 
-        Category category = (Category) CategoryArrayList.get(position);
+        Category category = (Category) categoryArrayList.get(position);
 
-        viewHolder.categoryName.setText(category.getType().name());
+        viewHolder.categoryName.setText(category.getType());
 /*
         Picasso.get()
                 .load(category.getImage())

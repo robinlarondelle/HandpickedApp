@@ -1,9 +1,11 @@
 package com.example.jan_paul.handpickedandroidclient.Logic;
 
 import android.os.Parcelable;
+import android.util.Log;
 
 import com.example.jan_paul.handpickedandroidclient.Domain.Category;
 import com.example.jan_paul.handpickedandroidclient.Domain.Order;
+import com.example.jan_paul.handpickedandroidclient.Domain.Product;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -17,10 +19,22 @@ public class Main {
     public Main() {
         this.currentOrder = null;
         this.oldOrders = new ArrayList<>();
+        this.categories = new ArrayList<>();
     }
 
     public Order getCurrentOrder() {
         return currentOrder;
+    }
+
+    public ArrayList<Product> getProductsPerCategory(String categoryName){
+        ArrayList<Product> products = new ArrayList<>();
+        for (Category category: categories) {
+            Log.i("categories", category.toString());
+            if (category.getType() == categoryName){
+                products = category.getProducts();
+            }
+        }
+        return products;
     }
 
     public void setCurrentOrder(Order currentOrder) {

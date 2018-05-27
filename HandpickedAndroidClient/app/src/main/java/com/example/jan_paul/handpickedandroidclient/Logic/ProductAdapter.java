@@ -29,6 +29,11 @@ public class ProductAdapter extends BaseAdapter {
         this.ProductArrayList = ProductArrayList;
     }
 
+    public void updateProductArrayList(ArrayList list){
+        ProductArrayList = list;
+        notifyDataSetChanged();
+    }
+
     public void clearData(){
         ProductArrayList.clear();
     }

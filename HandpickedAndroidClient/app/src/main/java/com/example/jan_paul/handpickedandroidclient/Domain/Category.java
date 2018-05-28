@@ -7,39 +7,39 @@ import java.util.ArrayList;
  */
 
 public class Category {
-    private Type type;
+    private String type;
     private String image;
     private ArrayList<Product> products;
-    private Boolean hidden;
+    private Boolean visible;
 
-    public Category(String image, Type type) {
+    public Category(String image, String type, Boolean visible) {
         this.image = image;
         this.type = type;
         this.products = new ArrayList<>();
-        hidden = false;
+        this.visible = visible;
     }
 
     public ArrayList<Product> getProducts() {
         return products;
     }
 
-    public Boolean getHidden() {
-        return hidden;
+    public Boolean getVisible() {
+        return visible;
     }
 
-    public void setHidden(Boolean hidden) {
-        this.hidden = hidden;
+    public void setVisible(Boolean hidden) {
+        this.visible = hidden;
     }
 
     public void setProducts(ArrayList<Product> products) {
         this.products = products;
     }
 
-    public Type getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(Type type) {
+    public void setType(String type) {
         this.type = type;
     }
 
@@ -56,6 +56,8 @@ public class Category {
         return "Category{" +
                 "type=" + type +
                 ", image='" + image + '\'' +
+                ", products=" + products +
+                ", visible=" + visible +
                 '}';
     }
 }

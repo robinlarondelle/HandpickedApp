@@ -5,22 +5,31 @@ package com.example.jan_paul.handpickedandroidclient.Domain;
  */
 
 public class Product {
-    private Category category;
     private String name;
     private String frontImage;
+    private Boolean visible;
+    private int productID;
 
-    public Product(Category category, String name, String frontImage) {
-        this.category = category;
+    public Product(String name, Boolean visible, int productID) {
         this.name = name;
-        this.frontImage = frontImage;
+        this.visible = visible;
+        this.productID = productID;
     }
 
-    public Category getCategory() {
-        return category;
+    public Boolean getVisible() {
+        return visible;
     }
 
-    public void setCategory(Category category) {
-        this.category = category;
+    public void setVisible(Boolean visible) {
+        this.visible = visible;
+    }
+
+    public int getProductID() {
+        return productID;
+    }
+
+    public void setProductID(int productID) {
+        this.productID = productID;
     }
 
     public String getName() {
@@ -42,7 +51,6 @@ public class Product {
     @Override
     public String toString() {
         return "Product{" +
-                "category=" + category +
                 ", name='" + name + '\'' +
                 ", frontImage='" + frontImage + '\'' +
                 '}';

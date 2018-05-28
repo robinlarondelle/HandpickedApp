@@ -19,6 +19,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 
 /**
  * Created by jan-paul on 5/22/2018.
@@ -26,11 +27,11 @@ import java.net.URLConnection;
 
 public class GetProductsTask extends AsyncTask<String, Void, String> {
 
-    private OnProductAvailable listener = null;
+    private OnProductsAvailable listener = null;
 
     private static final String TAG = GetProductsTask.class.getSimpleName();
 
-    public GetProductsTask(OnProductAvailable listener) {
+    public GetProductsTask(OnProductsAvailable listener) {
         this.listener = listener;
     }
 
@@ -78,6 +79,7 @@ public class GetProductsTask extends AsyncTask<String, Void, String> {
     }
 
     protected void onPostExecute(String response) {
+        ArrayList<Category> productsPerCategory = new ArrayList<>();
 
         Log.i(TAG, "onPostExecute " + response);
 
@@ -90,20 +92,43 @@ public class GetProductsTask extends AsyncTask<String, Void, String> {
         try {
             jsonObject = new JSONObject(response);
 
-            JSONArray products = jsonObject.getJSONArray("products");
-            for(int idx = 0; idx < products.length(); idx++) {
-                JSONObject product = products.getJSONObject(idx);
-                String category = product.getString("category");
-                String name = product.getString("name");
-                String frontImage = product.getString("frontImage");
+            JSONArray categories = jsonObject.getJSONArray("categories");
 
-                Product p = new Product(new Category("", Type.WARM), name, frontImage);
+            for(int i = 0; i < categories.length(); i++) {
+                JSONObject category =  categories.getJSONObject(i);
+                JSONArray products = category.getJSONArray("products");
+                String categoryName = category.getString("categoryName");
+                Boolean visible = intToBool(category.getInt("visible"));
+                Category currentCategory = new Category("", categoryName, visible);
+                productsPerCategory.add(currentCategory);
 
-                listener.onProductAvailable(p);
+                for (int idx = 0; idx < products.length(); idx++) {
+                    JSONObject product = products.getJSONObject(idx);
+                    int productID = product.getInt("productID");
+                    String productName = product.getString("productName");
+                    boolean productVisible = intToBool(product.getInt("visible"));
+                    //String frontImage = product.getString("frontImage");
+
+                    Product currentProduct = new Product(productName, productVisible, productID);
+                    currentCategory.getProducts().add(currentProduct);
+                }
             }
+
         } catch( JSONException ex) {
             Log.e(TAG, "onPostExecute JSONException " + ex.getLocalizedMessage());
         }
+        listener.onProductsAvailable(productsPerCategory);
+    }
+
+    Boolean intToBool(int i){
+        Boolean b;
+        if (i == 0){
+            b = false;
+        }
+        else {
+            b = true;
+        }
+        return b;
     }
 
     private static String getStringFromInputStream(InputStream is) {
@@ -134,7 +159,7 @@ public class GetProductsTask extends AsyncTask<String, Void, String> {
     }
 
     // Call back interface
-    public interface OnProductAvailable {
-        void onProductAvailable(Product product);
+    public interface OnProductsAvailable {
+        void onProductsAvailable(ArrayList<Category> productsPerCategory);
     }
 }

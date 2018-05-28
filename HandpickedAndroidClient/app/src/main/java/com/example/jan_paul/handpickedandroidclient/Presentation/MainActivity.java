@@ -30,7 +30,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements GetProductsTask.OnProductAvailable {
+public class MainActivity extends AppCompatActivity implements GetProductsTask.OnProductsAvailable {
 
     private Integer selectedCategory;
 
@@ -105,21 +105,13 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
                 selectedCategory = i;
                 categoryAdapter.setSelectedCategory(i);
                 categoryAdapter.notifyDataSetChanged();
+                Log.i("test", main.getProductsPerCategory(availableCategories.get(selectedCategory).getType()).toString());
+                productAdapter.updateProductArrayList(main.getProductsPerCategory(availableCategories.get(selectedCategory).getType()));
             }
         });
 
-        availableProducts.add(new Product(new Category("", Type.WARM), "koffie", ""));
-        availableProducts.add(new Product(new Category("", Type.WARM), "koffie", ""));
-        availableProducts.add(new Product(new Category("", Type.WARM), "koffie", ""));
-        availableProducts.add(new Product(new Category("", Type.WARM), "koffie", ""));
-
-        availableCategories.add(new Category("", Type.WARM));
-        availableCategories.add(new Category("", Type.KOUD));
-        availableCategories.add(new Category("", Type.ALCOHOLISCHE_DRANKEN));
-        availableCategories.add(new Category("", Type.WATER));
-
         getProductsTask = new GetProductsTask(this);
-        getProductsTask.execute("api call that returns some products of the selected category here...");
+        getProductsTask.execute("http://10.0.2.2:3000/api/allproducts");
 
         setLayout();
     }
@@ -167,16 +159,16 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
         notificationManager.notify(0, notify);
     }
 
-    public void changedCategory(){
-        availableProducts.clear();
-        productAdapter.notifyDataSetChanged();
-        //show some kind of animation here into the new products
-        getProductsTask.execute("api call that returns some products of the selected category here...");
-    }
-
     @Override
-    public void onProductAvailable(Product product) {
-        availableProducts.add(product);
-        productAdapter.notifyDataSetChanged();
+    public void onProductsAvailable(ArrayList<Category> productsPerCategory) {
+        Log.i("teeest", Integer.toString(productsPerCategory.size()));
+        main.setCategories(productsPerCategory);
+        availableCategories.clear();
+        availableCategories = main.getCategories();
+        availableProducts.clear();
+
+        availableProducts = main.getProductsPerCategory(availableCategories.get(selectedCategory).getType());
+        productAdapter.updateProductArrayList(availableProducts);
+        categoryAdapter.updateCategoryArrayList(availableCategories);
     }
 }

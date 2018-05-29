@@ -64,12 +64,11 @@ public class SendOrderTask extends AsyncTask<String, Void, String> {
 
 
             String body = "{\n" +
-                    "\"room\" : \"" + orderToSend.getVergaderRuimte() + "\",\n" +
-                    "\"message\" : \"" + orderToSend.getMessage() + "\",\n" +
+                    "\"room\": \"" + orderToSend.getVergaderRuimte() + "\",\n" +
+                    "\"comment\": \"" + orderToSend.getMessage() + "\",\n" +
                     "\"products\": [\n" +
                     hashmapToString(orderToSend.getProducts()) +
                     "]\n" +
-                    "\n" +
                     "}";
 
             Log.i("body", body);
@@ -163,7 +162,7 @@ public class SendOrderTask extends AsyncTask<String, Void, String> {
                         out = out + "},\n";
                     }
                     else {
-                        out = out + "}\n";
+                        out = out + "}";
                     }
             it.remove(); // avoids a ConcurrentModificationException
         }

@@ -10,7 +10,6 @@
         android:id="@+id/product_counter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="4x"
         android:textSize="30sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -20,7 +19,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:text="Coca Cola Regular"
         android:textSize="30sp"
         app:layout_constraintStart_toEndOf="@+id/product_counter"
         app:layout_constraintTop_toTopOf="parent" />
@@ -30,6 +28,7 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginStart="32dp"
+        android:padding="0dp"
         app:layout_constraintStart_toEndOf="@+id/product_name"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@android:color/holo_blue_bright" />

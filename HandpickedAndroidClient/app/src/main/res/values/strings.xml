@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">HandpickedAndroidClient</string>
+    <string name="splash_loading_text">Just a second - Fetching latest data from server..</string>
 </resources>

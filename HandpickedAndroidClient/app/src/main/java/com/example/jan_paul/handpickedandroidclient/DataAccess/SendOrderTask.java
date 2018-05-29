@@ -5,7 +5,6 @@ import android.util.Log;
 
 import com.example.jan_paul.handpickedandroidclient.Domain.Category;
 import com.example.jan_paul.handpickedandroidclient.Domain.Product;
-import com.example.jan_paul.handpickedandroidclient.Domain.Type;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -15,23 +14,20 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 
-/**
- * Created by jan-paul on 5/22/2018.
- */
+public class SendOrderTask extends AsyncTask<String, Void, String> {
 
-public class GetProductsTask extends AsyncTask<String, Void, String> {
-
-    private OnProductsAvailable listener = null;
+    private SendOrderTask.OnConfirmationAvailable listener = null;
 
     private static final String TAG = GetProductsTask.class.getSimpleName();
 
-    public GetProductsTask(OnProductsAvailable listener) {
+    public SendOrderTask(SendOrderTask.OnConfirmationAvailable listener) {
         this.listener = listener;
     }
 
@@ -53,11 +49,17 @@ public class GetProductsTask extends AsyncTask<String, Void, String> {
             }
 
             HttpURLConnection httpConnection = (HttpURLConnection) urlConnection;
-            httpConnection.setAllowUserInteraction(false);
-            httpConnection.setInstanceFollowRedirects(true);
-            httpConnection.setRequestMethod("GET");
+            httpConnection.setRequestProperty("Content-Type", "application/json");
+            //httpConnection.setAllowUserInteraction(false);
+            //httpConnection.setInstanceFollowRedirects(true);
+            httpConnection.setRequestMethod("POST");
 
             httpConnection.connect();
+
+            byte[] outputBytes = "{'value': 7.5}".getBytes("UTF-8");
+            OutputStream os = httpConnection.getOutputStream();
+            os.write(outputBytes);
+            os.close();
 
             responsCode = httpConnection.getResponseCode();
             if (responsCode == HttpURLConnection.HTTP_OK) {
@@ -73,8 +75,6 @@ public class GetProductsTask extends AsyncTask<String, Void, String> {
             Log.e("TAG", "doInBackground IOException " + e.getLocalizedMessage());
             return null;
         }
-
-
         return response;
     }
 
@@ -94,39 +94,10 @@ public class GetProductsTask extends AsyncTask<String, Void, String> {
 
             JSONArray categories = jsonObject.getJSONArray("categories");
 
-            for(int i = 0; i < categories.length(); i++) {
-                JSONObject category =  categories.getJSONObject(i);
-                JSONArray products = category.getJSONArray("products");
-                String categoryName = category.getString("categoryName");
-                Boolean visible = intToBool(category.getInt("visible"));
-                Category currentCategory = new Category("", categoryName, visible);
-                productsPerCategory.add(currentCategory);
-
-                for (int idx = 0; idx < products.length(); idx++) {
-                    JSONObject product = products.getJSONObject(idx);
-                    int productID = product.getInt("productID");
-                    String productName = product.getString("productName");
-                    boolean productVisible = intToBool(product.getInt("visible"));
-                    //String frontImage = product.getString("frontImage");
-
-                    Product currentProduct = new Product(productName, productVisible, productID);
-                    currentCategory.getProducts().add(currentProduct);
-                }
-            }
-
         } catch( JSONException ex) {
             Log.e(TAG, "onPostExecute JSONException " + ex.getLocalizedMessage());
         }
-        listener.onProductsAvailable(productsPerCategory);
-    }
-
-    Boolean intToBool(int i){
-        if (i == 0){
-            return false;
-        }
-        else {
-            return true;
-        }
+        listener.onConfirmationAvailable("");
     }
 
     private static String getStringFromInputStream(InputStream is) {
@@ -157,7 +128,7 @@ public class GetProductsTask extends AsyncTask<String, Void, String> {
     }
 
     // Call back interface
-    public interface OnProductsAvailable {
-        void onProductsAvailable(ArrayList<Category> productsPerCategory);
+    public interface OnConfirmationAvailable {
+        void onConfirmationAvailable(String confirmation);
     }
 }

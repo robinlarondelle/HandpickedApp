@@ -13,6 +13,7 @@ import com.example.jan_paul.handpickedandroidclient.Domain.Product;
 import com.example.jan_paul.handpickedandroidclient.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by tobia on 28-5-2018.
@@ -21,32 +22,32 @@ import java.util.ArrayList;
 public class OrderAdapter extends BaseAdapter {
     private Context mContext;
     private LayoutInflater mInflator;
-    private ArrayList orderArrayList;
+    private HashMap<String, Integer> orderItems;
 
-    public OrderAdapter (Context context, LayoutInflater layoutInflater, ArrayList<Order> orderArrayList) {
+    public OrderAdapter (Context context, LayoutInflater layoutInflater, HashMap<String, Integer> orderItems) {
         mContext = context;
         mInflator = layoutInflater;
-        this.orderArrayList = orderArrayList;
+        this.orderItems = orderItems;
     }
 
-    public void updateOderArrayList(ArrayList list) {
-        orderArrayList = list;
-        notifyDataSetChanged();
-    }
-
-    public void clearData() {
-        orderArrayList.clear();
-    }
+//    public void updateOderArrayList(ArrayList list) {
+//        orderArrayList = list;
+//        notifyDataSetChanged();
+//    }
+//
+//    public void clearData() {
+//        orderArrayList.clear();
+//    }
 
     @Override
     public int getCount() {
-        int size = orderArrayList.size();
+        int size = orderItems.size();
         return size;
     }
 
     @Override
     public Object getItem(int position) {
-        return orderArrayList.get(position);
+        return orderItems.get(position);
     }
 
     @Override
@@ -70,9 +71,11 @@ public class OrderAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        Order order = (Order) orderArrayList.get(position);
+//        viewHolder.productName.setText(orderItems.get());
 
-//        viewHolder.productName.setText(order.());
+//        viewHolder.productCounter.setText(order.getProducts());
+
+//        viewHolder.productName.setText(order.getProducts().get(0));
 
         return convertView;
     }

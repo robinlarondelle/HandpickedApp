@@ -42,7 +42,7 @@ public class SplashActivity extends AppCompatActivity implements GetProductsTask
         Log.d(TAG, "onCreate: textView font changed to Barlow Light.");
 
         getProductsTask = new GetProductsTask(SplashActivity.this);
-        getProductsTask.execute("http://10.0.2.2:3000/api/allproducts");
+        getProductsTask.execute(getString(R.string.get_products));
         handler = new Handler();
         test = new Runnable() {
             @Override
@@ -51,10 +51,9 @@ public class SplashActivity extends AppCompatActivity implements GetProductsTask
                 Log.i(TAG, "run: randomasstask");
                 getProductsTask.cancel(true);
                 getProductsTask = new GetProductsTask(SplashActivity.this);
-                getProductsTask.execute("http://10.0.2.2:3000/api/allproducts");
+                getProductsTask.execute(getString(R.string.get_products));
                 handler.postDelayed(test, 5000); //wait 4 sec and run again
                 splashLoadingText.setText("Failed to connect, trying again...");
-
             }
         };
         startTest();

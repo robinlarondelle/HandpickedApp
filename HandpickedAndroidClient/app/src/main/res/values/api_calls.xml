@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="get_products">http://handpickedserver.herokuapp.com/api/allproducts</string>
+</resources>

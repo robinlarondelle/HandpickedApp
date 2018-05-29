@@ -78,7 +78,7 @@ public class ProductAdapter extends BaseAdapter {
                 .load("http://images.quickoffice.nl/pictures/008/600x450/FRISDRANK-COCA-COLA-REGULAR-BLIKJE-0-33L-(c)20050085.jpg")
                 //.resize(viewHolder.productImage.getLayoutParams().width, viewHolder.productImage.getLayoutParams().height)
                 //.centerCrop()
-                .fit()
+                //.fit()
                 .into(viewHolder.productImage);
 
         return convertView;

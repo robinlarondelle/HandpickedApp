@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
         });
 
         getProductsTask = new GetProductsTask(this);
-        getProductsTask.execute("http://10.0.2.2:3000/api/allproducts");
+        getProductsTask.execute(getString(R.string.get_products));
 
         setLayout();
     }

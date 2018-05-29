@@ -15,29 +15,26 @@ public class Order {
     private HashMap<String, Integer> products;
     private Boolean isOrdered;
     private String orderDate;
-    private int vergaderRuimte;
-    private String clientID;
+    private String vergaderRuimte;
     private String message;
     private int ID;
 
-    public Order(Boolean isOrdered, String orderDate, int vergaderRuimte, String clientID, String message, int ID) {
+    public Order(Boolean isOrdered, String vergaderRuimte, String message) {
         this.products = new HashMap<>();
         this.isOrdered = isOrdered;
-        this.orderDate = orderDate;
+        this.orderDate = null;
         this.vergaderRuimte = vergaderRuimte;
-        this.clientID = clientID;
         this.message = message;
-        this.ID = ID;
+        this.ID = 0;
     }
 
-    public Order(Boolean isOrdered, String orderDate, int vergaderRuimte, String clientID, int ID) {
+    public Order(Boolean isOrdered, String vergaderRuimte) {
         this.products = new HashMap<>();
         this.isOrdered = isOrdered;
-        this.orderDate = orderDate;
+        this.orderDate = null;
         this.vergaderRuimte = vergaderRuimte;
-        this.clientID = clientID;
         this.message = null;
-        this.ID = ID;
+        this.ID = 0;
     }
 
     public void addOrRemoveProduct(Product product, int amount){
@@ -101,20 +98,12 @@ public class Order {
         this.orderDate = orderDate;
     }
 
-    public int getVergaderRuimte() {
+    public String getVergaderRuimte() {
         return vergaderRuimte;
     }
 
-    public void setVergaderRuimte(int vergaderRuimte) {
+    public void setVergaderRuimte(String vergaderRuimte) {
         this.vergaderRuimte = vergaderRuimte;
-    }
-
-    public String getClientID() {
-        return clientID;
-    }
-
-    public void setClientID(String clientID) {
-        this.clientID = clientID;
     }
 
     @Override
@@ -124,7 +113,6 @@ public class Order {
                 ", isOrdered=" + isOrdered +
                 ", orderDate='" + orderDate + '\'' +
                 ", vergaderRuimte=" + vergaderRuimte +
-                ", clientID='" + clientID + '\'' +
                 ", message='" + message + '\'' +
                 ", ID=" + ID +
                 '}';

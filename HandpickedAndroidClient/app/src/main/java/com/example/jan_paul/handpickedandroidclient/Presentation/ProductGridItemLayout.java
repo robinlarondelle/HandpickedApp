@@ -1,6 +1,7 @@
 package com.example.jan_paul.handpickedandroidclient.Presentation;
 
 import android.content.Context;
+import android.support.constraint.ConstraintLayout;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 
@@ -8,7 +9,7 @@ import android.widget.LinearLayout;
  * Created by tobia on 25-5-2018.
  */
 
-public class ProductGridItemLayout extends LinearLayout {
+public class ProductGridItemLayout extends ConstraintLayout {
     public ProductGridItemLayout(Context context) {
         super(context);
     }

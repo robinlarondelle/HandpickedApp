@@ -18,6 +18,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.jan_paul.handpickedandroidclient.DataAccess.GetProductsTask;
+import com.example.jan_paul.handpickedandroidclient.DataAccess.SendOrderTask;
 import com.example.jan_paul.handpickedandroidclient.Domain.Category;
 import com.example.jan_paul.handpickedandroidclient.Domain.Product;
 import com.example.jan_paul.handpickedandroidclient.Domain.Type;
@@ -30,6 +31,8 @@ import com.google.gson.Gson;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.security.auth.login.LoginException;
 
 public class MainActivity extends AppCompatActivity implements GetProductsTask.OnProductsAvailable {
 
@@ -51,7 +54,6 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
 
     private Main main;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,7 +61,6 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
         if (main == null) {
             Log.i("log", "main still null");
             main = new Main();
-            main.makenNewOrder();
         }
 
         if(selectedCategory == null){
@@ -83,8 +84,9 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
 //                String result = Integer.toString(main.getCurrentOrder().getTotalProducts());
 //                orderSizeNumber.setText(result);
 
-                Intent intent = new Intent(getApplicationContext(), OrderActivity.class);
-                startActivity(intent);
+                //Intent intent = new Intent(getApplicationContext(), OrderActivity.class);
+                //startActivity(intent);
+                main.sendCurrentOrder(MainActivity.this);
             }
         });
 
@@ -94,9 +96,13 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
         productSelectionGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                main.getCurrentOrder().addOrRemoveProduct(availableProducts.get(i), 1);
+                if (main.getCurrentOrder() == null){
+                    main.makenNewOrder("zaal 3", "dit is een extra bericht!");
+                }
+                main.getCurrentOrder().addOrRemoveProduct(main.getProductsPerCategory(availableCategories.get(selectedCategory).getType()).get(i), 1);
                 String result = Integer.toString(main.getCurrentOrder().getTotalProducts());
                 orderSizeNumber.setText(result);
+                Log.i("orderinfo", main.getCurrentOrder().toString());
             }
         });
 
@@ -115,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
         });
 
         getProductsTask = new GetProductsTask(this);
-        getProductsTask.execute("http://10.0.2.2:3000/api/allproducts");
+        getProductsTask.execute(getString(R.string.get_products));
 
         setLayout();
     }
@@ -146,7 +152,10 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
     }
 
     public void setLayout(){
-        String result = Integer.toString(main.getCurrentOrder().getTotalProducts());
+        String result = "0";
+        if (main.getCurrentOrder() != null){
+            result = Integer.toString(main.getCurrentOrder().getTotalProducts());
+        }
         orderSizeNumber.setText(result);
         categoryAdapter.setSelectedCategory(selectedCategory);
     }
@@ -165,7 +174,6 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
 
     @Override
     public void onProductsAvailable(ArrayList<Category> productsPerCategory) {
-        Log.i("teeest", Integer.toString(productsPerCategory.size()));
         main.setCategories(productsPerCategory);
         availableCategories.clear();
         availableCategories = main.getCategories();

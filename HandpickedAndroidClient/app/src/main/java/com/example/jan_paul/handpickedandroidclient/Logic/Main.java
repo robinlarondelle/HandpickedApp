@@ -1,17 +1,21 @@
 package com.example.jan_paul.handpickedandroidclient.Logic;
 
+import android.content.Context;
+import android.content.res.Resources;
 import android.os.Parcelable;
 import android.util.Log;
 
+import com.example.jan_paul.handpickedandroidclient.DataAccess.SendOrderTask;
 import com.example.jan_paul.handpickedandroidclient.Domain.Category;
 import com.example.jan_paul.handpickedandroidclient.Domain.Order;
 import com.example.jan_paul.handpickedandroidclient.Domain.Product;
+import com.example.jan_paul.handpickedandroidclient.R;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 
-public class Main {
+public class Main implements SendOrderTask.OnConfirmationAvailable{
     private Order currentOrder;
     private ArrayList<Order> oldOrders;
     private ArrayList<Category> categories;
@@ -37,23 +41,21 @@ public class Main {
         return products;
     }
 
-    public void setCurrentOrder(Order currentOrder) {
-        this.currentOrder = currentOrder;
-    }
-
-    public void makenNewOrder(){
+    public void makenNewOrder(String vergaderruimte, String message){
         if(currentOrder != null) {
+            currentOrder.setOrdered(true);
             oldOrders.add(currentOrder);
         }
-        currentOrder = new Order(false, Calendar.getInstance().getTime().toString(), 1, "jan-paul", 1);
+        currentOrder = new Order(false, vergaderruimte, message);
+    }
+
+    public void sendCurrentOrder(Context context){
+        SendOrderTask sendOrderTask = new SendOrderTask(this, currentOrder);
+        sendOrderTask.execute(context.getString(R.string.post_order));
     }
 
     public ArrayList<Order> getOldOrders() {
         return oldOrders;
-    }
-
-    public void setOldOrders(ArrayList<Order> oldOrders) {
-        this.oldOrders = oldOrders;
     }
 
     public ArrayList<Category> getCategories() {
@@ -71,5 +73,10 @@ public class Main {
                 ", oldOrders=" + oldOrders +
                 ", categories=" + categories +
                 '}';
+    }
+
+    @Override
+    public void onConfirmationAvailable(String confirmation){
+        Log.i("post", confirmation);
     }
 }

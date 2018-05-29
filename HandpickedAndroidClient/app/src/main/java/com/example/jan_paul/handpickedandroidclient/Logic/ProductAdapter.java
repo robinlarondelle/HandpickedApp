@@ -1,9 +1,17 @@
 package com.example.jan_paul.handpickedandroidclient.Logic;
 
 import android.content.Context;
+import android.support.v4.view.animation.FastOutLinearInInterpolator;
+import android.support.v4.view.animation.LinearOutSlowInInterpolator;
+import android.transition.Fade;
+import android.transition.Transition;
+import android.transition.TransitionManager;
+import android.transition.TransitionSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -73,13 +81,17 @@ public class ProductAdapter extends BaseAdapter {
         Product Product = (Product) ProductArrayList.get(position);
 
         viewHolder.productName.setText(Product.getName());
-/*
+
+        Animation a = AnimationUtils.loadAnimation(mContext, R.anim.fade);
+        convertView.startAnimation(a);
+
         Picasso.get()
-                .load(Product.getFrontImage())
-                .resize(viewHolder.productImage.getLayoutParams().width, viewHolder.productImage.getLayoutParams().height)
-                .centerCrop()
+                .load("http://images.quickoffice.nl/pictures/008/600x450/FRISDRANK-COCA-COLA-REGULAR-BLIKJE-0-33L-(c)20050085.jpg")
+                //.resize(viewHolder.productImage.getLayoutParams().width, viewHolder.productImage.getLayoutParams().height)
+                //.centerCrop()
+                //.fit()
                 .into(viewHolder.productImage);
-                */
+
         return convertView;
     }
 

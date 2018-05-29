@@ -31,6 +31,8 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.security.auth.login.LoginException;
+
 public class MainActivity extends AppCompatActivity implements GetProductsTask.OnProductsAvailable {
 
     private Integer selectedCategory;
@@ -58,7 +60,6 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
         if (main == null) {
             Log.i("log", "main still null");
             main = new Main();
-            main.makenNewOrder();
         }
 
         if(selectedCategory == null){
@@ -93,9 +94,13 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
         productSelectionGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if (main.getCurrentOrder() == null){
+                    main.makenNewOrder("zaal 3", "");
+                }
                 main.getCurrentOrder().addOrRemoveProduct(availableProducts.get(i), 1);
                 String result = Integer.toString(main.getCurrentOrder().getTotalProducts());
                 orderSizeNumber.setText(result);
+                Log.i("orderinfo", main.getCurrentOrder().toString());
             }
         });
 
@@ -145,7 +150,10 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
     }
 
     public void setLayout(){
-        String result = Integer.toString(main.getCurrentOrder().getTotalProducts());
+        String result = "0";
+        if (main.getCurrentOrder() != null){
+            result = Integer.toString(main.getCurrentOrder().getTotalProducts());
+        }
         orderSizeNumber.setText(result);
         categoryAdapter.setSelectedCategory(selectedCategory);
     }

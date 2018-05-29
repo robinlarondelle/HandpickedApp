@@ -37,23 +37,18 @@ public class Main {
         return products;
     }
 
-    public void setCurrentOrder(Order currentOrder) {
-        this.currentOrder = currentOrder;
-    }
-
-    public void makenNewOrder(){
+    public void makenNewOrder(String vergaderruimte, String message){
         if(currentOrder != null) {
+            currentOrder.setOrdered(true);
             oldOrders.add(currentOrder);
         }
-        currentOrder = new Order(false, Calendar.getInstance().getTime().toString(), 1, "jan-paul", 1);
+        currentOrder = new Order(false, "", "");
     }
+
+
 
     public ArrayList<Order> getOldOrders() {
         return oldOrders;
-    }
-
-    public void setOldOrders(ArrayList<Order> oldOrders) {
-        this.oldOrders = oldOrders;
     }
 
     public ArrayList<Category> getCategories() {

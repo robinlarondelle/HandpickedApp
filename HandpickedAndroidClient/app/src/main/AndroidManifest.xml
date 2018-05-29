@@ -13,6 +13,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".Presentation.SplashActivity"
+            android:noHistory="true"
             android:theme="@style/AppFullScreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

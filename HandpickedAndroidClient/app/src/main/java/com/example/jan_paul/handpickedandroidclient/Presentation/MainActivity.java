@@ -3,6 +3,7 @@ package com.example.jan_paul.handpickedandroidclient.Presentation;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Debug;
 import android.support.v7.app.AppCompatActivity;
@@ -78,9 +79,12 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
         orderIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                main.makenNewOrder();
-                String result = Integer.toString(main.getCurrentOrder().getTotalProducts());
-                orderSizeNumber.setText(result);
+//                main.makenNewOrder();
+//                String result = Integer.toString(main.getCurrentOrder().getTotalProducts());
+//                orderSizeNumber.setText(result);
+
+                Intent intent = new Intent(getApplicationContext(), OrderActivity.class);
+                startActivity(intent);
             }
         });
 

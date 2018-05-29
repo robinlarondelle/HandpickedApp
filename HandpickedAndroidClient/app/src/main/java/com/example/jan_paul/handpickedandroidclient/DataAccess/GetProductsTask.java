@@ -56,7 +56,7 @@ public class GetProductsTask extends AsyncTask<String, Void, String> {
             httpConnection.setAllowUserInteraction(false);
             httpConnection.setInstanceFollowRedirects(true);
             httpConnection.setRequestMethod("GET");
-
+            httpConnection.setConnectTimeout(3000);
             httpConnection.connect();
 
             responsCode = httpConnection.getResponseCode();
@@ -73,8 +73,6 @@ public class GetProductsTask extends AsyncTask<String, Void, String> {
             Log.e("TAG", "doInBackground IOException " + e.getLocalizedMessage());
             return null;
         }
-
-
         return response;
     }
 

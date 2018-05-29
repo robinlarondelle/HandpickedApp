@@ -51,7 +51,6 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
 
     private Main main;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

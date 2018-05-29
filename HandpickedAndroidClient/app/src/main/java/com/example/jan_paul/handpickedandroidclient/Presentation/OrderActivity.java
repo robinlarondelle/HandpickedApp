@@ -34,10 +34,6 @@ public class OrderActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_order);
 
-        currentOrder = new Order(false, "", 1, "someid", "", 1);
-        currentOrder.addOrRemoveProduct(new Product("cola", true, 1), 2);
-        currentOrder.addOrRemoveProduct(new Product("thee", true, 2), 5);
-
         orderItems = currentOrder.getProducts();
 
         orderList = findViewById(R.id.order_list);

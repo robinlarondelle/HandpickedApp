@@ -5,15 +5,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.example.jan_paul.handpickedandroidclient.Domain.Order;
-import com.example.jan_paul.handpickedandroidclient.Domain.Product;
 import com.example.jan_paul.handpickedandroidclient.R;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Created by tobia on 28-5-2018.
@@ -23,21 +21,14 @@ public class OrderAdapter extends BaseAdapter {
     private Context mContext;
     private LayoutInflater mInflator;
     private HashMap<String, Integer> orderItems;
+    private Iterator it;
 
     public OrderAdapter (Context context, LayoutInflater layoutInflater, HashMap<String, Integer> orderItems) {
         mContext = context;
         mInflator = layoutInflater;
         this.orderItems = orderItems;
+        it = orderItems.entrySet().iterator();
     }
-
-//    public void updateOderArrayList(ArrayList list) {
-//        orderArrayList = list;
-//        notifyDataSetChanged();
-//    }
-//
-//    public void clearData() {
-//        orderArrayList.clear();
-//    }
 
     @Override
     public int getCount() {
@@ -57,6 +48,7 @@ public class OrderAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        Map.Entry pair = (Map.Entry)it.next();
         ViewHolder viewHolder;
 
         if (convertView == null) {
@@ -71,11 +63,8 @@ public class OrderAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-//        viewHolder.productName.setText(orderItems.get());
-
-//        viewHolder.productCounter.setText(order.getProducts());
-
-//        viewHolder.productName.setText(order.getProducts().get(0));
+            viewHolder.productName.setText(pair.getKey() + "");
+            viewHolder.productCounter.setText(pair.getValue() + "");
 
         return convertView;
     }

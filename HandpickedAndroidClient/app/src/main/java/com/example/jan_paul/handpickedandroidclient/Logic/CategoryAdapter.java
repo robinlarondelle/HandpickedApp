@@ -84,6 +84,7 @@ public class CategoryAdapter  extends BaseAdapter {
         }
 
         if (position == selectedCategory){
+            convertView.setMinimumWidth(convertView.getWidth() + 30);
             convertView.setBackgroundColor(ContextCompat.getColor(convertView.getContext(), R.color.selectedCategory));
         }
         else {

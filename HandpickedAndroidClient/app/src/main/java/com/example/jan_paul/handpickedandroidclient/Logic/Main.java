@@ -1,17 +1,21 @@
 package com.example.jan_paul.handpickedandroidclient.Logic;
 
+import android.content.Context;
+import android.content.res.Resources;
 import android.os.Parcelable;
 import android.util.Log;
 
+import com.example.jan_paul.handpickedandroidclient.DataAccess.SendOrderTask;
 import com.example.jan_paul.handpickedandroidclient.Domain.Category;
 import com.example.jan_paul.handpickedandroidclient.Domain.Order;
 import com.example.jan_paul.handpickedandroidclient.Domain.Product;
+import com.example.jan_paul.handpickedandroidclient.R;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 
-public class Main {
+public class Main implements SendOrderTask.OnConfirmationAvailable{
     private Order currentOrder;
     private ArrayList<Order> oldOrders;
     private ArrayList<Category> categories;
@@ -42,10 +46,13 @@ public class Main {
             currentOrder.setOrdered(true);
             oldOrders.add(currentOrder);
         }
-        currentOrder = new Order(false, "", "");
+        currentOrder = new Order(false, vergaderruimte, "");
     }
 
-
+    public void sendCurrentOrder(Context context){
+        SendOrderTask sendOrderTask = new SendOrderTask(this, currentOrder);
+        sendOrderTask.execute(context.getString(R.string.post_order));
+    }
 
     public ArrayList<Order> getOldOrders() {
         return oldOrders;
@@ -66,5 +73,10 @@ public class Main {
                 ", oldOrders=" + oldOrders +
                 ", categories=" + categories +
                 '}';
+    }
+
+    @Override
+    public void onConfirmationAvailable(String confirmation){
+        Log.i("post", confirmation);
     }
 }

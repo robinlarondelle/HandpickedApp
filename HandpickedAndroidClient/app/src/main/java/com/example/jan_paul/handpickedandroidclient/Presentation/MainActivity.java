@@ -18,6 +18,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.jan_paul.handpickedandroidclient.DataAccess.GetProductsTask;
+import com.example.jan_paul.handpickedandroidclient.DataAccess.SendOrderTask;
 import com.example.jan_paul.handpickedandroidclient.Domain.Category;
 import com.example.jan_paul.handpickedandroidclient.Domain.Product;
 import com.example.jan_paul.handpickedandroidclient.Domain.Type;
@@ -83,8 +84,9 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
 //                String result = Integer.toString(main.getCurrentOrder().getTotalProducts());
 //                orderSizeNumber.setText(result);
 
-                Intent intent = new Intent(getApplicationContext(), OrderActivity.class);
-                startActivity(intent);
+                //Intent intent = new Intent(getApplicationContext(), OrderActivity.class);
+                //startActivity(intent);
+                main.sendCurrentOrder(MainActivity.this);
             }
         });
 

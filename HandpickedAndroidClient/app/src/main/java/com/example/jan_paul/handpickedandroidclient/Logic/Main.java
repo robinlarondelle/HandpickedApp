@@ -46,7 +46,7 @@ public class Main implements SendOrderTask.OnConfirmationAvailable{
             currentOrder.setOrdered(true);
             oldOrders.add(currentOrder);
         }
-        currentOrder = new Order(false, vergaderruimte, "");
+        currentOrder = new Order(false, vergaderruimte, message);
     }
 
     public void sendCurrentOrder(Context context){

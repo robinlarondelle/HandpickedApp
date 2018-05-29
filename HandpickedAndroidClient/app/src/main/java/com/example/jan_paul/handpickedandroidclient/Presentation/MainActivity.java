@@ -97,9 +97,9 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 if (main.getCurrentOrder() == null){
-                    main.makenNewOrder("zaal 3", "");
+                    main.makenNewOrder("zaal 3", "dit is een extra bericht!");
                 }
-                main.getCurrentOrder().addOrRemoveProduct(availableProducts.get(i), 1);
+                main.getCurrentOrder().addOrRemoveProduct(main.getProductsPerCategory(availableCategories.get(selectedCategory).getType()).get(i), 1);
                 String result = Integer.toString(main.getCurrentOrder().getTotalProducts());
                 orderSizeNumber.setText(result);
                 Log.i("orderinfo", main.getCurrentOrder().toString());
@@ -174,7 +174,6 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
 
     @Override
     public void onProductsAvailable(ArrayList<Category> productsPerCategory) {
-        Log.i("teeest", Integer.toString(productsPerCategory.size()));
         main.setCategories(productsPerCategory);
         availableCategories.clear();
         availableCategories = main.getCategories();

@@ -64,10 +64,11 @@ public class SendOrderTask extends AsyncTask<String, Void, String> {
 
 
             String body = "{\n" +
-                    "\t\"room\" : \"" + orderToSend.getVergaderRuimte() + "\",\n" +
-                    "\t\"products\": [\n" +
+                    "\"room\" : \"" + orderToSend.getVergaderRuimte() + "\",\n" +
+                    "\"message\" : \"" + orderToSend.getMessage() + "\",\n" +
+                    "\"products\": [\n" +
                     hashmapToString(orderToSend.getProducts()) +
-                    "\t]\n" +
+                    "]\n" +
                     "\n" +
                     "}";
 
@@ -155,14 +156,14 @@ public class SendOrderTask extends AsyncTask<String, Void, String> {
         while (it.hasNext()) {
             Map.Entry pair = (Map.Entry)it.next();
             out = out +
-                    "\t\t{\n" +
-                    "\t\t\t\"Naam\" : \"" + pair.getKey() + "\",\n" +
-                    "\t\t\t\"Aantal\" : " + pair.getValue() + "\n";
+                    "{\n" +
+                    "\"Naam\" : \"" + pair.getKey() + "\",\n" +
+                    "\"Aantal\" : " + pair.getValue() + "\n";
                     if(it.hasNext()){
-                        out = out + "\t\t},\n";
+                        out = out + "},\n";
                     }
                     else {
-                        out = out + "\t\t}\n";
+                        out = out + "}\n";
                     }
             it.remove(); // avoids a ConcurrentModificationException
         }

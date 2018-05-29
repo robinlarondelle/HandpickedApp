@@ -1,6 +1,7 @@
 package com.example.jan_paul.handpickedandroidclient.Logic;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,13 +22,14 @@ public class OrderAdapter extends BaseAdapter {
     private Context mContext;
     private LayoutInflater mInflator;
     private HashMap<String, Integer> orderItems;
+    private String[] orderItemsKeys;
     private Iterator it;
 
     public OrderAdapter (Context context, LayoutInflater layoutInflater, HashMap<String, Integer> orderItems) {
         mContext = context;
         mInflator = layoutInflater;
         this.orderItems = orderItems;
-        it = orderItems.entrySet().iterator();
+        orderItemsKeys = orderItems.keySet().toArray(new String[orderItems.size()]);
     }
 
     @Override
@@ -38,7 +40,7 @@ public class OrderAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        return orderItems.get(position);
+        return orderItems.get(orderItemsKeys[position]);
     }
 
     @Override
@@ -48,7 +50,9 @@ public class OrderAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Map.Entry pair = (Map.Entry)it.next();
+        String key = orderItemsKeys[position];
+        int value = (Integer) getItem(position);
+
         ViewHolder viewHolder;
 
         if (convertView == null) {
@@ -63,8 +67,14 @@ public class OrderAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-            viewHolder.productName.setText(pair.getKey() + "");
-            viewHolder.productCounter.setText(pair.getValue() + "");
+        if (position % 2 == 1) {
+            convertView.setBackgroundColor(Color.parseColor("#FFFFFF"));
+        } else {
+            convertView.setBackgroundColor(Color.parseColor("#F5F5F6"));
+        }
+
+            viewHolder.productName.setText(key + "");
+            viewHolder.productCounter.setText(value + "x");
 
         return convertView;
     }

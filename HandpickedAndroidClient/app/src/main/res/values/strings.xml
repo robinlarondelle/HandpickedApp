@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">HandpickedAndroidClient</string>
+    <string name="app_name">HA Drink Selector</string>
     <string name="splash_loading_text">Just a second - Fetching latest data from server&#8230;</string>
     <string name="splash_no_connection">Failed to connect, trying again&#8230;</string>
     <string name="splash_connection_successful">Connected successfully!</string>

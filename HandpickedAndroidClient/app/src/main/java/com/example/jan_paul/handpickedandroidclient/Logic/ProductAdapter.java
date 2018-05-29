@@ -73,13 +73,14 @@ public class ProductAdapter extends BaseAdapter {
         Product Product = (Product) ProductArrayList.get(position);
 
         viewHolder.productName.setText(Product.getName());
-/*
+
         Picasso.get()
-                .load(Product.getFrontImage())
-                .resize(viewHolder.productImage.getLayoutParams().width, viewHolder.productImage.getLayoutParams().height)
-                .centerCrop()
+                .load("http://images.quickoffice.nl/pictures/008/600x450/FRISDRANK-COCA-COLA-REGULAR-BLIKJE-0-33L-(c)20050085.jpg")
+                //.resize(viewHolder.productImage.getLayoutParams().width, viewHolder.productImage.getLayoutParams().height)
+                //.centerCrop()
+                .fit()
                 .into(viewHolder.productImage);
-                */
+
         return convertView;
     }
 

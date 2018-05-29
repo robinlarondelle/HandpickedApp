@@ -5,14 +5,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.example.jan_paul.handpickedandroidclient.Domain.Order;
-import com.example.jan_paul.handpickedandroidclient.Domain.Product;
 import com.example.jan_paul.handpickedandroidclient.R;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Created by tobia on 28-5-2018.
@@ -21,32 +20,25 @@ import java.util.ArrayList;
 public class OrderAdapter extends BaseAdapter {
     private Context mContext;
     private LayoutInflater mInflator;
-    private ArrayList orderArrayList;
+    private HashMap<String, Integer> orderItems;
+    private Iterator it;
 
-    public OrderAdapter (Context context, LayoutInflater layoutInflater, ArrayList<Order> orderArrayList) {
+    public OrderAdapter (Context context, LayoutInflater layoutInflater, HashMap<String, Integer> orderItems) {
         mContext = context;
         mInflator = layoutInflater;
-        this.orderArrayList = orderArrayList;
-    }
-
-    public void updateOderArrayList(ArrayList list) {
-        orderArrayList = list;
-        notifyDataSetChanged();
-    }
-
-    public void clearData() {
-        orderArrayList.clear();
+        this.orderItems = orderItems;
+        it = orderItems.entrySet().iterator();
     }
 
     @Override
     public int getCount() {
-        int size = orderArrayList.size();
+        int size = orderItems.size();
         return size;
     }
 
     @Override
     public Object getItem(int position) {
-        return orderArrayList.get(position);
+        return orderItems.get(position);
     }
 
     @Override
@@ -56,6 +48,7 @@ public class OrderAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        Map.Entry pair = (Map.Entry)it.next();
         ViewHolder viewHolder;
 
         if (convertView == null) {
@@ -70,9 +63,8 @@ public class OrderAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        Order order = (Order) orderArrayList.get(position);
-
-//        viewHolder.productName.setText(order.());
+            viewHolder.productName.setText(pair.getKey() + "");
+            viewHolder.productCounter.setText(pair.getValue() + "");
 
         return convertView;
     }

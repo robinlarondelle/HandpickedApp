@@ -15,17 +15,21 @@
             android:name=".Presentation.SplashActivity"
             android:noHistory="true"
             android:theme="@style/AppFullScreenTheme">
+
+            <!-- Start with SplashActivity -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
         <activity
             android:name=".Presentation.MainActivity"
             android:theme="@style/AppFullScreenTheme"></activity>
         <activity android:name=".Presentation.OrderActivity" />
-        <activity android:name=".Presentation.SuccessActivity"></activity>
+        <activity android:name=".Presentation.SuccessActivity"
+            android:theme="@style/AppFullScreenTheme" />
     </application>
 
 </manifest>

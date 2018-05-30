@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Debug;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -51,8 +52,10 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
 
     private TextView orderSizeNumber;
     private ImageButton orderIcon;
-
+    private TextView mainActivityTitle;
     private Main main;
+
+    private String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +65,11 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
             Log.i("log", "main still null");
             main = new Main();
         }
+
+        mainActivityTitle = (TextView) findViewById(R.id.main_activity_title);
+        Typeface sofiaSemiBold = Typeface.createFromAsset(getAssets(),"fonts/sofia_semi_bold.ttf");
+        mainActivityTitle.setTypeface(sofiaSemiBold);
+        Log.d(TAG, "onCreate: mainActivityTitle changed to sofiaSemiBold");
 
         if(selectedCategory == null){
         Log.i("log", "selectedCategory still null");

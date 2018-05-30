@@ -1,9 +1,19 @@
 <resources>
+
+    <!-- Global -->
     <string name="app_name">HA Drink Selector</string>
+
+    <!-- Splash Activity -->
     <string name="splash_loading_text">Just a second - Fetching latest data from server&#8230;</string>
     <string name="splash_no_connection">Failed to connect, trying again&#8230;</string>
     <string name="splash_connection_successful">Connected successfully!</string>
+
+    <!-- Main Activity -->
+    <string name="main_activity_title">Frisdranken.</string>
+
+    <!-- Success Activity -->
     <string name="success_title">Thank you.</string>
     <string name="success_message">Your order has arrived and will be prepared. If you did attach a message it\'s delivered successfully.</string>
     <string name="success_return_button">Return</string>
+
 </resources>

@@ -160,7 +160,9 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="60dp"/>
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline2"

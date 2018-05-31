@@ -105,9 +105,9 @@ public class GetProductsTask extends AsyncTask<String, Void, String> {
                     int productID = product.getInt("productID");
                     String productName = product.getString("productName");
                     boolean productVisible = intToBool(product.getInt("visible"));
-                    //String frontImage = product.getString("frontImage");
+                    String frontImage = product.getString("image");
 
-                    Product currentProduct = new Product(productName, productVisible, productID);
+                    Product currentProduct = new Product(productName, productVisible, productID, frontImage);
                     currentCategory.getProducts().add(currentProduct);
                 }
             }

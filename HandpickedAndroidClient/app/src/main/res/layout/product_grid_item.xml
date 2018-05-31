@@ -24,13 +24,13 @@
             android:layout_marginEnd="16dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:scaleType="centerCrop"
+            android:padding="10dp"
+            android:scaleType="centerInside"
             app:layout_constraintBottom_toTopOf="@+id/product_name"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@android:color/holo_orange_light"
-            android:padding="10dp"/>
+            app:srcCompat="@android:color/holo_orange_light" />
 
         <TextView
             android:id="@+id/product_name"

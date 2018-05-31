@@ -6,14 +6,15 @@ package com.example.jan_paul.handpickedandroidclient.Domain;
 
 public class Product {
     private String name;
-    private String frontImage;
+    private String image;
     private Boolean visible;
     private int productID;
 
-    public Product(String name, Boolean visible, int productID) {
+    public Product(String name, Boolean visible, int productID, String image) {
         this.name = name;
         this.visible = visible;
         this.productID = productID;
+        this.image = image;
     }
 
     public Boolean getVisible() {
@@ -40,19 +41,19 @@ public class Product {
         this.name = name;
     }
 
-    public String getFrontImage() {
-        return frontImage;
+    public String getImage() {
+        return image;
     }
 
-    public void setFrontImage(String frontImage) {
-        this.frontImage = frontImage;
+    public void setImage(String frontImage) {
+        this.image = image;
     }
 
     @Override
     public String toString() {
         return "Product{" +
                 ", name='" + name + '\'' +
-                ", frontImage='" + frontImage + '\'' +
+                ", frontImage='" + image + '\'' +
                 '}';
     }
 }

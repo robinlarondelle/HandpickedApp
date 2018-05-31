@@ -169,4 +169,32 @@
         android:orientation="vertical"
         app:layout_constraintGuide_begin="20dp" />
 
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/overlay_holder"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/transblack"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:animateLayoutChanges="true">
+
+        <fragment
+            android:id="@+id/fragment_container"
+            android:name="com.example.jan_paul.handpickedandroidclient.Presentation.OrderFragment"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="64dp"
+            android:layout_marginEnd="64dp"
+            android:layout_marginStart="64dp"
+            android:layout_marginTop="64dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </android.support.constraint.ConstraintLayout>
+
 </android.support.constraint.ConstraintLayout>

@@ -22,14 +22,13 @@ public class OrderAdapter extends BaseAdapter {
     private Context mContext;
     private LayoutInflater mInflator;
     private HashMap<String, Integer> orderItems;
-    private String[] orderItemsKeys;
-    private Iterator it;
+    private String[] keys;
 
     public OrderAdapter (Context context, LayoutInflater layoutInflater, HashMap<String, Integer> orderItems) {
         mContext = context;
         mInflator = layoutInflater;
         this.orderItems = orderItems;
-        orderItemsKeys = orderItems.keySet().toArray(new String[orderItems.size()]);
+        keys = orderItems.keySet().toArray(new String[orderItems.size()]);
     }
 
     @Override
@@ -40,7 +39,7 @@ public class OrderAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        return orderItems.get(orderItemsKeys[position]);
+        return orderItems.get(keys[position]);
     }
 
     @Override
@@ -50,33 +49,40 @@ public class OrderAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        String key = orderItemsKeys[position];
-        int value = (Integer) getItem(position);
+        String key = keys[position];
+        String value = getItem(position).toString();
 
         ViewHolder viewHolder;
 
         if (convertView == null) {
-            convertView = mInflator.inflate(R.layout.order_list_item, null);
+            convertView = mInflator.inflate(R.layout.order_item, null);
 
             viewHolder = new ViewHolder();
-            viewHolder.productCounter = (TextView) convertView.findViewById(R.id.product_counter);
-            viewHolder.productName = (TextView) convertView.findViewById(R.id.product_name);
+            viewHolder.productCounter = convertView.findViewById(R.id.order_product_amount);
+            viewHolder.productName = convertView.findViewById(R.id.order_product_name);
 
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        if (position % 2 == 1) {
-            convertView.setBackgroundColor(Color.parseColor("#FFFFFF"));
-        } else {
+        if ((position & 1) == 0){
             convertView.setBackgroundColor(Color.parseColor("#F5F5F6"));
         }
+        else {
+            convertView.setBackgroundColor(Color.parseColor("#FFFFFF"));
+        }
 
-            viewHolder.productName.setText(key + "");
-            viewHolder.productCounter.setText(value + "x");
+        viewHolder.productName.setText(key);
+        viewHolder.productCounter.setText(value);
 
         return convertView;
+    }
+
+    public void updateOrderItems(HashMap<String, Integer> orderItems){
+        this.orderItems = orderItems;
+        this.keys = orderItems.keySet().toArray(new String[orderItems.size()]);
+        notifyDataSetChanged();
     }
 
     private static class ViewHolder {

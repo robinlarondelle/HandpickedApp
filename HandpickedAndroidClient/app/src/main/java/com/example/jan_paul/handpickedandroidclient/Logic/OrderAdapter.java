@@ -6,8 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.jan_paul.handpickedandroidclient.Domain.Order;
 import com.example.jan_paul.handpickedandroidclient.R;
 
 import java.util.HashMap;
@@ -23,11 +25,13 @@ public class OrderAdapter extends BaseAdapter {
     private LayoutInflater mInflator;
     private HashMap<String, Integer> orderItems;
     private String[] keys;
+    private Order order;
 
-    public OrderAdapter (Context context, LayoutInflater layoutInflater, HashMap<String, Integer> orderItems) {
+    public OrderAdapter (Context context, LayoutInflater layoutInflater, Order order) {
         mContext = context;
         mInflator = layoutInflater;
-        this.orderItems = orderItems;
+        this.order = order;
+        this.orderItems = order.getProducts();
         keys = orderItems.keySet().toArray(new String[orderItems.size()]);
     }
 
@@ -48,7 +52,7 @@ public class OrderAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         String key = keys[position];
         String value = getItem(position).toString();
 
@@ -68,6 +72,25 @@ public class OrderAdapter extends BaseAdapter {
 
         viewHolder.productName.setText(key);
         viewHolder.productCounter.setText(value);
+
+        TextView addButton = convertView.findViewById(R.id.order_plus);
+        TextView removeButton = convertView.findViewById(R.id.order_minus);
+
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                order.addOrRemoveProduct(keys[position], 1);
+                updateOrderItems(order.getProducts());
+            }
+        });
+
+        removeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                order.addOrRemoveProduct(keys[position], -1);
+                updateOrderItems(order.getProducts());
+            }
+        });
 
         return convertView;
     }

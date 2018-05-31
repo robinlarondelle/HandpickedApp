@@ -150,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
             }
         });
 
-        orderAdapter = new OrderAdapter(MainActivity.this, getLayoutInflater(), main.getCurrentOrder().getProducts());
+        orderAdapter = new OrderAdapter(MainActivity.this, getLayoutInflater(), main.getCurrentOrder());
         orderItemsList.setAdapter(orderAdapter);
 
         productAdapter = new ProductAdapter(getApplicationContext(), getLayoutInflater(), availableProducts);
@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
         productSelectionGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                main.getCurrentOrder().addOrRemoveProduct(main.getProductsPerCategory(availableCategories.get(selectedCategory).getType()).get(i), 1);
+                main.getCurrentOrder().addOrRemoveProduct(main.getProductsPerCategory(availableCategories.get(selectedCategory).getType()).get(i).getName(), 1);
                 String result = Integer.toString(main.getCurrentOrder().getTotalProducts());
                 orderSizeNumber.setText(result);
                 Log.i("orderinfo", main.getCurrentOrder().toString());

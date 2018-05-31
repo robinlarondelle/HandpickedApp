@@ -1,5 +1,7 @@
 package com.example.jan_paul.handpickedandroidclient.Presentation;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.FragmentManager;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -22,6 +24,7 @@ import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.jan_paul.handpickedandroidclient.DataAccess.GetProductsTask;
 import com.example.jan_paul.handpickedandroidclient.DataAccess.SendOrderTask;
@@ -64,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
     private ConstraintLayout orderButton;
     private Button orderSendButton;
     private Button orderCommentButton;
+    private TextView orderComment;
 
     private ConstraintLayout overlayHolder;
     private ListView orderItemsList;
@@ -83,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
             main = new Main();
         }
 
-        mainActivityTitle = (TextView) findViewById(R.id.main_activity_title);
+        mainActivityTitle = findViewById(R.id.main_activity_title);
         Typeface sofiaSemiBold = Typeface.createFromAsset(getAssets(),"fonts/sofia_semi_bold.ttf");
         mainActivityTitle.setTypeface(sofiaSemiBold);
         Log.d(TAG, "onCreate: mainActivityTitle changed to sofiaSemiBold");
@@ -105,14 +109,17 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
         overlayHolder = findViewById(R.id.overlay_holder);
         orderSendButton = findViewById(R.id.order_send_button);
         orderCommentButton = findViewById(R.id.order_comment_button);
-
+        orderComment = findViewById(R.id.order_comment);
+        mainActivityTitle = findViewById(R.id.main_activity_title);
 
         orderSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 main.getCurrentOrder().setOrderDate(Calendar.getInstance().getTime().toString());
+                main.getCurrentOrder().setMessage(orderComment.getText().toString());
+                main.getCurrentOrder().setVergaderRuimte("jp's osso");
                 main.sendCurrentOrder(MainActivity.this);
-                main.makenNewOrder("zaal xxx", "echooo");
+                main.makenNewOrder();
                 //get callback from main to check for success, than show new view...
             }
         });
@@ -120,16 +127,26 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
         overlayHolder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                overlayHolder.animate().alpha(0.0f).setDuration(1000);
-                overlayHolder.setVisibility(View.INVISIBLE);
+                overlayHolder.animate().alpha(0.0f).setDuration(500).setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        overlayHolder.setVisibility(View.INVISIBLE);
+                    }
+                });
             }
         });
 
         orderIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                overlayHolder.animate().alpha(1.0f).setDuration(1000);
-                overlayHolder.setVisibility(View.VISIBLE);
+                overlayHolder.animate().alpha(1.0f).setDuration(500).setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        overlayHolder.setVisibility(View.VISIBLE);
+                    }
+                });
             }
         });
 
@@ -142,9 +159,6 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
         productSelectionGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if (main.getCurrentOrder() == null){
-                    main.makenNewOrder("zaal 3", "dit is een extra bericht!");
-                }
                 main.getCurrentOrder().addOrRemoveProduct(main.getProductsPerCategory(availableCategories.get(selectedCategory).getType()).get(i), 1);
                 String result = Integer.toString(main.getCurrentOrder().getTotalProducts());
                 orderSizeNumber.setText(result);
@@ -162,6 +176,9 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 if (selectedCategory != i) {
                     selectedCategory = i;
+
+                    mainActivityTitle.setText(availableCategories.get(selectedCategory).getType());
+
                     categoryAdapter.setSelectedCategory(i);
                     categoryAdapter.notifyDataSetChanged();
                     Log.i("test", main.getProductsPerCategory(availableCategories.get(selectedCategory).getType()).toString());

@@ -70,23 +70,23 @@ public class ProductAdapter extends BaseAdapter {
             convertView = mInflator.inflate(R.layout.product_grid_item, null);
 
             viewHolder = new ViewHolder();
-            viewHolder.productImage = (ImageView) convertView.findViewById(R.id.category_image);
-            viewHolder.productName = (TextView) convertView.findViewById(R.id.product_name);
+            viewHolder.productImage = convertView.findViewById(R.id.category_image);
+            viewHolder.productName = convertView.findViewById(R.id.product_name);
 
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        Product Product = (Product) ProductArrayList.get(position);
+        Product product = (Product) ProductArrayList.get(position);
 
-        viewHolder.productName.setText(Product.getName());
+        viewHolder.productName.setText(product.getName());
 
         Animation fade = AnimationUtils.loadAnimation(mContext, R.anim.fade);
         convertView.startAnimation(fade);
 
         Picasso.get()
-                .load("http://images.quickoffice.nl/pictures/008/600x450/FRISDRANK-COCA-COLA-REGULAR-BLIKJE-0-33L-(c)20050085.jpg")
+                .load(product.getImage())
                 //.resize(viewHolder.productImage.getLayoutParams().width, viewHolder.productImage.getLayoutParams().height)
                 //.centerCrop()
                 //.fit()

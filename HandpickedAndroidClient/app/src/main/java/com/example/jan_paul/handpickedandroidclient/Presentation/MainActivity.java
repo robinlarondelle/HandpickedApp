@@ -16,6 +16,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -35,6 +36,7 @@ import com.google.gson.Gson;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.security.auth.login.LoginException;
@@ -58,6 +60,8 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
     private TextView orderSizeNumber;
     private ImageButton orderIcon;
     private ConstraintLayout orderButton;
+    private Button orderSendButton;
+    private Button orderCommentButton;
 
     private ConstraintLayout overlayHolder;
     private ListView orderItemsList;
@@ -88,7 +92,19 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
         productCategoryList = findViewById(R.id.category_list);
         orderItemsList = findViewById(R.id.order_items_list);
         overlayHolder = findViewById(R.id.overlay_holder);
+        orderSendButton = findViewById(R.id.order_send_button);
+        orderCommentButton = findViewById(R.id.order_comment_button);
 
+
+        orderSendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                main.getCurrentOrder().setOrderDate(Calendar.getInstance().getTime().toString());
+                main.sendCurrentOrder(MainActivity.this);
+                main.makenNewOrder("zaal xxx", "echooo");
+                //get callback from main to check for success, than show new view...
+            }
+        });
 
         overlayHolder.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,15 +117,8 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
         orderIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                main.makenNewOrder();
-//                String result = Integer.toString(main.getCurrentOrder().getTotalProducts());
-//                orderSizeNumber.setText(result);
-
-                //make fragment visible here
                 overlayHolder.animate().alpha(1.0f).setDuration(1000);
-
                 overlayHolder.setVisibility(View.VISIBLE);
-                //.sendCurrentOrder(MainActivity.this);
             }
         });
 

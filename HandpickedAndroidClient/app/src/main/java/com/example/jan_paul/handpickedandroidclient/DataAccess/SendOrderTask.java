@@ -66,6 +66,7 @@ public class SendOrderTask extends AsyncTask<String, Void, String> {
             String body = "{\n" +
                     "\"room\": \"" + orderToSend.getVergaderRuimte() + "\",\n" +
                     "\"comment\": \"" + orderToSend.getMessage() + "\",\n" +
+                    //"\"datetime\": \"" + orderToSend.getOrderDate() + "\",\n" +
                     "\"products\": [\n" +
                     hashmapToString(orderToSend.getProducts()) +
                     "]\n" +

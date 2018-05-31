@@ -33,7 +33,7 @@ public class Order {
         this.isOrdered = isOrdered;
         this.orderDate = null;
         this.vergaderRuimte = vergaderRuimte;
-        this.message = null;
+        this.message = "";
         this.ID = 0;
     }
 

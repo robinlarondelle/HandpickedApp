@@ -15,12 +15,16 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 
-public class Main implements SendOrderTask.OnConfirmationAvailable{
+public class Main implements SendOrderTask.OnStatusAvailable{
     private Order currentOrder;
     private ArrayList<Order> oldOrders;
     private ArrayList<Category> categories;
     private String vergaderRuimte;
-    private OnStatusAvailable onStatusAvailable;
+    private String availableStatus = "";
+
+    public String getAvailableStatus() {
+        return availableStatus;
+    }
 
     public String getVergaderRuimte() {
         return vergaderRuimte;
@@ -58,9 +62,14 @@ public class Main implements SendOrderTask.OnConfirmationAvailable{
         currentOrder = new Order(false, this.vergaderRuimte, "");
     }
 
-    public void sendCurrentOrder(Context context){
+    public String sendCurrentOrder(Context context){
+        String orderValidator = "";
+        if (currentOrder.getTotalProducts() < 1 && currentOrder.getMessage().length() < 1){
+            orderValidator = "Please add at least one product or message.";
+        }
         SendOrderTask sendOrderTask = new SendOrderTask(this, currentOrder);
         sendOrderTask.execute(context.getString(R.string.post_order));
+        return orderValidator;
     }
 
     public ArrayList<Order> getOldOrders() {
@@ -85,14 +94,7 @@ public class Main implements SendOrderTask.OnConfirmationAvailable{
     }
 
     @Override
-    public void onConfirmationAvailable(String confirmation){
-        Log.i("post", confirmation);
-        onStatusAvailable.onStatusAvailable(confirmation);
-
-    }
-
-    // Call back interface
-    public interface OnStatusAvailable {
-        void onStatusAvailable(String status);
+    public void onStatusAvailable(String status){
+        Log.i("post", status);
     }
 }

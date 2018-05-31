@@ -48,6 +48,7 @@ import javax.security.auth.login.LoginException;
 public class MainActivity extends AppCompatActivity implements GetProductsTask.OnProductsAvailable {
 
     private Integer selectedCategory;
+    private String vergaderRuimte;
 
     private ArrayList<Product> availableProducts;
     private ArrayList<Category> availableCategories;
@@ -66,7 +67,6 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
 
     private ConstraintLayout orderButton;
     private Button orderSendButton;
-    private Button orderCommentButton;
     private TextView orderComment;
 
     private ConstraintLayout overlayHolder;
@@ -108,7 +108,6 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
         orderItemsList = findViewById(R.id.order_items_list);
         overlayHolder = findViewById(R.id.overlay_holder);
         orderSendButton = findViewById(R.id.order_send_button);
-        orderCommentButton = findViewById(R.id.order_comment_button);
         orderComment = findViewById(R.id.order_comment);
         mainActivityTitle = findViewById(R.id.main_activity_title);
 
@@ -245,6 +244,7 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
         main.setCategories(productsPerCategory);
         availableCategories.clear();
         availableCategories = main.getCategories();
+        mainActivityTitle.setText(availableCategories.get(selectedCategory).getType());
         availableProducts.clear();
 
         availableProducts = main.getProductsPerCategory(availableCategories.get(selectedCategory).getType());

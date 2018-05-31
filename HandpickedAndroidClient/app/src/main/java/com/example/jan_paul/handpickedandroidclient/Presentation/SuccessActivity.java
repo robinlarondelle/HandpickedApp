@@ -27,7 +27,7 @@ public class SuccessActivity extends AppCompatActivity {
         successTitle = (TextView) findViewById(R.id.success_title);
         successTitle.setTypeface(sofiaPro);
 
-        successText = (TextView) findViewById(R.id.success_text);
+        successText = (TextView) findViewById(R.id.status_text);
         successText.setTypeface(barlowLight);
 
         Log.d(TAG, "onCreate: textView font changed to Barlow Light.");

@@ -1,5 +1,4 @@
 <resources>
-
     <!-- Global -->
     <string name="app_name">HA Drink Selector</string>
 
@@ -12,7 +11,11 @@
 
     <!-- Success Activity -->
     <string name="success_title">Thank you.</string>
-    <string name="success_message">Your order has arrived and will be prepared. If you did attach a message it\'s delivered successfully.</string>
+    <string name="success_order_message">Your order has been send to the hostess and will be delivered shortly.</string>
+    <string name="success_comment_message">Your comment has been send successfully.</string>
+    <string name="error_send_message">Something went wrong while sending your message, please try again.</string>
+    <string name="error_send_order">Something went wrong while sending your order, please try again.</string>
+
     <string name="success_return_button">Return</string>
 
 </resources>

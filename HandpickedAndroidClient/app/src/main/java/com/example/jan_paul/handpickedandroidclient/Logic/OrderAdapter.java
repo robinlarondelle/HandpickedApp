@@ -66,8 +66,15 @@ public class OrderAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-            viewHolder.productName.setText(key);
-            viewHolder.productCounter.setText(value);
+        if ((position & 1) == 0){
+            convertView.setBackgroundColor(Color.parseColor("#F5F5F6"));
+        }
+        else {
+            convertView.setBackgroundColor(Color.parseColor("#FFFFFF"));
+        }
+
+        viewHolder.productName.setText(key);
+        viewHolder.productCounter.setText(value);
 
         return convertView;
     }

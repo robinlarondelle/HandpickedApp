@@ -22,17 +22,17 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/order_opmerking"
+        android:id="@+id/order_comment_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:text="opmerking"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/verzenden" />
+        app:layout_constraintEnd_toStartOf="@+id/order_send_button" />
 
     <Button
-        android:id="@+id/verzenden"
+        android:id="@+id/order_send_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -49,7 +49,7 @@
         android:layout_marginStart="8dp"
         android:ems="10"
         android:inputType="textMultiLine"
-        app:layout_constraintBottom_toTopOf="@+id/order_opmerking"
+        app:layout_constraintBottom_toTopOf="@+id/order_comment_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 

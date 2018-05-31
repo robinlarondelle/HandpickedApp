@@ -21,7 +21,7 @@ public class Main implements SendOrderTask.OnConfirmationAvailable{
     private ArrayList<Category> categories;
 
     public Main() {
-        this.currentOrder = new Order(false, "","");
+        this.currentOrder = new Order(false, "zaal 40","teest");
         this.oldOrders = new ArrayList<>();
         this.categories = new ArrayList<>();
     }

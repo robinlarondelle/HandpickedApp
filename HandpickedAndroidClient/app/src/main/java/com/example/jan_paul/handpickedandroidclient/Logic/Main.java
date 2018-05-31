@@ -21,7 +21,7 @@ public class Main implements SendOrderTask.OnConfirmationAvailable{
     private ArrayList<Category> categories;
 
     public Main() {
-        this.currentOrder = null;
+        this.currentOrder = new Order(false, "","");
         this.oldOrders = new ArrayList<>();
         this.categories = new ArrayList<>();
     }
@@ -33,7 +33,6 @@ public class Main implements SendOrderTask.OnConfirmationAvailable{
     public ArrayList<Product> getProductsPerCategory(String categoryName){
         ArrayList<Product> products = new ArrayList<>();
         for (Category category: categories) {
-            Log.i("categories", category.toString());
             if (category.getType() == categoryName){
                 products = category.getProducts();
             }

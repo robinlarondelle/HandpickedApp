@@ -1,5 +1,6 @@
 package com.example.jan_paul.handpickedandroidclient.Presentation;
 
+import android.app.FragmentManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -27,6 +28,7 @@ import com.example.jan_paul.handpickedandroidclient.Domain.Product;
 import com.example.jan_paul.handpickedandroidclient.Domain.Type;
 import com.example.jan_paul.handpickedandroidclient.Logic.CategoryAdapter;
 import com.example.jan_paul.handpickedandroidclient.Logic.Main;
+import com.example.jan_paul.handpickedandroidclient.Logic.OrderAdapter;
 import com.example.jan_paul.handpickedandroidclient.Logic.ProductAdapter;
 import com.example.jan_paul.handpickedandroidclient.R;
 import com.google.gson.Gson;
@@ -49,12 +51,16 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
 
     private ProductAdapter productAdapter;
     private CategoryAdapter categoryAdapter;
+    private OrderAdapter orderAdapter;
 
     private GetProductsTask getProductsTask;
 
     private TextView orderSizeNumber;
     private ImageButton orderIcon;
     private ConstraintLayout orderButton;
+
+    private ConstraintLayout overlayHolder;
+    private ListView orderItemsList;
 
     private Main main;
 
@@ -80,6 +86,17 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
 
         productSelectionGrid = findViewById(R.id.product_grid);
         productCategoryList = findViewById(R.id.category_list);
+        orderItemsList = findViewById(R.id.order_items_list);
+        overlayHolder = findViewById(R.id.overlay_holder);
+
+
+        overlayHolder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                overlayHolder.animate().alpha(0.0f).setDuration(1000);
+                overlayHolder.setVisibility(View.INVISIBLE);
+            }
+        });
 
         orderIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,11 +105,16 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
 //                String result = Integer.toString(main.getCurrentOrder().getTotalProducts());
 //                orderSizeNumber.setText(result);
 
-                //Intent intent = new Intent(getApplicationContext(), OrderActivity.class);
-                //startActivity(intent);
-                main.sendCurrentOrder(MainActivity.this);
+                //make fragment visible here
+                overlayHolder.animate().alpha(1.0f).setDuration(1000);
+
+                overlayHolder.setVisibility(View.VISIBLE);
+                //.sendCurrentOrder(MainActivity.this);
             }
         });
+
+        orderAdapter = new OrderAdapter(MainActivity.this, getLayoutInflater(), main.getCurrentOrder().getProducts());
+        orderItemsList.setAdapter(orderAdapter);
 
         productAdapter = new ProductAdapter(getApplicationContext(), getLayoutInflater(), availableProducts);
         productSelectionGrid.setAdapter(productAdapter);
@@ -109,6 +131,7 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
                 Log.i("orderinfo", main.getCurrentOrder().toString());
                 Animation shake = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake);
                 orderButton.startAnimation(shake);
+                orderAdapter.updateOrderItems(main.getCurrentOrder().getProducts());
             }
         });
 

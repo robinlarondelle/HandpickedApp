@@ -21,13 +21,13 @@ public class OrderAdapter extends BaseAdapter {
     private Context mContext;
     private LayoutInflater mInflator;
     private HashMap<String, Integer> orderItems;
-    private Iterator it;
+    private String[] keys;
 
     public OrderAdapter (Context context, LayoutInflater layoutInflater, HashMap<String, Integer> orderItems) {
         mContext = context;
         mInflator = layoutInflater;
         this.orderItems = orderItems;
-        it = orderItems.entrySet().iterator();
+        keys = orderItems.keySet().toArray(new String[orderItems.size()]);
     }
 
     @Override
@@ -38,7 +38,7 @@ public class OrderAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        return orderItems.get(position);
+        return orderItems.get(keys[position]);
     }
 
     @Override
@@ -48,25 +48,33 @@ public class OrderAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Map.Entry pair = (Map.Entry)it.next();
+        String key = keys[position];
+        String value = getItem(position).toString();
+
         ViewHolder viewHolder;
 
         if (convertView == null) {
-            convertView = mInflator.inflate(R.layout.order_list_item, null);
+            convertView = mInflator.inflate(R.layout.order_item, null);
 
             viewHolder = new ViewHolder();
-            viewHolder.productCounter = (TextView) convertView.findViewById(R.id.product_counter);
-            viewHolder.productName = (TextView) convertView.findViewById(R.id.product_name);
+            viewHolder.productCounter = convertView.findViewById(R.id.order_product_amount);
+            viewHolder.productName = convertView.findViewById(R.id.order_product_name);
 
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-            viewHolder.productName.setText(pair.getKey() + "");
-            viewHolder.productCounter.setText(pair.getValue() + "");
+            viewHolder.productName.setText(key);
+            viewHolder.productCounter.setText(value);
 
         return convertView;
+    }
+
+    public void updateOrderItems(HashMap<String, Integer> orderItems){
+        this.orderItems = orderItems;
+        this.keys = orderItems.keySet().toArray(new String[orderItems.size()]);
+        notifyDataSetChanged();
     }
 
     private static class ViewHolder {

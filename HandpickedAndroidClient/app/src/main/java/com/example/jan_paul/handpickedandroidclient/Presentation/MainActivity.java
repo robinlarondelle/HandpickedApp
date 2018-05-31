@@ -110,6 +110,7 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
         orderSendButton = findViewById(R.id.order_send_button);
         orderCommentButton = findViewById(R.id.order_comment_button);
         orderComment = findViewById(R.id.order_comment);
+        mainActivityTitle = findViewById(R.id.main_activity_title);
 
         orderSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -175,6 +176,9 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 if (selectedCategory != i) {
                     selectedCategory = i;
+
+                    mainActivityTitle.setText(availableCategories.get(selectedCategory).getType());
+
                     categoryAdapter.setSelectedCategory(i);
                     categoryAdapter.notifyDataSetChanged();
                     Log.i("test", main.getProductsPerCategory(availableCategories.get(selectedCategory).getType()).toString());

@@ -3,41 +3,32 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
 
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/constraintLayout2"
-        android:layout_width="match_parent"
-        android:layout_height="175dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+    <ImageButton
+        android:id="@+id/back_button"
+        android:layout_width="75dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:padding="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/bestellingoverzicht_textview"
+        app:layout_constraintEnd_toStartOf="@+id/bestellingoverzicht_textview"
+        app:layout_constraintTop_toTopOf="@+id/bestellingoverzicht_textview"
+        app:srcCompat="@android:color/holo_blue_bright" />
 
-        <TextView
-            android:id="@+id/bestellingoverzicht_textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="34dp"
-            android:layout_marginTop="90dp"
-            android:text="Bestellingsoverzicht."
-            android:textSize="50sp"
-            app:layout_constraintStart_toEndOf="@+id/back_button"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageButton
-            android:id="@+id/back_button"
-            android:layout_width="84dp"
-            android:layout_height="0dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginStart="180dp"
-            android:layout_marginTop="100dp"
-            android:padding="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@android:color/holo_blue_bright" />
-    </android.support.constraint.ConstraintLayout>
+    <TextView
+        android:id="@+id/bestellingoverzicht_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="70dp"
+        android:text="Bestellingsoverzicht."
+        android:textColor="@android:color/black"
+        android:textSize="60sp"
+        app:layout_constraintStart_toStartOf="@+id/order_list"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/remark_button"
@@ -45,31 +36,48 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="100dp"
         android:layout_marginEnd="32dp"
+        android:layout_marginTop="100dp"
         android:text="Opmerking"
+        android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/send_button" />
+        app:layout_constraintEnd_toStartOf="@+id/send_button"
+        app:layout_constraintTop_toBottomOf="@+id/remark_edit_text" />
 
     <Button
         android:id="@+id/send_button"
-        android:layout_width="wrap_content"
+        android:layout_width="195dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="100dp"
-        android:layout_marginEnd="200dp"
         android:text="Verzenden"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="@+id/remark_button"
+        app:layout_constraintEnd_toEndOf="@+id/order_list"
+        app:layout_constraintTop_toTopOf="@+id/remark_button" />
 
     <ListView
         android:id="@+id/order_list"
-        android:layout_width="930dp"
-        android:layout_height="386dp"
-        android:layout_marginBottom="16dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/remark_button"
+        android:layout_width="0dp"
+        android:layout_height="400dp"
+        android:layout_marginEnd="200dp"
+        android:layout_marginStart="275dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout2" />
+        app:layout_constraintTop_toBottomOf="@+id/bestellingoverzicht_textview" />
+
+    <EditText
+        android:id="@+id/remark_edit_text"
+        android:layout_width="0dp"
+        android:layout_height="75dp"
+        android:layout_marginEnd="200dp"
+        android:layout_marginStart="275dp"
+        android:layout_marginTop="8dp"
+        android:background="#F5F5F6"
+        android:inputType="text"
+        android:textSize="30sp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/order_list" />
 
 </android.support.constraint.ConstraintLayout>

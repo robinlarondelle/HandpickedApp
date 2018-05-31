@@ -53,7 +53,7 @@ public class SplashActivity extends AppCompatActivity implements GetProductsTask
                 getProductsTask = new GetProductsTask(SplashActivity.this);
                 getProductsTask.execute(getString(R.string.get_products));
                 handler.postDelayed(test, 5000); //wait 4 sec and run again
-                splashLoadingText.setText("Failed to connect, trying again...");
+                splashLoadingText.setText(getResources().getString(R.string.splash_no_connection));
             }
         };
         startTest();
@@ -90,7 +90,7 @@ public class SplashActivity extends AppCompatActivity implements GetProductsTask
 
     @Override
     public void onProductsAvailable(ArrayList<Category> productsPerCategory) {
-        splashLoadingText.setText("successfully connected!");
+        splashLoadingText.setText(getResources().getString(R.string.splash_connection_successful));
         main.setCategories(productsPerCategory);
 
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);

@@ -20,7 +20,6 @@ public class Main implements SendOrderTask.OnConfirmationAvailable{
     private ArrayList<Order> oldOrders;
     private ArrayList<Category> categories;
     private String vergaderRuimte;
-    private OnStatusAvailable onStatusAvailable;
 
     public String getVergaderRuimte() {
         return vergaderRuimte;
@@ -87,12 +86,6 @@ public class Main implements SendOrderTask.OnConfirmationAvailable{
     @Override
     public void onConfirmationAvailable(String confirmation){
         Log.i("post", confirmation);
-        onStatusAvailable.onStatusAvailable(confirmation);
 
-    }
-
-    // Call back interface
-    public interface OnStatusAvailable {
-        void onStatusAvailable(String status);
     }
 }

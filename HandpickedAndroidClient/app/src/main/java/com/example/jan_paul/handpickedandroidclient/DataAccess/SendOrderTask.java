@@ -1,11 +1,13 @@
 package com.example.jan_paul.handpickedandroidclient.DataAccess;
 
+import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import com.example.jan_paul.handpickedandroidclient.Domain.Category;
 import com.example.jan_paul.handpickedandroidclient.Domain.Order;
 import com.example.jan_paul.handpickedandroidclient.Domain.Product;
+import com.example.jan_paul.handpickedandroidclient.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -97,20 +99,35 @@ public class SendOrderTask extends AsyncTask<String, Void, String> {
     }
 
     protected void onPostExecute(String response) {
-        String status = "error";
+        String status = "";
         Log.i(TAG, "onPostExecute " + response);
 
         if(response == null || response == "") {
             Log.e(TAG, "onPostExecute kreeg een lege response!");
             //callback an error here
+            if (orderToSend.getMessage().length() < 1){
+                status = Resources.getSystem().getString(R.string.error_send_order);
+                listener.onStatusAvailable(status);
+
+            }
+            else if (orderToSend.getTotalProducts() < 1){
+                status = Resources.getSystem().getString(R.string.error_send_message);
+                listener.onStatusAvailable(status);
+            }
             return;
         }
 
         JSONObject jsonObject;
         try {
             jsonObject = new JSONObject(response);
-            jsonObject.getString("status");
-
+            if(jsonObject.getString("status") == "send"){
+                if (orderToSend.getMessage().length() < 1){
+                    status = Resources.getSystem().getString(R.string.success_order_message);
+                }
+                else if (orderToSend.getTotalProducts() < 1){
+                    status = Resources.getSystem().getString(R.string.success_comment_message);
+                }
+            }
         } catch( JSONException ex) {
             Log.e(TAG, "onPostExecute JSONException " + ex.getLocalizedMessage());
         }

@@ -20,6 +20,11 @@ public class Main implements SendOrderTask.OnStatusAvailable{
     private ArrayList<Order> oldOrders;
     private ArrayList<Category> categories;
     private String vergaderRuimte;
+    private String availableStatus = "";
+
+    public String getAvailableStatus() {
+        return availableStatus;
+    }
 
     public String getVergaderRuimte() {
         return vergaderRuimte;
@@ -57,9 +62,14 @@ public class Main implements SendOrderTask.OnStatusAvailable{
         currentOrder = new Order(false, this.vergaderRuimte, "");
     }
 
-    public void sendCurrentOrder(Context context){
+    public String sendCurrentOrder(Context context){
+        String orderValidator = "";
+        if (currentOrder.getTotalProducts() < 1 && currentOrder.getMessage().length() < 1){
+            orderValidator = "Please add at least one product or message.";
+        }
         SendOrderTask sendOrderTask = new SendOrderTask(this, currentOrder);
         sendOrderTask.execute(context.getString(R.string.post_order));
+        return orderValidator;
     }
 
     public ArrayList<Order> getOldOrders() {
@@ -86,11 +96,5 @@ public class Main implements SendOrderTask.OnStatusAvailable{
     @Override
     public void onStatusAvailable(String status){
         Log.i("post", status);
-        if (status == "send"){
-            //success
-        }
-        else {
-            //an error occured
-        }
     }
 }

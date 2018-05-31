@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 
-public class Main implements SendOrderTask.OnConfirmationAvailable{
+public class Main implements SendOrderTask.OnStatusAvailable{
     private Order currentOrder;
     private ArrayList<Order> oldOrders;
     private ArrayList<Category> categories;
@@ -84,8 +84,13 @@ public class Main implements SendOrderTask.OnConfirmationAvailable{
     }
 
     @Override
-    public void onConfirmationAvailable(String confirmation){
-        Log.i("post", confirmation);
-
+    public void onStatusAvailable(String status){
+        Log.i("post", status);
+        if (status == "send"){
+            //success
+        }
+        else {
+            //an error occured
+        }
     }
 }

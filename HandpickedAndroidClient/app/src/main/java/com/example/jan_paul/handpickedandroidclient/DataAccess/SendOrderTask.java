@@ -27,12 +27,12 @@ import java.util.Map;
 
 public class SendOrderTask extends AsyncTask<String, Void, String> {
 
-    private SendOrderTask.OnConfirmationAvailable listener = null;
+    private SendOrderTask.OnStatusAvailable listener = null;
 
     private static final String TAG = GetProductsTask.class.getSimpleName();
     private  Order orderToSend;
 
-    public SendOrderTask(SendOrderTask.OnConfirmationAvailable listener, Order order) {
+    public SendOrderTask(SendOrderTask.OnStatusAvailable listener, Order order) {
         this.listener = listener;
         this.orderToSend = order;
     }
@@ -97,26 +97,25 @@ public class SendOrderTask extends AsyncTask<String, Void, String> {
     }
 
     protected void onPostExecute(String response) {
-        ArrayList<Category> productsPerCategory = new ArrayList<>();
-
+        String status = "error";
         Log.i(TAG, "onPostExecute " + response);
 
         if(response == null || response == "") {
             Log.e(TAG, "onPostExecute kreeg een lege response!");
+            //callback an error here
             return;
         }
-/*
+
         JSONObject jsonObject;
         try {
             jsonObject = new JSONObject(response);
-
-            JSONArray categories = jsonObject.getJSONArray("categories");
+            jsonObject.getString("status");
 
         } catch( JSONException ex) {
             Log.e(TAG, "onPostExecute JSONException " + ex.getLocalizedMessage());
         }
-        */
-        listener.onConfirmationAvailable("");
+
+        listener.onStatusAvailable(status);
     }
 
     private static String getStringFromInputStream(InputStream is) {
@@ -146,8 +145,8 @@ public class SendOrderTask extends AsyncTask<String, Void, String> {
         return sb.toString();
     }
     // Call back interface
-    public interface OnConfirmationAvailable {
-        void onConfirmationAvailable(String confirmation);
+    public interface OnStatusAvailable {
+        void onStatusAvailable(String status);
     }
 
     public String hashmapToString(HashMap<String, Integer> hashmap){

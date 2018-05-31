@@ -245,6 +245,7 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
         main.setCategories(productsPerCategory);
         availableCategories.clear();
         availableCategories = main.getCategories();
+        mainActivityTitle.setText(availableCategories.get(selectedCategory).getType());
         availableProducts.clear();
 
         availableProducts = main.getProductsPerCategory(availableCategories.get(selectedCategory).getType());

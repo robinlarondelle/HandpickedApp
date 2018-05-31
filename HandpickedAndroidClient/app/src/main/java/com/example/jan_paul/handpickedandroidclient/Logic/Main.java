@@ -19,9 +19,19 @@ public class Main implements SendOrderTask.OnConfirmationAvailable{
     private Order currentOrder;
     private ArrayList<Order> oldOrders;
     private ArrayList<Category> categories;
+    private String vergaderRuimte;
+    private OnStatusAvailable onStatusAvailable;
+
+    public String getVergaderRuimte() {
+        return vergaderRuimte;
+    }
+
+    public void setVergaderRuimte(String vergaderRuimte) {
+        this.vergaderRuimte = vergaderRuimte;
+    }
 
     public Main() {
-        this.currentOrder = new Order(false, "zaal 40","teest");
+        this.currentOrder = new Order(false, "","");
         this.oldOrders = new ArrayList<>();
         this.categories = new ArrayList<>();
     }
@@ -40,12 +50,12 @@ public class Main implements SendOrderTask.OnConfirmationAvailable{
         return products;
     }
 
-    public void makenNewOrder(String vergaderruimte, String message){
+    public void makenNewOrder(){
         if(currentOrder != null) {
             currentOrder.setOrdered(true);
             oldOrders.add(currentOrder);
         }
-        currentOrder = new Order(false, vergaderruimte, message);
+        currentOrder = new Order(false, this.vergaderRuimte, "");
     }
 
     public void sendCurrentOrder(Context context){
@@ -77,5 +87,12 @@ public class Main implements SendOrderTask.OnConfirmationAvailable{
     @Override
     public void onConfirmationAvailable(String confirmation){
         Log.i("post", confirmation);
+        onStatusAvailable.onStatusAvailable(confirmation);
+
+    }
+
+    // Call back interface
+    public interface OnStatusAvailable {
+        void onStatusAvailable(String status);
     }
 }

@@ -36,7 +36,7 @@ public class SplashActivity extends AppCompatActivity implements GetProductsTask
             main = new Main();
         }
 
-        splashLoadingText = (TextView) findViewById(R.id.splash_loading_text);
+        splashLoadingText = findViewById(R.id.splash_loading_text);
         Typeface barlowLight = Typeface.createFromAsset(getAssets(),"fonts/barlow_light.ttf");
         splashLoadingText.setTypeface(barlowLight);
         Log.d(TAG, "onCreate: textView font changed to Barlow Light.");
@@ -48,7 +48,6 @@ public class SplashActivity extends AppCompatActivity implements GetProductsTask
             @Override
             public void run() {
                 //do work
-                Log.i(TAG, "run: randomasstask");
                 getProductsTask.cancel(true);
                 getProductsTask = new GetProductsTask(SplashActivity.this);
                 getProductsTask.execute(getString(R.string.get_products));

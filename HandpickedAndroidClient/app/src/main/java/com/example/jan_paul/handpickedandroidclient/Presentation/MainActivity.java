@@ -140,11 +140,12 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
         orderIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                overlayHolder.setAlpha(0.0f);
+                overlayHolder.setVisibility(View.VISIBLE);
                 overlayHolder.animate().alpha(1.0f).setDuration(500).setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         super.onAnimationEnd(animation);
-                        overlayHolder.setVisibility(View.VISIBLE);
                     }
                 });
             }

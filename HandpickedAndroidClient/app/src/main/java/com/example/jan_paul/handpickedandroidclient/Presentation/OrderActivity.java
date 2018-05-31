@@ -40,7 +40,7 @@ public class OrderActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_order);
 
-//        currentOrder = new Order(false, "", 1, "someid", "", 1);
+        currentOrder = new Order(false, "", 1, "someid", "", 1);
         currentOrder.addOrRemoveProduct(new Product("cola", true, 1), 2);
         currentOrder.addOrRemoveProduct(new Product("thee", true, 2), 5);
         currentOrder.addOrRemoveProduct(new Product("theea", true, 3), 5);

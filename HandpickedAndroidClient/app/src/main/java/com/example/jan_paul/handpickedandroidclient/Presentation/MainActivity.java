@@ -1,5 +1,6 @@
 package com.example.jan_paul.handpickedandroidclient.Presentation;
 
+import android.app.FragmentManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -7,10 +8,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Debug;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
@@ -25,6 +29,7 @@ import com.example.jan_paul.handpickedandroidclient.Domain.Product;
 import com.example.jan_paul.handpickedandroidclient.Domain.Type;
 import com.example.jan_paul.handpickedandroidclient.Logic.CategoryAdapter;
 import com.example.jan_paul.handpickedandroidclient.Logic.Main;
+import com.example.jan_paul.handpickedandroidclient.Logic.OrderAdapter;
 import com.example.jan_paul.handpickedandroidclient.Logic.ProductAdapter;
 import com.example.jan_paul.handpickedandroidclient.R;
 import com.google.gson.Gson;
@@ -47,12 +52,20 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
 
     private ProductAdapter productAdapter;
     private CategoryAdapter categoryAdapter;
+    private OrderAdapter orderAdapter;
 
     private GetProductsTask getProductsTask;
 
     private TextView orderSizeNumber;
     private ImageButton orderIcon;
+
+    private ConstraintLayout orderButton;
+
+    private ConstraintLayout overlayHolder;
+    private ListView orderItemsList;
+
     private TextView mainActivityTitle;
+
     private Main main;
 
     private String TAG = "MainActivity";
@@ -77,13 +90,24 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
 
         orderSizeNumber = findViewById(R.id.order_size_number);
         orderIcon = findViewById(R.id.order_icon);
-
+        orderButton = findViewById(R.id.cart_button);
 
         availableProducts = new ArrayList<>();
         availableCategories = new ArrayList<>();
 
         productSelectionGrid = findViewById(R.id.product_grid);
         productCategoryList = findViewById(R.id.category_list);
+        orderItemsList = findViewById(R.id.order_items_list);
+        overlayHolder = findViewById(R.id.overlay_holder);
+
+
+        overlayHolder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                overlayHolder.animate().alpha(0.0f).setDuration(1000);
+                overlayHolder.setVisibility(View.INVISIBLE);
+            }
+        });
 
         orderIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,11 +116,16 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
 //                String result = Integer.toString(main.getCurrentOrder().getTotalProducts());
 //                orderSizeNumber.setText(result);
 
-                //Intent intent = new Intent(getApplicationContext(), OrderActivity.class);
-                //startActivity(intent);
-                main.sendCurrentOrder(MainActivity.this);
+                //make fragment visible here
+                overlayHolder.animate().alpha(1.0f).setDuration(1000);
+
+                overlayHolder.setVisibility(View.VISIBLE);
+                //.sendCurrentOrder(MainActivity.this);
             }
         });
+
+        orderAdapter = new OrderAdapter(MainActivity.this, getLayoutInflater(), main.getCurrentOrder().getProducts());
+        orderItemsList.setAdapter(orderAdapter);
 
         productAdapter = new ProductAdapter(getApplicationContext(), getLayoutInflater(), availableProducts);
         productSelectionGrid.setAdapter(productAdapter);
@@ -111,20 +140,24 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
                 String result = Integer.toString(main.getCurrentOrder().getTotalProducts());
                 orderSizeNumber.setText(result);
                 Log.i("orderinfo", main.getCurrentOrder().toString());
+                Animation shake = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake);
+                orderButton.startAnimation(shake);
+                orderAdapter.updateOrderItems(main.getCurrentOrder().getProducts());
             }
         });
 
         categoryAdapter = new CategoryAdapter(getApplicationContext(), getLayoutInflater(), availableCategories);
         productCategoryList.setAdapter(categoryAdapter);
-
         productCategoryList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                selectedCategory = i;
-                categoryAdapter.setSelectedCategory(i);
-                categoryAdapter.notifyDataSetChanged();
-                Log.i("test", main.getProductsPerCategory(availableCategories.get(selectedCategory).getType()).toString());
-                productAdapter.updateProductArrayList(main.getProductsPerCategory(availableCategories.get(selectedCategory).getType()));
+                if (selectedCategory != i) {
+                    selectedCategory = i;
+                    categoryAdapter.setSelectedCategory(i);
+                    categoryAdapter.notifyDataSetChanged();
+                    Log.i("test", main.getProductsPerCategory(availableCategories.get(selectedCategory).getType()).toString());
+                    productAdapter.updateProductArrayList(main.getProductsPerCategory(availableCategories.get(selectedCategory).getType()));
+                }
             }
         });
 

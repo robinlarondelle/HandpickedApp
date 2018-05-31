@@ -1,16 +1,22 @@
 package com.example.jan_paul.handpickedandroidclient.Logic;
 
 import android.content.Context;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.Transformation;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.jan_paul.handpickedandroidclient.Domain.*;
+import com.example.jan_paul.handpickedandroidclient.Presentation.MainActivity;
 import com.example.jan_paul.handpickedandroidclient.R;
 import com.squareup.picasso.Picasso;
 
@@ -67,7 +73,7 @@ public class CategoryAdapter  extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        CategoryAdapter.ViewHolder viewHolder;
+        final CategoryAdapter.ViewHolder viewHolder;
 
         Log.i("log", "selected " + selectedCategory);
 
@@ -75,25 +81,46 @@ public class CategoryAdapter  extends BaseAdapter {
             convertView = mInflator.inflate(R.layout.category_list_item, null);
 
             viewHolder = new CategoryAdapter.ViewHolder();
-            viewHolder.categoryImage = (ImageView) convertView.findViewById(R.id.category_image);
-            viewHolder.categoryName = (TextView) convertView.findViewById(R.id.category_name);
+            viewHolder.categoryImage = convertView.findViewById(R.id.category_image);
+            viewHolder.categoryName = convertView.findViewById(R.id.category_name);
+            viewHolder.categoryHolder = convertView.findViewById(R.id.category_holder);
 
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (CategoryAdapter.ViewHolder) convertView.getTag();
         }
 
-        if (position == selectedCategory){
-            convertView.setMinimumWidth(convertView.getWidth() + 30);
-            convertView.setBackgroundColor(ContextCompat.getColor(convertView.getContext(), R.color.selectedCategory));
-        }
-        else {
-            convertView.setBackgroundColor(ContextCompat.getColor(convertView.getContext(), R.color.nonSelectedCategory));
-        }
-
         Category category = (Category) categoryArrayList.get(position);
 
+        Animation moveOut = new Animation() {
+            @Override
+            protected void applyTransformation(float interpolatedTime, Transformation t) {
+                ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) viewHolder.categoryHolder.getLayoutParams();
+                params.setMarginEnd((int)(0));
+                viewHolder.categoryHolder.setLayoutParams(params);
+            }
+        };
+        moveOut.setDuration(500); // in ms
+
+        Animation moveIn = new Animation() {
+            @Override
+            protected void applyTransformation(float interpolatedTime, Transformation t) {
+                ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) viewHolder.categoryHolder.getLayoutParams();
+                params.setMarginEnd((int)(64));
+                viewHolder.categoryHolder.setLayoutParams(params);
+            }
+        };
+        moveIn.setDuration(500); // in ms
+
         viewHolder.categoryName.setText(category.getType());
+        if (position == selectedCategory) {
+            viewHolder.categoryHolder.setBackgroundColor(ContextCompat.getColor(convertView.getContext(), R.color.selectedCategory));
+            convertView.startAnimation(moveOut);
+        } else {
+            viewHolder.categoryHolder.setBackgroundColor(ContextCompat.getColor(convertView.getContext(), R.color.nonSelectedCategory));
+            convertView.startAnimation(moveIn);
+        }
+
 /*
         Picasso.get()
                 .load(category.getImage())
@@ -107,5 +134,6 @@ public class CategoryAdapter  extends BaseAdapter {
     private static class ViewHolder {
         public ImageView categoryImage;
         public TextView categoryName;
+        public ConstraintLayout categoryHolder;
     }
 }

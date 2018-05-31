@@ -6,5 +6,6 @@
     <color name="handpickedBlack">#121617</color>
     <color name="selectedCategory">#dedede</color>
     <color name="nonSelectedCategory">#f5f5f5</color>
+    <color name="transblack">#8e000000</color>
 
 </resources>

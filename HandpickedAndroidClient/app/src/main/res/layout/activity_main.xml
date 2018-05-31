@@ -7,7 +7,8 @@
     android:background="@android:color/white"
     tools:context="com.example.jan_paul.handpickedandroidclient.Presentation.MainActivity">
 
-    <FrameLayout
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/main_activity_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorAccent">
@@ -24,15 +25,17 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/bg_triangle" />
 
-    </FrameLayout>
-
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/constraintLayout"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        <ListView
+            android:id="@+id/category_list"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_margin="0dp"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="20.0sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/guideline"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
 
         <TextView
             android:id="@+id/main_activity_title"
@@ -123,7 +126,13 @@
         </android.support.constraint.ConstraintLayout>
 
 
-    </android.support.constraint.ConstraintLayout>
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/constraintLayout"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
     <GridView
         android:id="@+id/product_grid"
@@ -142,26 +151,41 @@
         app:layout_constraintStart_toEndOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
 
-    <android.support.constraint.Guideline
-        android:id="@+id/guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.3" />
+        </android.support.constraint.ConstraintLayout>
 
-    <ListView
-        android:id="@+id/category_list"
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/overlay_holder"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:background="@color/transblack"
+        android:visibility="invisible"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/guideline"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:animateLayoutChanges="true">
 
+        <fragment
+            android:id="@+id/fragment_container"
+            android:name="com.example.jan_paul.handpickedandroidclient.Presentation.OrderFragment"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="32dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="32dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </android.support.constraint.ConstraintLayout>
     <android.support.constraint.Guideline
         android:id="@+id/guideline2"
         android:layout_width="wrap_content"

@@ -82,8 +82,8 @@ public class ProductAdapter extends BaseAdapter {
 
         viewHolder.productName.setText(Product.getName());
 
-        Animation a = AnimationUtils.loadAnimation(mContext, R.anim.fade);
-        convertView.startAnimation(a);
+        Animation fade = AnimationUtils.loadAnimation(mContext, R.anim.fade);
+        convertView.startAnimation(fade);
 
         Picasso.get()
                 .load("http://images.quickoffice.nl/pictures/008/600x450/FRISDRANK-COCA-COLA-REGULAR-BLIKJE-0-33L-(c)20050085.jpg")

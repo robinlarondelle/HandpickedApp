@@ -10,7 +10,8 @@
     <android.support.constraint.ConstraintLayout
         android:id="@+id/main_activity_content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/colorAccent">
 
         <ImageView
             android:id="@+id/splash_bg_triangle2"
@@ -36,25 +37,94 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
 
-        <GridView
-            android:id="@+id/product_grid"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:animateLayoutChanges="true"
-            android:horizontalSpacing="15dp"
-            android:numColumns="3"
-            android:verticalSpacing="15dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/guideline"
-            app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
-
-        <android.support.constraint.Guideline
-            android:id="@+id/guideline"
+        <TextView
+            android:id="@+id/main_activity_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.3" />
+            android:layout_marginEnd="120dp"
+            android:text="@string/main_activity_title"
+            android:textAlignment="center"
+            android:textColor="@color/handpickedBlack"
+            android:textSize="60sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/question_icon_container" />
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/question_icon_container"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginBottom="2dp"
+            android:layout_marginEnd="128dp"
+            android:background="@color/colorPrimary"
+            android:elevation="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageButton
+                android:id="@+id/question_icon"
+                android:layout_width="55dp"
+                android:layout_height="60dp"
+                android:layout_margin="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:adjustViewBounds="true"
+                android:background="@null"
+                android:padding="5dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/fa_question"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/order_icon_container"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginBottom="2dp"
+            android:layout_marginEnd="16dp"
+            android:background="@android:color/white"
+            android:elevation="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageButton
+                android:id="@+id/order_icon"
+                android:layout_width="55dp"
+                android:layout_height="60dp"
+                android:layout_margin="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:adjustViewBounds="true"
+                android:background="@android:color/white"
+                android:padding="5dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/fa_shopping_cart"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/order_size_number"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/fa_circle"
+                android:gravity="center"
+                android:scaleType="fitCenter"
+                android:text="0"
+                android:textAlignment="center"
+                android:textSize="13sp"
+                app:layout_constraintEnd_toEndOf="@+id/order_icon"
+                app:layout_constraintTop_toTopOf="@+id/order_icon"
+                tools:text="0" />
+        </android.support.constraint.ConstraintLayout>
+
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/constraintLayout"
@@ -64,42 +134,22 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <android.support.constraint.ConstraintLayout
-                android:id="@+id/cart_button"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_marginBottom="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginTop="8dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <ImageButton
-                    android:id="@+id/order_icon"
-                    android:layout_width="60dp"
-                    android:layout_height="0dp"
-                    android:layout_margin="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginTop="8dp"
-                    android:padding="0dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@android:drawable/ic_menu_report_image" />
-
-                <TextView
-                    android:id="@+id/order_size_number"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="0"
-                    android:textSize="40sp"
-                    app:layout_constraintBottom_toBottomOf="@+id/order_icon"
-                    app:layout_constraintEnd_toEndOf="@+id/order_icon"
-                    tools:text="0" />
-
-            </android.support.constraint.ConstraintLayout>
+    <GridView
+        android:id="@+id/product_grid"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:animateLayoutChanges="true"
+        android:horizontalSpacing="15dp"
+        android:numColumns="3"
+        android:verticalSpacing="15dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
 
         </android.support.constraint.ConstraintLayout>
 
@@ -111,6 +161,10 @@
         android:layout_height="0dp"
         android:background="@color/transblack"
         android:visibility="invisible"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -132,4 +186,11 @@
             app:layout_constraintTop_toTopOf="parent" />
 
     </android.support.constraint.ConstraintLayout>
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="20dp" />
+
 </android.support.constraint.ConstraintLayout>

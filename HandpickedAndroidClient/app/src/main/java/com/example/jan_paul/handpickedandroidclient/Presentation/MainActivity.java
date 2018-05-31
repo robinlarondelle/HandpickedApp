@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
 
         orderSizeNumber = findViewById(R.id.order_size_number);
         orderIcon = findViewById(R.id.order_icon);
-        orderButton = findViewById(R.id.cart_button);
+        orderButton = findViewById(R.id.order_icon_container);
 
         availableProducts = new ArrayList<>();
         availableCategories = new ArrayList<>();

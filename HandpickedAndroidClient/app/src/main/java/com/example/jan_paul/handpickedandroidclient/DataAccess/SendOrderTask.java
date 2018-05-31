@@ -157,8 +157,8 @@ public class SendOrderTask extends AsyncTask<String, Void, String> {
             Map.Entry pair = (Map.Entry)it.next();
             out = out +
                     "{\n" +
-                    "\"Naam\" : \"" + pair.getKey() + "\",\n" +
-                    "\"Aantal\" : " + pair.getValue() + "\n";
+                    "\"naam\" : \"" + pair.getKey() + "\",\n" +
+                    "\"aantal\" : " + pair.getValue() + "\n";
                     if(it.hasNext()){
                         out = out + "},\n";
                     }

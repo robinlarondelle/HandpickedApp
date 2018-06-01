@@ -15,24 +15,21 @@ public class Order {
     private HashMap<String, Integer> products;
     private Boolean isOrdered;
     private String orderDate;
-    private String vergaderRuimte;
     private String message;
     private int ID;
 
-    public Order(Boolean isOrdered, String vergaderRuimte, String message) {
+    public Order(Boolean isOrdered, String message) {
         this.products = new HashMap<>();
         this.isOrdered = isOrdered;
         this.orderDate = null;
-        this.vergaderRuimte = vergaderRuimte;
         this.message = message;
         this.ID = 0;
     }
 
-    public Order(Boolean isOrdered, String vergaderRuimte) {
+    public Order(Boolean isOrdered) {
         this.products = new HashMap<>();
         this.isOrdered = isOrdered;
         this.orderDate = null;
-        this.vergaderRuimte = vergaderRuimte;
         this.message = "";
         this.ID = 0;
     }
@@ -40,16 +37,17 @@ public class Order {
     public void addOrRemoveProduct(String productName, int amount){
         //expecting amount is always 1 or -1
         if (products.containsKey(productName)) {
+            int amountOfProducts = products.get(productName).intValue();
             if (amount < 0) {
                 if (products.get(productName).intValue() == 1) {
                     products.remove(productName);
                 }
                 else {
-                    products.put(productName, products.get(productName).intValue() - 1);
+                    products.put(productName, amountOfProducts - 1);
                 }
             }
             else {
-                products.put(productName, products.get(productName).intValue() + amount);
+                products.put(productName, amountOfProducts + amount);
             }
         }
         else {
@@ -109,21 +107,12 @@ public class Order {
         this.orderDate = orderDate;
     }
 
-    public String getVergaderRuimte() {
-        return vergaderRuimte;
-    }
-
-    public void setVergaderRuimte(String vergaderRuimte) {
-        this.vergaderRuimte = vergaderRuimte;
-    }
-
     @Override
     public String toString() {
         return "Order{" +
                 "products=" + products +
                 ", isOrdered=" + isOrdered +
                 ", orderDate='" + orderDate + '\'' +
-                ", vergaderRuimte=" + vergaderRuimte +
                 ", message='" + message + '\'' +
                 ", ID=" + ID +
                 '}';

@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.example.jan_paul.handpickedandroidclient.Domain.Category;
 import com.example.jan_paul.handpickedandroidclient.Domain.Product;
+import com.example.jan_paul.handpickedandroidclient.Domain.TimeRange;
 import com.example.jan_paul.handpickedandroidclient.Domain.Type;
 
 import org.json.JSONArray;
@@ -20,6 +21,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  * Created by jan-paul on 5/22/2018.
@@ -90,15 +92,46 @@ public class GetProductsTask extends AsyncTask<String, Void, String> {
         try {
             jsonObject = new JSONObject(response);
 
-            JSONArray categories = jsonObject.getJSONArray("categories");
-
+                JSONArray categories = jsonObject.getJSONArray("categories");
             for(int i = 0; i < categories.length(); i++) {
                 JSONObject category =  categories.getJSONObject(i);
                 JSONArray products = category.getJSONArray("products");
                 String categoryName = category.getString("categoryName");
-                Boolean visible = intToBool(category.getInt("visible"));
-                Category currentCategory = new Category("", categoryName, visible);
-                productsPerCategory.add(currentCategory);
+                String[] begin = null;
+                String[] end = null;
+                String day = null;
+
+                JSONArray timeRanges = category.getJSONArray("timeranges");
+                for(int ix = 0; ix < timeRanges.length(); ix++) {
+                    JSONObject timerange = timeRanges.getJSONObject(ix);
+                    begin = timerange.getString("begin").split(":");
+                    end =  timerange.getString("end").split(":");
+
+                    Log.i("tijd in string", timerange.getString("begin") + " - " + timerange.getString("end"));
+
+                    day =  timerange.getString("day");
+                }
+                Calendar beginTime = null;
+                if (begin != null) {
+                    beginTime = Calendar.getInstance();
+                    beginTime.set(Calendar.HOUR_OF_DAY, Integer.valueOf(begin[0]));
+                    beginTime.set(Calendar.MINUTE, Integer.valueOf(begin[1]));
+                    beginTime.set(Calendar.SECOND, Integer.valueOf(begin[2]));
+                    beginTime.set(Calendar.DAY_OF_WEEK, Integer.valueOf(day) + 1);
+                }
+
+                    Calendar endTime = null;
+                if (end != null) {
+                    endTime = Calendar.getInstance();
+                    endTime.set(Calendar.HOUR_OF_DAY, Integer.valueOf(end[0]));
+                    endTime.set(Calendar.MINUTE, Integer.valueOf(end[1]));
+                    endTime.set(Calendar.SECOND, Integer.valueOf(end[2]));
+                    endTime.set(Calendar.DAY_OF_WEEK, Integer.valueOf(day) + 1);
+                    }
+
+                Category currentCategory = new Category("", categoryName, new TimeRange(beginTime, endTime));
+
+                Log.i("is in range", currentCategory.getTimeRange().isInRange().toString());
 
                 for (int idx = 0; idx < products.length(); idx++) {
                     JSONObject product = products.getJSONObject(idx);
@@ -106,9 +139,11 @@ public class GetProductsTask extends AsyncTask<String, Void, String> {
                     String productName = product.getString("productName");
                     boolean productVisible = intToBool(product.getInt("visible"));
                     String frontImage = product.getString("image");
-
                     Product currentProduct = new Product(productName, productVisible, productID, frontImage);
                     currentCategory.getProducts().add(currentProduct);
+                }
+                if (currentCategory.getTimeRange().isInRange()) {
+                    productsPerCategory.add(currentCategory);
                 }
             }
 

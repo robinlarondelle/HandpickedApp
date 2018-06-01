@@ -2,5 +2,6 @@
 <resources>
     <string name="get_products">http://handpickedserver.herokuapp.com/api/allproducts</string>
     <string name="post_order">http://handpickedserver.herokuapp.com/api/order</string>
+    <string name="get_serialNumber">http://handpickedserver.herokuapp.com/api/tablet</string>
 
 </resources>

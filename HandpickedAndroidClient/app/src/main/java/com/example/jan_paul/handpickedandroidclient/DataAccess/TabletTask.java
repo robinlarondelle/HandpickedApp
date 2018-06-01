@@ -2,15 +2,11 @@ package com.example.jan_paul.handpickedandroidclient.DataAccess;
 
 import android.content.res.Resources;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.util.Log;
 
-import com.example.jan_paul.handpickedandroidclient.Domain.Category;
 import com.example.jan_paul.handpickedandroidclient.Domain.Order;
-import com.example.jan_paul.handpickedandroidclient.Domain.Product;
 import com.example.jan_paul.handpickedandroidclient.R;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -23,22 +19,16 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
-public class SendOrderTask extends AsyncTask<String, Void, String> {
+public class TabletTask extends AsyncTask<String, Void, String> {
 
-    private SendOrderTask.OnStatusAvailable listener = null;
+    private TabletTask.OnStatusAvailable listener = null;
 
-    private static final String TAG = GetProductsTask.class.getSimpleName();
-    private  Order orderToSend;
+    private static final String TAG = TabletTask.class.getSimpleName();
+    private Order orderToSend;
 
-    public SendOrderTask(SendOrderTask.OnStatusAvailable listener, Order order) {
+    public TabletTask(TabletTask.OnStatusAvailable listener) {
         this.listener = listener;
-        this.orderToSend = order;
     }
 
     @Override
@@ -63,16 +53,11 @@ public class SendOrderTask extends AsyncTask<String, Void, String> {
             httpConnection.setRequestMethod("POST");
             httpConnection.connect();
 
+            //post body here
             String body = "{\n" +
-                    "\"serialnumber\": \"" + Build.SERIAL + "\",\n" +
-                    "\"comment\": \"" + orderToSend.getMessage() + "\",\n" +
-                    "\"datetime\": \"" + Calendar.getInstance().getTime() + "\",\n" +
-                    "\"products\": [\n" +
-                    hashmapToString(orderToSend.getProducts()) +
-                    "]\n" +
+                    "  \"serialNumber\": \"" + params[0] + "\",\n" +
+                    "  \"room\": null\n" +
                     "}";
-
-            Log.i("body", body);
 
             byte[] outputBytes = body.getBytes("UTF-8");
             OutputStream os = httpConnection.getOutputStream();
@@ -103,29 +88,13 @@ public class SendOrderTask extends AsyncTask<String, Void, String> {
         if(response == null || response == "") {
             Log.e(TAG, "onPostExecute kreeg een lege response!");
             //callback an error here
-            if (orderToSend.getMessage().length() < 1){
-                status = Resources.getSystem().getString(R.string.error_send_order);
-                listener.onStatusAvailable(status);
-
-            }
-            else if (orderToSend.getTotalProducts() < 1){
-                status = Resources.getSystem().getString(R.string.error_send_message);
-                listener.onStatusAvailable(status);
-            }
             return;
         }
 
         JSONObject jsonObject;
         try {
             jsonObject = new JSONObject(response);
-            if(jsonObject.getString("status") == "send"){
-                if (orderToSend.getMessage().length() < 1){
-                    status = Resources.getSystem().getString(R.string.success_order_message);
-                }
-                else if (orderToSend.getTotalProducts() < 1){
-                    status = Resources.getSystem().getString(R.string.success_comment_message);
-                }
-            }
+            status = jsonObject.getString("code");
         } catch( JSONException ex) {
             Log.e(TAG, "onPostExecute JSONException " + ex.getLocalizedMessage());
         }
@@ -162,25 +131,5 @@ public class SendOrderTask extends AsyncTask<String, Void, String> {
     // Call back interface
     public interface OnStatusAvailable {
         void onStatusAvailable(String status);
-    }
-
-    public String hashmapToString(HashMap<String, Integer> hashmap){
-        String out = "";
-        Iterator it = hashmap.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry pair = (Map.Entry)it.next();
-            out = out +
-                    "{\n" +
-                    "\"naam\" : \"" + pair.getKey() + "\",\n" +
-                    "\"aantal\" : " + pair.getValue() + "\n";
-                    if(it.hasNext()){
-                        out = out + "},\n";
-                    }
-                    else {
-                        out = out + "}";
-                    }
-            it.remove(); // avoids a ConcurrentModificationException
-        }
-        return out;
     }
 }

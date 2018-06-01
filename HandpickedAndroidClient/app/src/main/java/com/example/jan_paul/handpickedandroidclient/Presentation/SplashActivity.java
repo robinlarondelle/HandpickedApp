@@ -10,6 +10,7 @@ import android.util.Log;
 import android.widget.TextView;
 
 import com.example.jan_paul.handpickedandroidclient.DataAccess.GetProductsTask;
+import com.example.jan_paul.handpickedandroidclient.DataAccess.TabletTask;
 import com.example.jan_paul.handpickedandroidclient.Domain.Category;
 import com.example.jan_paul.handpickedandroidclient.Logic.Main;
 import com.example.jan_paul.handpickedandroidclient.R;
@@ -17,26 +18,49 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
-public class SplashActivity extends AppCompatActivity implements GetProductsTask.OnProductsAvailable{
+public class SplashActivity extends AppCompatActivity implements GetProductsTask.OnProductsAvailable, TabletTask.OnStatusAvailable{
 
     private static String TAG = "SplashActivity";
     private Main main;
     private GetProductsTask getProductsTask;
+    private TabletTask tabletTask;
     Handler handler;
     Runnable test;
+    Runnable postTablet;
     TextView splashLoadingText;
+    String tabletUrl;
+    String tabletStatus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate: called");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+        splashLoadingText = findViewById(R.id.splash_loading_text);
+
+        tabletStatus = getString(R.string.post_tablet);
+        tabletUrl = getString(R.string.get_serialNumber);
+        splashLoadingText.setText(tabletStatus);
+
+        tabletTask = new TabletTask(this);
+        tabletTask.execute(tabletUrl);
+
+        handler = new Handler();
+        postTablet = new Runnable() {
+            @Override
+            public void run() {
+                tabletTask.cancel(true);
+                tabletTask = new TabletTask(SplashActivity.this);
+                tabletTask.execute(tabletUrl);
+                handler.postDelayed(postTablet, 5000); //wait 4 sec and run again
+                splashLoadingText.setText(tabletStatus);
+            }
+        };
 
         if (main == null){
             main = new Main();
         }
 
-        splashLoadingText = findViewById(R.id.splash_loading_text);
         Typeface barlowLight = Typeface.createFromAsset(getAssets(),"fonts/barlow_light.ttf");
         splashLoadingText.setTypeface(barlowLight);
         Log.d(TAG, "onCreate: textView font changed to Barlow Light.");
@@ -47,7 +71,6 @@ public class SplashActivity extends AppCompatActivity implements GetProductsTask
         test = new Runnable() {
             @Override
             public void run() {
-                //do work
                 getProductsTask.cancel(true);
                 getProductsTask = new GetProductsTask(SplashActivity.this);
                 getProductsTask.execute(getString(R.string.get_products));
@@ -95,5 +118,14 @@ public class SplashActivity extends AppCompatActivity implements GetProductsTask
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         stopTest();
         startActivity(intent);
+    }
+
+    public void onStatusAvailable (String status){
+        if (status == "409"){
+            tabletStatus = getString(R.string.post_tablet_success);
+            handler.removeCallbacks(postTablet);        }
+        else{
+            tabletStatus = getString(R.string.post_tablet_notregistered);
+        }
     }
 }

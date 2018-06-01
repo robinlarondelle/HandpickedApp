@@ -11,6 +11,7 @@ import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Debug;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -48,7 +49,6 @@ import javax.security.auth.login.LoginException;
 public class MainActivity extends AppCompatActivity implements GetProductsTask.OnProductsAvailable {
 
     private Integer selectedCategory;
-    private String vergaderRuimte;
 
     private ArrayList<Product> availableProducts;
     private ArrayList<Category> availableCategories;
@@ -73,6 +73,7 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
     private ListView orderItemsList;
 
     private TextView mainActivityTitle;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     private Main main;
 
@@ -110,15 +111,26 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
         orderSendButton = findViewById(R.id.order_send_button);
         orderComment = findViewById(R.id.order_comment);
         mainActivityTitle = findViewById(R.id.main_activity_title);
+        swipeRefreshLayout = findViewById(R.id.swiperefresh);
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getProductsTask = new GetProductsTask(MainActivity.this);
+                getProductsTask.execute(getString(R.string.get_products));
+            }
+        });
 
         orderSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 main.getCurrentOrder().setOrderDate(Calendar.getInstance().getTime().toString());
                 main.getCurrentOrder().setMessage(orderComment.getText().toString());
-                main.getCurrentOrder().setVergaderRuimte("jp's osso");
                 main.sendCurrentOrder(MainActivity.this);
                 main.makenNewOrder();
+                orderAdapter.updateOrderItems(main.getCurrentOrder().getProducts());
+                Log.i("SEND", main.getCurrentOrder().getProducts().toString());
+                orderSizeNumber.setText(Integer.toString(main.getCurrentOrder().getTotalProducts()));
                 //get callback from main to check for success, than show new view...
             }
         });
@@ -126,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
         overlayHolder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                overlayHolder.animate().alpha(0.0f).setDuration(500).setListener(new AnimatorListenerAdapter() {
+                overlayHolder.animate().alpha(0.0f).setDuration(250).setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         super.onAnimationEnd(animation);
@@ -141,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
             public void onClick(View view) {
                 overlayHolder.setAlpha(0.0f);
                 overlayHolder.setVisibility(View.VISIBLE);
-                overlayHolder.animate().alpha(1.0f).setDuration(500).setListener(new AnimatorListenerAdapter() {
+                overlayHolder.animate().alpha(1.0f).setDuration(250).setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         super.onAnimationEnd(animation);
@@ -163,6 +175,8 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
                 String result = Integer.toString(main.getCurrentOrder().getTotalProducts());
                 orderSizeNumber.setText(result);
                 Log.i("orderinfo", main.getCurrentOrder().toString());
+                Animation click = AnimationUtils.loadAnimation(MainActivity.this, R.anim.product_click);
+                view.startAnimation(click);
                 Animation shake = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake);
                 orderButton.startAnimation(shake);
                 orderAdapter.updateOrderItems(main.getCurrentOrder().getProducts());
@@ -250,5 +264,6 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
         availableProducts = main.getProductsPerCategory(availableCategories.get(selectedCategory).getType());
         productAdapter.updateProductArrayList(availableProducts);
         categoryAdapter.updateCategoryArrayList(availableCategories);
+        swipeRefreshLayout.setRefreshing(false);
     }
 }

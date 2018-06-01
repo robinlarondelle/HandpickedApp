@@ -35,7 +35,7 @@ public class Main implements SendOrderTask.OnStatusAvailable{
     }
 
     public Main() {
-        this.currentOrder = new Order(false, "","");
+        this.currentOrder = new Order(false);
         this.oldOrders = new ArrayList<>();
         this.categories = new ArrayList<>();
     }
@@ -59,7 +59,7 @@ public class Main implements SendOrderTask.OnStatusAvailable{
             currentOrder.setOrdered(true);
             oldOrders.add(currentOrder);
         }
-        currentOrder = new Order(false, this.vergaderRuimte, "");
+        currentOrder = new Order(false);
     }
 
     public String sendCurrentOrder(Context context){

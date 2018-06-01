@@ -88,6 +88,7 @@ public class OrderAdapter extends BaseAdapter {
             @Override
             public void onClick(View view) {
                 order.addOrRemoveProduct(keys[position], -1);
+
                 updateOrderItems(order.getProducts());
             }
         });

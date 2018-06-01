@@ -40,8 +40,13 @@ public class Order {
     public void addOrRemoveProduct(String productName, int amount){
         //expecting amount is always 1 or -1
         if (products.containsKey(productName)) {
-            if (products.get(productName).intValue() < 2 && amount < 0) {
-                products.remove(productName);
+            if (amount < 0) {
+                if (products.get(productName).intValue() == 1) {
+                    products.remove(productName);
+                }
+                else {
+                    products.put(productName, products.get(productName).intValue() - 1);
+                }
             }
             else {
                 products.put(productName, products.get(productName).intValue() + amount);

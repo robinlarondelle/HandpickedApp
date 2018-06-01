@@ -33,16 +33,27 @@ public class Order {
         this.isOrdered = isOrdered;
         this.orderDate = null;
         this.vergaderRuimte = vergaderRuimte;
-        this.message = null;
+        this.message = "";
         this.ID = 0;
     }
 
-    public void addOrRemoveProduct(Product product, int amount){
-        if (products.containsKey(product.getName())){
-            products.put(product.getName(), products.get(product.getName()).intValue() + amount);
+    public void addOrRemoveProduct(String productName, int amount){
+        //expecting amount is always 1 or -1
+        if (products.containsKey(productName)) {
+            if (amount < 0) {
+                if (products.get(productName).intValue() == 1) {
+                    products.remove(productName);
+                }
+                else {
+                    products.put(productName, products.get(productName).intValue() - 1);
+                }
+            }
+            else {
+                products.put(productName, products.get(productName).intValue() + amount);
+            }
         }
         else {
-            products.put(product.getName(), amount);
+            products.put(productName, amount);
         }
     }
 

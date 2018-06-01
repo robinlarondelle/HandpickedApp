@@ -8,6 +8,7 @@
     <string name="splash_connection_successful">Connected successfully!</string>
 
     <!-- Main Activity -->
+    <string name="main_title">Category</string>
 
     <!-- Success Activity -->
     <string name="success_title">Thank you.</string>

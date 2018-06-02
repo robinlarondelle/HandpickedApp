@@ -128,6 +128,12 @@ public class CategoryAdapter  extends BaseAdapter {
                 .centerCrop()
                 .into(viewHolder.categoryImage);
                 */
+        if (category.getVisible()){
+            convertView.setVisibility(View.VISIBLE);
+        }
+        else {
+            convertView.setVisibility(View.INVISIBLE);
+        }
         return convertView;
     }
 

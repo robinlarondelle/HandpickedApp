@@ -125,22 +125,30 @@
 
     </android.support.constraint.ConstraintLayout>
 
-    <GridView
-        android:id="@+id/product_grid"
+
+    <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/swiperefresh"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:animateLayoutChanges="true"
-        android:horizontalSpacing="15dp"
-        android:numColumns="3"
-        android:verticalSpacing="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/guideline"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
+
+        <GridView
+            android:id="@+id/product_grid"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:animateLayoutChanges="true"
+            android:horizontalSpacing="15dp"
+            android:numColumns="3"
+            android:verticalSpacing="15dp" />
+    </android.support.v4.widget.SwipeRefreshLayout>
+
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline"
@@ -148,7 +156,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.3" />
-
+  
     <ListView
         android:id="@+id/category_list"
         android:layout_width="0dp"

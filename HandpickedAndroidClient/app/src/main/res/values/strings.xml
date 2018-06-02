@@ -6,6 +6,9 @@
     <string name="splash_loading_text">Just a second - Fetching latest data from server&#8230;</string>
     <string name="splash_no_connection">Failed to connect, trying again&#8230;</string>
     <string name="splash_connection_successful">Connected successfully!</string>
+    <string name="post_tablet">Connecting to server...</string>
+    <string name="post_tablet_success">Room linked, receiving latest products...</string>
+    <string name="post_tablet_notregistered">No room linked to this tablet yet, please contact your admin.</string>
 
     <!-- Main Activity -->
     <string name="main_title">Category</string>

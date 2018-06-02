@@ -13,7 +13,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:inputType="numberSigned"
-        android:textSize="24sp"
+        android:textSize="36sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/order_minus"
@@ -25,21 +25,13 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"
         android:text="title"
-        android:textSize="24sp"
+        android:textSize="36sp"
         app:layout_constraintBottom_toBottomOf="@+id/order_product_amount"
         app:layout_constraintStart_toEndOf="@+id/order_plus"
         app:layout_constraintTop_toTopOf="@+id/order_product_amount"
         app:layout_constraintVertical_bias="0.333" />
-
-    <Button
-        android:id="@+id/order_product_remove"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="verwijder product"
-        app:layout_constraintBottom_toBottomOf="@+id/order_product_amount"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/order_product_amount" />
 
     <TextView
         android:id="@+id/order_minus"
@@ -48,7 +40,7 @@
         android:layout_marginBottom="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:textSize="24sp"
+        android:textSize="48sp"
         android:text="-"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -61,7 +53,7 @@
         android:layout_marginBottom="8dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:textSize="24sp"
+        android:textSize="48sp"
         android:text="+"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/order_product_amount"

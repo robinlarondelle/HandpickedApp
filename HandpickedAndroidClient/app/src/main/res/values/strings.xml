@@ -11,6 +11,7 @@
     <string name="post_tablet_notregistered">No room linked to this tablet yet, please contact your admin.</string>
 
     <!-- Main Activity -->
+    <string name="main_title">Category</string>
 
     <!-- Success Activity -->
     <string name="success_title">Thank you.</string>

@@ -178,7 +178,8 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
                 Animation click = AnimationUtils.loadAnimation(MainActivity.this, R.anim.product_click);
                 view.startAnimation(click);
                 Animation shake = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake);
-                orderButton.startAnimation(shake);
+                Animation bop = AnimationUtils.loadAnimation(MainActivity.this, R.anim.bop_cart);
+                orderButton.startAnimation(bop);
                 orderAdapter.updateOrderItems(main.getCurrentOrder().getProducts());
             }
         });

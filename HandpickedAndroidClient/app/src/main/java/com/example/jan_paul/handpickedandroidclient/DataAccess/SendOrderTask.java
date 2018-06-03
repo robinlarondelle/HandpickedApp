@@ -64,7 +64,7 @@ public class SendOrderTask extends AsyncTask<String, Void, String> {
             httpConnection.connect();
 
             String body = "{\n" +
-                    "\"serialnumber\": \"" + Build.SERIAL + "\",\n" +
+                    "\"serialNumber\": \"" + Build.SERIAL + "\",\n" +
                     "\"comment\": \"" + orderToSend.getMessage() + "\",\n" +
                     "\"datetime\": \"" + Calendar.getInstance().getTime() + "\",\n" +
                     "\"products\": [\n" +
@@ -104,7 +104,9 @@ public class SendOrderTask extends AsyncTask<String, Void, String> {
             Log.e(TAG, "onPostExecute kreeg een lege response!");
             //callback an error here
             if (orderToSend.getMessage().length() < 1){
-                status = Resources.getSystem().getString(R.string.error_send_order);
+                //status = Resources.getSystem().getString(R.string.error_send_order);
+                status = "error lool";
+
                 listener.onStatusAvailable(status);
 
             }

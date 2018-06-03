@@ -2,6 +2,7 @@ package com.example.jan_paul.handpickedandroidclient.DataAccess;
 
 import android.content.res.Resources;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.util.Log;
 
 import com.example.jan_paul.handpickedandroidclient.Domain.Order;
@@ -51,13 +52,15 @@ public class TabletTask extends AsyncTask<String, Void, String> {
             HttpURLConnection httpConnection = (HttpURLConnection) urlConnection;
             httpConnection.setRequestProperty("Content-Type", "application/json");
             httpConnection.setRequestMethod("POST");
+            httpConnection.setConnectTimeout(3000);
             httpConnection.connect();
 
             //post body here
             String body = "{\n" +
-                    "  \"serialNumber\": \"" + params[0] + "\",\n" +
-                    "  \"room\": null\n" +
+                    "\t\"serialNumber\": \"" + "123456789" + "\",\n" +
+                    "\t\"room\": null\n" +
                     "}";
+            Log.i("tablettask body", body);
 
             byte[] outputBytes = body.getBytes("UTF-8");
             OutputStream os = httpConnection.getOutputStream();

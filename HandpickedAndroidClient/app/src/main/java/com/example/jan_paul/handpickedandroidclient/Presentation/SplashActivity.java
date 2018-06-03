@@ -57,6 +57,7 @@ public class SplashActivity extends AppCompatActivity implements GetProductsTask
             }
         };
 
+
         if (main == null){
             main = new Main();
         }
@@ -65,9 +66,6 @@ public class SplashActivity extends AppCompatActivity implements GetProductsTask
         splashLoadingText.setTypeface(barlowLight);
         Log.d(TAG, "onCreate: textView font changed to Barlow Light.");
 
-        getProductsTask = new GetProductsTask(SplashActivity.this);
-        getProductsTask.execute(getString(R.string.get_products));
-        handler = new Handler();
         test = new Runnable() {
             @Override
             public void run() {
@@ -78,7 +76,8 @@ public class SplashActivity extends AppCompatActivity implements GetProductsTask
                 splashLoadingText.setText(getResources().getString(R.string.splash_no_connection));
             }
         };
-        startTest();
+
+        handler.post(postTablet);
     }
 
     public void stopTest() {
@@ -86,6 +85,8 @@ public class SplashActivity extends AppCompatActivity implements GetProductsTask
     }
 
     public void startTest() {
+        getProductsTask = new GetProductsTask(SplashActivity.this);
+        getProductsTask.execute(getString(R.string.get_products));
         handler.post(test); //wait 0 ms and run
     }
 
@@ -121,11 +122,23 @@ public class SplashActivity extends AppCompatActivity implements GetProductsTask
     }
 
     public void onStatusAvailable (String status){
+        Log.i("curent status", status);
         if (status == "409"){
+            //heeft room
             tabletStatus = getString(R.string.post_tablet_success);
-            handler.removeCallbacks(postTablet);        }
-        else{
-            tabletStatus = getString(R.string.post_tablet_notregistered);
+            splashLoadingText.setText(tabletStatus);
+
+            handler.removeCallbacks(postTablet);
+            startTest();
         }
+        else if (status == "200"){
+            //mag niet door, heeft geen room
+            tabletStatus = getString(R.string.post_tablet_notregistered);
+            splashLoadingText.setText(tabletStatus);
+
+        }
+        else tabletStatus = "unknown error";
+        splashLoadingText.setText(tabletStatus);
+
     }
 }

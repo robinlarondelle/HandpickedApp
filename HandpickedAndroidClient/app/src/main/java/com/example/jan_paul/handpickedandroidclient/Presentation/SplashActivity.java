@@ -121,24 +121,24 @@ public class SplashActivity extends AppCompatActivity implements GetProductsTask
         startActivity(intent);
     }
 
-    public void onStatusAvailable (String status){
-        Log.i("curent status", status);
-        if (status == "409"){
+    public void onStatusAvailable (int status){
+        Log.i("curent status", Integer.toString(status));
+        if (status == 409){
             //heeft room
             tabletStatus = getString(R.string.post_tablet_success);
-            splashLoadingText.setText(tabletStatus);
+//            splashLoadingText.setText(tabletStatus);
 
             handler.removeCallbacks(postTablet);
             startTest();
         }
-        else if (status == "200"){
+        else if (status == 200){
             //mag niet door, heeft geen room
             tabletStatus = getString(R.string.post_tablet_notregistered);
-            splashLoadingText.setText(tabletStatus);
+      //      splashLoadingText.setText(tabletStatus);
 
         }
         else tabletStatus = "unknown error";
-        splashLoadingText.setText(tabletStatus);
+    //    splashLoadingText.setText(tabletStatus);
 
     }
 }

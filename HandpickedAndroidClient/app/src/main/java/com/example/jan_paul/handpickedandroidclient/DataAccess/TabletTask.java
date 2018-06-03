@@ -52,10 +52,9 @@ public class TabletTask extends AsyncTask<String, Void, String> {
             HttpURLConnection httpConnection = (HttpURLConnection) urlConnection;
             httpConnection.setRequestProperty("Content-Type", "application/json");
             httpConnection.setRequestMethod("POST");
-            httpConnection.setConnectTimeout(3000);
+            //httpConnection.setConnectTimeout(3000);
             httpConnection.connect();
 
-            //post body here
             String body = "{\n" +
                     "\t\"serialNumber\": \"" + "123456789" + "\",\n" +
                     "\t\"room\": null\n" +
@@ -68,12 +67,12 @@ public class TabletTask extends AsyncTask<String, Void, String> {
             os.close();
 
             responsCode = httpConnection.getResponseCode();
-            if (responsCode == HttpURLConnection.HTTP_OK) {
-                inputStream = httpConnection.getInputStream();
-                response = getStringFromInputStream(inputStream);
-            } else {
-                Log.e(TAG, "Error, invalid response");
-            }
+
+            listener.onStatusAvailable(responsCode);
+
+
+            //inputStream = httpConnection.getInputStream();
+            //response = getStringFromInputStream(inputStream);
         } catch (MalformedURLException e) {
             Log.e(TAG, "doInBackground MalformedURLEx " + e.getLocalizedMessage());
             return null;
@@ -85,24 +84,6 @@ public class TabletTask extends AsyncTask<String, Void, String> {
     }
 
     protected void onPostExecute(String response) {
-        String status = "";
-        Log.i(TAG, "onPostExecute " + response);
-
-        if(response == null || response == "") {
-            Log.e(TAG, "onPostExecute kreeg een lege response!");
-            //callback an error here
-            return;
-        }
-
-        JSONObject jsonObject;
-        try {
-            jsonObject = new JSONObject(response);
-            status = jsonObject.getString("code");
-        } catch( JSONException ex) {
-            Log.e(TAG, "onPostExecute JSONException " + ex.getLocalizedMessage());
-        }
-
-        listener.onStatusAvailable(status);
     }
 
     private static String getStringFromInputStream(InputStream is) {
@@ -133,6 +114,6 @@ public class TabletTask extends AsyncTask<String, Void, String> {
     }
     // Call back interface
     public interface OnStatusAvailable {
-        void onStatusAvailable(String status);
+        void onStatusAvailable(int status);
     }
 }

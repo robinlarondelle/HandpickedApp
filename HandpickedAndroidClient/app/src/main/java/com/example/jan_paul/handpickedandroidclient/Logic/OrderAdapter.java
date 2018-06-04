@@ -83,7 +83,7 @@ public class OrderAdapter extends BaseAdapter {
             @Override
             public void onClick(View view) {
                 order.addOrRemoveProduct(keys[position], 1);
-                updateOrderItems(order.getProducts());
+                updateOrderItems(order);
                 mainActivity.updateLayout();
             }
         });
@@ -92,7 +92,7 @@ public class OrderAdapter extends BaseAdapter {
             @Override
             public void onClick(View view) {
                 order.addOrRemoveProduct(keys[position], -1);
-                updateOrderItems(order.getProducts());
+                updateOrderItems(order);
                 mainActivity.updateLayout();
             }
         });
@@ -100,8 +100,9 @@ public class OrderAdapter extends BaseAdapter {
         return convertView;
     }
 
-    public void updateOrderItems(HashMap<String, Integer> orderItems){
-        this.orderItems = orderItems;
+    public void updateOrderItems(Order order){
+        this.orderItems = order.getProducts();
+        this.order = order;
         this.keys = orderItems.keySet().toArray(new String[orderItems.size()]);
         notifyDataSetChanged();
     }

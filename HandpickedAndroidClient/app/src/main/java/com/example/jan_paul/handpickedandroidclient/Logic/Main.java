@@ -17,10 +17,13 @@ import java.util.HashMap;
 
 public class Main implements SendOrderTask.OnStatusAvailable{
     private Order currentOrder;
-    private ArrayList<Order> oldOrders;
     private ArrayList<Category> categories;
     private String vergaderRuimte;
     private String availableStatus = "";
+
+    public void setCurrentOrder(Order currentOrder) {
+        this.currentOrder = currentOrder;
+    }
 
     public String getAvailableStatus() {
         return availableStatus;
@@ -36,7 +39,6 @@ public class Main implements SendOrderTask.OnStatusAvailable{
 
     public Main() {
         this.currentOrder = new Order(false);
-        this.oldOrders = new ArrayList<>();
         this.categories = new ArrayList<>();
     }
 
@@ -54,14 +56,6 @@ public class Main implements SendOrderTask.OnStatusAvailable{
         return products;
     }
 
-    public void makenNewOrder(){
-        if(currentOrder != null) {
-            currentOrder.setOrdered(true);
-            oldOrders.add(currentOrder);
-        }
-        currentOrder = new Order(false);
-    }
-
     public String sendCurrentOrder(Context context){
         String orderValidator = "";
         if (currentOrder.getTotalProducts() < 1 && currentOrder.getMessage().length() < 1){
@@ -70,10 +64,6 @@ public class Main implements SendOrderTask.OnStatusAvailable{
         SendOrderTask sendOrderTask = new SendOrderTask(this, currentOrder);
         sendOrderTask.execute(context.getString(R.string.post_order));
         return orderValidator;
-    }
-
-    public ArrayList<Order> getOldOrders() {
-        return oldOrders;
     }
 
     public ArrayList<Category> getCategories() {
@@ -88,7 +78,6 @@ public class Main implements SendOrderTask.OnStatusAvailable{
     public String toString() {
         return "Main{" +
                 "currentOrder=" + currentOrder +
-                ", oldOrders=" + oldOrders +
                 ", categories=" + categories +
                 '}';
     }

@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -30,6 +31,7 @@ import android.widget.Toast;
 import com.example.jan_paul.handpickedandroidclient.DataAccess.GetProductsTask;
 import com.example.jan_paul.handpickedandroidclient.DataAccess.SendOrderTask;
 import com.example.jan_paul.handpickedandroidclient.Domain.Category;
+import com.example.jan_paul.handpickedandroidclient.Domain.Order;
 import com.example.jan_paul.handpickedandroidclient.Domain.Product;
 import com.example.jan_paul.handpickedandroidclient.Domain.Type;
 import com.example.jan_paul.handpickedandroidclient.Logic.CategoryAdapter;
@@ -127,9 +129,8 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
                 main.getCurrentOrder().setOrderDate(Calendar.getInstance().getTime().toString());
                 main.getCurrentOrder().setMessage(orderComment.getText().toString());
                 main.sendCurrentOrder(MainActivity.this);
-                main.makenNewOrder();
-                orderAdapter.updateOrderItems(main.getCurrentOrder().getProducts());
-                Log.i("SEND", main.getCurrentOrder().getProducts().toString());
+                main.setCurrentOrder(new Order(false));
+                orderAdapter.updateOrderItems(main.getCurrentOrder());
                 orderSizeNumber.setText(Integer.toString(main.getCurrentOrder().getTotalProducts()));
                 //get callback from main to check for success, than show new view...
             }
@@ -145,6 +146,8 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
                         overlayHolder.setVisibility(View.INVISIBLE);
                     }
                 });
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             }
         });
 
@@ -180,7 +183,7 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
                 Animation shake = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake);
                 Animation bop = AnimationUtils.loadAnimation(MainActivity.this, R.anim.bop_cart);
                 orderButton.startAnimation(bop);
-                orderAdapter.updateOrderItems(main.getCurrentOrder().getProducts());
+                orderAdapter.updateOrderItems(main.getCurrentOrder());
             }
         });
 

@@ -36,7 +36,11 @@ public class Order {
 
     public void addOrRemoveProduct(String productName, int amount){
         //expecting amount is always 1 or -1
-        Log.i("ORDER", this.toString());
+        try {
+            Log.i("ORDER", this.toString());
+        } catch (Exception e) {
+            // Ignore
+        }
         if (products.containsKey(productName)) {
             int amountOfProducts = products.get(productName).intValue();
             if (amount < 0) {
@@ -54,7 +58,11 @@ public class Order {
         else {
             products.put(productName, amount);
         }
-        Log.i("ORDER", this.toString());
+        try {
+            Log.i("ORDER", this.toString());
+        } catch (Exception e) {
+            // Ignore
+        }
     }
 
     public int getTotalProducts(){

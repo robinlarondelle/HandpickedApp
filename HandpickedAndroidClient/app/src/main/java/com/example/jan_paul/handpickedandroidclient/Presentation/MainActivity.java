@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
 
                 transaction = getFragmentManager().beginTransaction();
 
-                transaction.replace(R.id.fragment_container, orderFragment);
+                transaction.replace(R.id.overlay_holder, orderFragment);
                 transaction.addToBackStack(null);
                 transaction.commit();
 
@@ -325,7 +325,7 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
         }
         transaction = getFragmentManager().beginTransaction();
 
-        transaction.replace(R.id.fragment_container, statusFragment);
+        transaction.replace(R.id.overlay_holder, statusFragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }

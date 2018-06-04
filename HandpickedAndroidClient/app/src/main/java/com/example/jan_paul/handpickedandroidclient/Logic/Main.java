@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 
-public class Main implements SendOrderTask.OnStatusAvailable{
+public class Main {
     private Order currentOrder;
     private ArrayList<Category> categories;
     private String vergaderRuimte;
@@ -56,14 +56,13 @@ public class Main implements SendOrderTask.OnStatusAvailable{
         return products;
     }
 
-    public String sendCurrentOrder(Context context){
-        String orderValidator = "";
+    public Boolean validateOrder(){
         if (currentOrder.getTotalProducts() < 1 && currentOrder.getMessage().length() < 1){
-            orderValidator = "Please add at least one product or message.";
+            return false;
         }
-        SendOrderTask sendOrderTask = new SendOrderTask(this, currentOrder);
-        sendOrderTask.execute(context.getString(R.string.post_order));
-        return orderValidator;
+        else {
+            return true;
+        }
     }
 
     public ArrayList<Category> getCategories() {
@@ -80,10 +79,5 @@ public class Main implements SendOrderTask.OnStatusAvailable{
                 "currentOrder=" + currentOrder +
                 ", categories=" + categories +
                 '}';
-    }
-
-    @Override
-    public void onStatusAvailable(String status){
-        Log.i("post", status);
     }
 }

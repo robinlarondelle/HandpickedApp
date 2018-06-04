@@ -29,7 +29,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-public class SendOrderTask extends AsyncTask<String, Void, String> {
+public class SendOrderTask extends AsyncTask<String, Void, Integer> {
 
     private SendOrderTask.OnStatusAvailable listener = null;
 
@@ -42,8 +42,7 @@ public class SendOrderTask extends AsyncTask<String, Void, String> {
     }
 
     @Override
-    protected String doInBackground(String... params) {
-
+    protected Integer doInBackground(String... params) {
         InputStream inputStream = null;
         int responsCode = -1;
         String productUrl = params[0];
@@ -80,12 +79,7 @@ public class SendOrderTask extends AsyncTask<String, Void, String> {
             os.close();
 
             responsCode = httpConnection.getResponseCode();
-            if (responsCode == HttpURLConnection.HTTP_OK) {
-                inputStream = httpConnection.getInputStream();
-                response = getStringFromInputStream(inputStream);
-            } else {
-                Log.e(TAG, "Error, invalid response");
-            }
+
         } catch (MalformedURLException e) {
             Log.e(TAG, "doInBackground MalformedURLEx " + e.getLocalizedMessage());
             return null;
@@ -93,77 +87,17 @@ public class SendOrderTask extends AsyncTask<String, Void, String> {
             Log.e("TAG", "doInBackground IOException " + e.getLocalizedMessage());
             return null;
         }
-        return response;
+        return responsCode;
     }
 
-    protected void onPostExecute(String response) {
-        String status = "";
-        Log.i(TAG, "onPostExecute " + response);
+    protected void onPostExecute(Integer responseCode) {
+        listener.onStatusAvailable(responseCode);
 
-        if(response == null || response == "") {
-            Log.e(TAG, "onPostExecute kreeg een lege response!");
-            //callback an error here
-            if (orderToSend.getMessage().length() < 1){
-                //status = Resources.getSystem().getString(R.string.error_send_order);
-                status = "error lool";
-
-                listener.onStatusAvailable(status);
-
-            }
-            else if (orderToSend.getTotalProducts() < 1){
-                status = Resources.getSystem().getString(R.string.error_send_message);
-                listener.onStatusAvailable(status);
-            }
-            return;
-        }
-
-        JSONObject jsonObject;
-        try {
-            jsonObject = new JSONObject(response);
-            if(jsonObject.getString("status") == "send"){
-                if (orderToSend.getMessage().length() < 1){
-                    status = Resources.getSystem().getString(R.string.success_order_message);
-                }
-                else if (orderToSend.getTotalProducts() < 1){
-                    status = Resources.getSystem().getString(R.string.success_comment_message);
-                }
-            }
-        } catch( JSONException ex) {
-            Log.e(TAG, "onPostExecute JSONException " + ex.getLocalizedMessage());
-        }
-
-        listener.onStatusAvailable(status);
     }
 
-    private static String getStringFromInputStream(InputStream is) {
-
-        BufferedReader br = null;
-        StringBuilder sb = new StringBuilder();
-
-        String line;
-        try {
-
-            br = new BufferedReader(new InputStreamReader(is));
-            while ((line = br.readLine()) != null) {
-                sb.append(line);
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (br != null) {
-                try {
-                    br.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return sb.toString();
-    }
     // Call back interface
     public interface OnStatusAvailable {
-        void onStatusAvailable(String status);
+        void onStatusAvailable(int status);
     }
 
     public String hashmapToString(HashMap<String, Integer> hashmap){

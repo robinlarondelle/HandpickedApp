@@ -2,7 +2,9 @@ package com.example.jan_paul.handpickedandroidclient.Presentation;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -25,6 +27,7 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,7 +51,7 @@ import java.util.List;
 
 import javax.security.auth.login.LoginException;
 
-public class MainActivity extends AppCompatActivity implements GetProductsTask.OnProductsAvailable {
+public class MainActivity extends AppCompatActivity implements GetProductsTask.OnProductsAvailable, SendOrderTask.OnStatusAvailable {
 
     private Integer selectedCategory;
 
@@ -68,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
     private ImageButton orderIcon;
 
     private ConstraintLayout orderButton;
+    private ConstraintLayout orderOverlay;
     private Button orderSendButton;
     private TextView orderComment;
 
@@ -76,6 +80,10 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
 
     private TextView mainActivityTitle;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private ProgressBar orderProgress;
+    private Fragment orderFragment;
+    private Fragment statusFragment;
+    private FragmentTransaction transaction;
 
     private Main main;
 
@@ -99,9 +107,15 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
         Log.i("log", "selectedCategory still null");
         selectedCategory = 0;}
 
+        orderFragment = new OrderFragment();
+        statusFragment = new StatusFragment();
+        transaction = getFragmentManager().beginTransaction();
+
         orderSizeNumber = findViewById(R.id.order_size_number);
         orderIcon = findViewById(R.id.order_icon);
         orderButton = findViewById(R.id.order_icon_container);
+        orderProgress = findViewById(R.id.order_load_animation);
+        orderOverlay = findViewById(R.id.order_overlay);
 
         availableProducts = new ArrayList<>();
         availableCategories = new ArrayList<>();
@@ -128,10 +142,12 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
             public void onClick(View view) {
                 main.getCurrentOrder().setOrderDate(Calendar.getInstance().getTime().toString());
                 main.getCurrentOrder().setMessage(orderComment.getText().toString());
-                main.sendCurrentOrder(MainActivity.this);
-                main.setCurrentOrder(new Order(false));
-                orderAdapter.updateOrderItems(main.getCurrentOrder());
-                orderSizeNumber.setText(Integer.toString(main.getCurrentOrder().getTotalProducts()));
+                if (main.validateOrder()) {
+                    SendOrderTask sendOrderTask = new SendOrderTask(MainActivity.this, main.getCurrentOrder());
+                    sendOrderTask.execute(getString(R.string.post_order));
+                }
+                orderOverlay.setVisibility(View.VISIBLE);
+                orderProgress.setVisibility(View.VISIBLE);
                 //get callback from main to check for success, than show new view...
             }
         });
@@ -139,6 +155,13 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
         overlayHolder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                transaction = getFragmentManager().beginTransaction();
+
+                transaction.replace(R.id.fragment_container, orderFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+
                 overlayHolder.animate().alpha(0.0f).setDuration(250).setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
@@ -273,5 +296,37 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
 
     public void updateLayout(){
         orderSizeNumber.setText(Integer.toString(main.getCurrentOrder().getTotalProducts()));
+    }
+
+    @Override
+    public void onStatusAvailable(int status){
+        Log.i("post", Integer.toString(status));
+        orderProgress.setAlpha(1.0f);
+        orderProgress.setVisibility(View.INVISIBLE);
+        orderProgress.animate().alpha(0.0f).setDuration(250).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+            }
+        });
+
+        if (status == 200){
+            //success
+            main.setCurrentOrder(new Order(false));
+            orderAdapter.updateOrderItems(main.getCurrentOrder());
+            orderSizeNumber.setText(Integer.toString(main.getCurrentOrder().getTotalProducts()));
+        }
+        if (status == 401){
+            //slack error
+
+        }
+        else {
+            //unknown error
+        }
+        transaction = getFragmentManager().beginTransaction();
+
+        transaction.replace(R.id.fragment_container, statusFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 }

@@ -162,7 +162,7 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
             }
         });
 
-        orderAdapter = new OrderAdapter(MainActivity.this, getLayoutInflater(), main.getCurrentOrder());
+        orderAdapter = new OrderAdapter(MainActivity.this, getLayoutInflater(), main.getCurrentOrder(), this);
         orderItemsList.setAdapter(orderAdapter);
 
         productAdapter = new ProductAdapter(getApplicationContext(), getLayoutInflater(), availableProducts);
@@ -266,5 +266,9 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
         productAdapter.updateProductArrayList(availableProducts);
         categoryAdapter.updateCategoryArrayList(availableCategories);
         swipeRefreshLayout.setRefreshing(false);
+    }
+
+    public void updateLayout(){
+        orderSizeNumber.setText(Integer.toString(main.getCurrentOrder().getTotalProducts()));
     }
 }

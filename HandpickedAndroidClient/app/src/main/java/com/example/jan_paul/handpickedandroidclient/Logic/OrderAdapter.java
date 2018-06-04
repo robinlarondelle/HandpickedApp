@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.jan_paul.handpickedandroidclient.Domain.Order;
+import com.example.jan_paul.handpickedandroidclient.Presentation.MainActivity;
 import com.example.jan_paul.handpickedandroidclient.R;
 
 import java.util.HashMap;
@@ -26,13 +27,15 @@ public class OrderAdapter extends BaseAdapter {
     private HashMap<String, Integer> orderItems;
     private String[] keys;
     private Order order;
+    private MainActivity mainActivity;
 
-    public OrderAdapter (Context context, LayoutInflater layoutInflater, Order order) {
+    public OrderAdapter (Context context, LayoutInflater layoutInflater, Order order, MainActivity mainActivity) {
         mContext = context;
         mInflator = layoutInflater;
         this.order = order;
         this.orderItems = order.getProducts();
         keys = orderItems.keySet().toArray(new String[orderItems.size()]);
+        this.mainActivity = mainActivity;
     }
 
     @Override
@@ -81,6 +84,7 @@ public class OrderAdapter extends BaseAdapter {
             public void onClick(View view) {
                 order.addOrRemoveProduct(keys[position], 1);
                 updateOrderItems(order.getProducts());
+                mainActivity.updateLayout();
             }
         });
 
@@ -88,8 +92,8 @@ public class OrderAdapter extends BaseAdapter {
             @Override
             public void onClick(View view) {
                 order.addOrRemoveProduct(keys[position], -1);
-
                 updateOrderItems(order.getProducts());
+                mainActivity.updateLayout();
             }
         });
 

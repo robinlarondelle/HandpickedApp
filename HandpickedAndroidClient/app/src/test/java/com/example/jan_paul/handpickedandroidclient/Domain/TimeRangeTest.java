@@ -44,7 +44,7 @@ public class TimeRangeTest {
     }
 
     @Test
-    public void isInRange_WrongBeginAndEndCalendar() throws Exception {
+    public void isInRange_wrongBeginAndEndCalendar() throws Exception {
         boolean expected = false;
         boolean actual;
 

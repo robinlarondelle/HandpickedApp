@@ -16,6 +16,8 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
@@ -51,7 +53,7 @@ import java.util.List;
 
 import javax.security.auth.login.LoginException;
 
-public class MainActivity extends AppCompatActivity implements GetProductsTask.OnProductsAvailable, SendOrderTask.OnStatusAvailable {
+public class MainActivity extends AppCompatActivity implements GetProductsTask.OnProductsAvailable {
 
     private Integer selectedCategory;
 
@@ -71,16 +73,11 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
     private ImageButton orderIcon;
 
     private ConstraintLayout orderButton;
-    private ConstraintLayout orderOverlay;
-    private Button orderSendButton;
-    private TextView orderComment;
-
     private ConstraintLayout overlayHolder;
-    private ListView orderItemsList;
+    private ConstraintLayout outsideView;
 
     private TextView mainActivityTitle;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private ProgressBar orderProgress;
     private Fragment orderFragment;
     private Fragment statusFragment;
     private FragmentTransaction transaction;
@@ -109,87 +106,49 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
 
         orderFragment = new OrderFragment();
         statusFragment = new StatusFragment();
-        transaction = getFragmentManager().beginTransaction();
 
         orderSizeNumber = findViewById(R.id.order_size_number);
         orderIcon = findViewById(R.id.order_icon);
         orderButton = findViewById(R.id.order_icon_container);
-        orderProgress = findViewById(R.id.order_load_animation);
-        orderOverlay = findViewById(R.id.order_overlay);
 
         availableProducts = new ArrayList<>();
         availableCategories = new ArrayList<>();
 
         productSelectionGrid = findViewById(R.id.product_grid);
         productCategoryList = findViewById(R.id.category_list);
-        orderItemsList = findViewById(R.id.order_items_list);
         overlayHolder = findViewById(R.id.overlay_holder);
-        orderSendButton = findViewById(R.id.order_send_button);
-        orderComment = findViewById(R.id.order_comment);
         mainActivityTitle = findViewById(R.id.main_activity_title);
         swipeRefreshLayout = findViewById(R.id.swiperefresh);
+        outsideView = findViewById(R.id.outsideView);
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 getProductsTask = new GetProductsTask(MainActivity.this);
                 getProductsTask.execute(getString(R.string.get_products));
+                Log.i("LOADED PRODUCTS: ", main.getCategories().toString());
             }
         });
 
-        orderSendButton.setOnClickListener(new View.OnClickListener() {
+        outsideView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                main.getCurrentOrder().setOrderDate(Calendar.getInstance().getTime().toString());
-                main.getCurrentOrder().setMessage(orderComment.getText().toString());
-                if (main.validateOrder()) {
-                    SendOrderTask sendOrderTask = new SendOrderTask(MainActivity.this, main.getCurrentOrder());
-                    sendOrderTask.execute(getString(R.string.post_order));
-                }
-                orderOverlay.setVisibility(View.VISIBLE);
-                orderProgress.setVisibility(View.VISIBLE);
-                //get callback from main to check for success, than show new view...
-            }
-        });
+                outsideView.setVisibility(View.INVISIBLE);
 
-        overlayHolder.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                transaction = getFragmentManager().beginTransaction();
-
-                transaction.replace(R.id.overlay_holder, orderFragment);
-                transaction.addToBackStack(null);
-                transaction.commit();
-
-                overlayHolder.animate().alpha(0.0f).setDuration(250).setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        super.onAnimationEnd(animation);
-                        overlayHolder.setVisibility(View.INVISIBLE);
-                    }
-                });
-                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                //InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                //imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             }
         });
 
         orderIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                overlayHolder.setAlpha(0.0f);
-                overlayHolder.setVisibility(View.VISIBLE);
-                overlayHolder.animate().alpha(1.0f).setDuration(250).setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        super.onAnimationEnd(animation);
-                    }
-                });
+                switchFragments(orderFragment);
+                outsideView.setVisibility(View.VISIBLE);
             }
         });
 
         orderAdapter = new OrderAdapter(MainActivity.this, getLayoutInflater(), main.getCurrentOrder(), this);
-        orderItemsList.setAdapter(orderAdapter);
 
         productAdapter = new ProductAdapter(getApplicationContext(), getLayoutInflater(), availableProducts);
         productSelectionGrid.setAdapter(productAdapter);
@@ -280,6 +239,42 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
         notificationManager.notify(0, notify);
     }
 
+    public Main getMain() {
+        return main;
+    }
+
+    public void switchFragments(Fragment fragment){
+        FragmentTransaction transaction;
+        transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.overlay_holder, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    public Fragment getOrderFragment() {
+        return orderFragment;
+    }
+
+    public Fragment getStatusFragment() {
+        return statusFragment;
+    }
+
+    public void updateLayout(){
+        orderSizeNumber.setText(Integer.toString(main.getCurrentOrder().getTotalProducts()));
+    }
+
+    public ProductAdapter getProductAdapter() {
+        return productAdapter;
+    }
+
+    public CategoryAdapter getCategoryAdapter() {
+        return categoryAdapter;
+    }
+
+    public OrderAdapter getOrderAdapter() {
+        return orderAdapter;
+    }
+
     @Override
     public void onProductsAvailable(ArrayList<Category> productsPerCategory) {
         main.setCategories(productsPerCategory);
@@ -292,41 +287,5 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
         productAdapter.updateProductArrayList(availableProducts);
         categoryAdapter.updateCategoryArrayList(availableCategories);
         swipeRefreshLayout.setRefreshing(false);
-    }
-
-    public void updateLayout(){
-        orderSizeNumber.setText(Integer.toString(main.getCurrentOrder().getTotalProducts()));
-    }
-
-    @Override
-    public void onStatusAvailable(int status){
-        Log.i("post", Integer.toString(status));
-        orderProgress.setAlpha(1.0f);
-        orderProgress.setVisibility(View.INVISIBLE);
-        orderProgress.animate().alpha(0.0f).setDuration(250).setListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-            }
-        });
-
-        if (status == 200){
-            //success
-            main.setCurrentOrder(new Order(false));
-            orderAdapter.updateOrderItems(main.getCurrentOrder());
-            orderSizeNumber.setText(Integer.toString(main.getCurrentOrder().getTotalProducts()));
-        }
-        if (status == 401){
-            //slack error
-
-        }
-        else {
-            //unknown error
-        }
-        transaction = getFragmentManager().beginTransaction();
-
-        transaction.replace(R.id.overlay_holder, statusFragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
     }
 }

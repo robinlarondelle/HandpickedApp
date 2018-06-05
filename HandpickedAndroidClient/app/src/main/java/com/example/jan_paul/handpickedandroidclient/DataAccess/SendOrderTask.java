@@ -63,7 +63,7 @@ public class SendOrderTask extends AsyncTask<String, Void, Integer> {
             httpConnection.connect();
 
             String body = "{\n" +
-                    "\"serialNumber\": \"" + "1234" + "\",\n" +
+                    "\"serialNumber\": \"" + "123456789" + "\",\n" +
                     "\"comment\": \"" + orderToSend.getMessage() + "\",\n" +
                     "\"datetime\": \"" + Calendar.getInstance().getTime() + "\",\n" +
                     "\"products\": [\n" +

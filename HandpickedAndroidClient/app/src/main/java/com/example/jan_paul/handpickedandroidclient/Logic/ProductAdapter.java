@@ -1,12 +1,14 @@
 package com.example.jan_paul.handpickedandroidclient.Logic;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -72,6 +74,8 @@ public class ProductAdapter extends BaseAdapter {
             viewHolder.productImage = convertView.findViewById(R.id.category_image);
             viewHolder.productName = convertView.findViewById(R.id.product_name);
             viewHolder.productAmount = convertView.findViewById(R.id.product_amount);
+            viewHolder.checkBox1 = convertView.findViewById(R.id.product_option1);
+            viewHolder.checkBox2 = convertView.findViewById(R.id.product_option2);
 
             convertView.setTag(viewHolder);
         } else {
@@ -79,6 +83,27 @@ public class ProductAdapter extends BaseAdapter {
         }
 
         Product product = (Product) ProductArrayList.get(position);
+
+        Log.i("", product.getOptions().toString() + " - " + Integer.toString(product.getOptions().size()));
+
+        if (product.getOptions().size() == 1){
+            viewHolder.checkBox1.setVisibility(View.VISIBLE);
+            viewHolder.checkBox1.setText(product.getOptions().get(0));
+            viewHolder.checkBox2.setVisibility(View.INVISIBLE);
+        }
+
+        else if (product.getOptions().size() == 2){
+            viewHolder.checkBox1.setVisibility(View.VISIBLE);
+            viewHolder.checkBox1.setText(product.getOptions().get(0));
+            viewHolder.checkBox2.setVisibility(View.VISIBLE);
+            viewHolder.checkBox2.setText(product.getOptions().get(1));
+        }
+        else {
+            viewHolder.checkBox1.setVisibility(View.INVISIBLE);
+            viewHolder.checkBox2.setVisibility(View.INVISIBLE);
+        }
+
+
 
         viewHolder.productName.setText(product.getName());
         int amount = 0;
@@ -108,5 +133,7 @@ public class ProductAdapter extends BaseAdapter {
         public ImageView productImage;
         public TextView productName;
         public TextView productAmount;
+        public CheckBox checkBox1;
+        public CheckBox checkBox2;
     }
 }

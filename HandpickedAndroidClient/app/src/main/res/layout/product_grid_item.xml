@@ -21,9 +21,9 @@
             android:id="@+id/category_image"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:padding="10dp"
             android:scaleType="centerInside"
             app:layout_constraintBottom_toTopOf="@+id/product_name"
@@ -61,6 +61,31 @@
             app:layout_constraintTop_toTopOf="@+id/category_image"
             tools:text="0"
             android:elevation="5dp"/>
+
+        <CheckBox
+            android:id="@+id/product_option1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:scaleX="1.50"
+            android:scaleY="1.50"
+            android:text="1"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@+id/product_name"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <CheckBox
+            android:id="@+id/product_option2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:scaleX="1.50"
+            android:scaleY="1.50"
+            android:text="2"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/product_option1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/product_option1" />
     </android.support.constraint.ConstraintLayout>
 
 </com.example.jan_paul.handpickedandroidclient.Presentation.ProductGridItemLayout>

@@ -146,7 +146,8 @@
             android:animateLayoutChanges="true"
             android:horizontalSpacing="15dp"
             android:numColumns="3"
-            android:verticalSpacing="15dp" />
+            android:verticalSpacing="15dp"
+            android:descendantFocusability="blocksDescendants"/>
     </android.support.v4.widget.SwipeRefreshLayout>
 
 

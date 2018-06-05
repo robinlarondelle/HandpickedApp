@@ -1,5 +1,7 @@
 package com.example.jan_paul.handpickedandroidclient.Domain;
 
+import java.util.ArrayList;
+
 /**
  * Created by jan-paul on 5/22/2018.
  */
@@ -9,12 +11,22 @@ public class Product {
     private String image;
     private Boolean visible;
     private int productID;
+    private ArrayList<String> options;
 
-    public Product(String name, Boolean visible, int productID, String image) {
+    public Product(String name, Boolean visible, int productID, String image, ArrayList<String> options) {
         this.name = name;
         this.visible = visible;
         this.productID = productID;
         this.image = image;
+        this.options = options;
+    }
+
+    public ArrayList<String> getOptions() {
+        return options;
+    }
+
+    public void setOptions(ArrayList<String> options) {
+        this.options = options;
     }
 
     public Boolean getVisible() {

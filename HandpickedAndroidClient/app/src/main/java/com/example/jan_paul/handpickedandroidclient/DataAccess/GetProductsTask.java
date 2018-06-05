@@ -7,6 +7,7 @@ import com.example.jan_paul.handpickedandroidclient.Domain.Category;
 import com.example.jan_paul.handpickedandroidclient.Domain.Product;
 import com.example.jan_paul.handpickedandroidclient.Domain.TimeRange;
 import com.example.jan_paul.handpickedandroidclient.Domain.Type;
+import com.google.gson.JsonArray;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -139,7 +140,14 @@ public class GetProductsTask extends AsyncTask<String, Void, String> {
                     String productName = product.getString("productName");
                     boolean productVisible = intToBool(product.getInt("visible"));
                     String frontImage = product.getString("image");
-                    Product currentProduct = new Product(productName, productVisible, productID, frontImage);
+                    JSONArray JSONOptions = product.getJSONArray("options");
+                    ArrayList<String> options = new ArrayList<>();
+                    for (int opt = 0; opt < JSONOptions.length(); opt++){
+                        String option = JSONOptions.getJSONObject(opt).getString("name");
+                        options.add(option);
+                    }
+
+                    Product currentProduct = new Product(productName, productVisible, productID, frontImage, options);
                     currentCategory.getProducts().add(currentProduct);
                 }
                 if (currentCategory.getTimeRange().isInRange()) {

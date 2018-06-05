@@ -80,7 +80,6 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
     private SwipeRefreshLayout swipeRefreshLayout;
     private Fragment orderFragment;
     private Fragment statusFragment;
-    private FragmentTransaction transaction;
 
     private Main main;
 
@@ -140,17 +139,19 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
             }
         });
 
+        switchFragments(orderFragment);
+
         orderIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                switchFragments(orderFragment);
                 outsideView.setVisibility(View.VISIBLE);
+                switchFragments(orderFragment);
             }
         });
 
         orderAdapter = new OrderAdapter(MainActivity.this, getLayoutInflater(), main.getCurrentOrder(), this);
 
-        productAdapter = new ProductAdapter(getApplicationContext(), getLayoutInflater(), availableProducts);
+        productAdapter = new ProductAdapter(getApplicationContext(), getLayoutInflater(), availableProducts, main.getCurrentOrder());
         productSelectionGrid.setAdapter(productAdapter);
 
         productSelectionGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -162,8 +163,13 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
                 Log.i("orderinfo", main.getCurrentOrder().toString());
                 Animation click = AnimationUtils.loadAnimation(MainActivity.this, R.anim.product_click);
                 view.startAnimation(click);
-                Animation shake = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake);
                 Animation bop = AnimationUtils.loadAnimation(MainActivity.this, R.anim.bop_cart);
+
+                TextView t = view.findViewById(R.id.product_amount);
+                Animation scale = AnimationUtils.loadAnimation(MainActivity.this, R.anim.product_click);
+                t.startAnimation(scale);
+                t.setText(main.getCurrentOrder().getProducts().get(main.getProductsPerCategory(availableCategories.get(selectedCategory).getType()).get(i).getName()).toString());
+
                 orderButton.startAnimation(bop);
                 orderAdapter.updateOrderItems(main.getCurrentOrder());
             }
@@ -182,7 +188,7 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
                     categoryAdapter.setSelectedCategory(i);
                     categoryAdapter.notifyDataSetChanged();
                     Log.i("test", main.getProductsPerCategory(availableCategories.get(selectedCategory).getType()).toString());
-                    productAdapter.updateProductArrayList(main.getProductsPerCategory(availableCategories.get(selectedCategory).getType()));
+                    productAdapter.updateProductArrayList(main.getProductsPerCategory(availableCategories.get(selectedCategory).getType()), main.getCurrentOrder());
                 }
             }
         });
@@ -246,6 +252,7 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
     public void switchFragments(Fragment fragment){
         FragmentTransaction transaction;
         transaction = getFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
         transaction.replace(R.id.overlay_holder, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
@@ -261,6 +268,7 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
 
     public void updateLayout(){
         orderSizeNumber.setText(Integer.toString(main.getCurrentOrder().getTotalProducts()));
+        productAdapter.updateProductArrayList(availableProducts, main.getCurrentOrder());
     }
 
     public ProductAdapter getProductAdapter() {
@@ -280,11 +288,14 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
         main.setCategories(productsPerCategory);
         availableCategories.clear();
         availableCategories = main.getCategories();
-        mainActivityTitle.setText(availableCategories.get(selectedCategory).getType());
-        availableProducts.clear();
+        if (main.getCategories().size() > 0) {
+            mainActivityTitle.setText(availableCategories.get(selectedCategory).getType());
 
-        availableProducts = main.getProductsPerCategory(availableCategories.get(selectedCategory).getType());
-        productAdapter.updateProductArrayList(availableProducts);
+            availableProducts.clear();
+
+            availableProducts = main.getProductsPerCategory(availableCategories.get(selectedCategory).getType());
+        }
+        productAdapter.updateProductArrayList(availableProducts, main.getCurrentOrder());
         categoryAdapter.updateCategoryArrayList(availableCategories);
         swipeRefreshLayout.setRefreshing(false);
     }

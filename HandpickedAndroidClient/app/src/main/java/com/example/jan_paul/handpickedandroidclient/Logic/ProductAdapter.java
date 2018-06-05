@@ -1,12 +1,6 @@
 package com.example.jan_paul.handpickedandroidclient.Logic;
 
 import android.content.Context;
-import android.support.v4.view.animation.FastOutLinearInInterpolator;
-import android.support.v4.view.animation.LinearOutSlowInInterpolator;
-import android.transition.Fade;
-import android.transition.Transition;
-import android.transition.TransitionManager;
-import android.transition.TransitionSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +10,9 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.jan_paul.handpickedandroidclient.Domain.Order;
 import com.example.jan_paul.handpickedandroidclient.Domain.Product;
+import com.example.jan_paul.handpickedandroidclient.Presentation.MainActivity;
 import com.example.jan_paul.handpickedandroidclient.R;
 import com.squareup.picasso.Picasso;
 
@@ -29,16 +25,19 @@ public class ProductAdapter extends BaseAdapter {
     private Context mContext;
     private LayoutInflater mInflator;
     private ArrayList ProductArrayList;
+    private Order order;
 
-    public ProductAdapter(Context context, LayoutInflater layoutInflater, ArrayList<Product> ProductArrayList)
+    public ProductAdapter(Context context, LayoutInflater layoutInflater, ArrayList<Product> ProductArrayList, Order order)
     {
         mContext = context;
         mInflator = layoutInflater;
         this.ProductArrayList = ProductArrayList;
+        this.order = order;
     }
 
-    public void updateProductArrayList(ArrayList list){
+    public void updateProductArrayList(ArrayList list, Order order){
         ProductArrayList = list;
+        this.order = order;
         notifyDataSetChanged();
     }
 
@@ -72,6 +71,7 @@ public class ProductAdapter extends BaseAdapter {
             viewHolder = new ViewHolder();
             viewHolder.productImage = convertView.findViewById(R.id.category_image);
             viewHolder.productName = convertView.findViewById(R.id.product_name);
+            viewHolder.productAmount = convertView.findViewById(R.id.product_amount);
 
             convertView.setTag(viewHolder);
         } else {
@@ -81,8 +81,17 @@ public class ProductAdapter extends BaseAdapter {
         Product product = (Product) ProductArrayList.get(position);
 
         viewHolder.productName.setText(product.getName());
+        int amount = 0;
+        if (order.getProducts().containsKey(product.getName())){
+            amount = order.getProducts().get(product.getName());
+        }
 
-        Animation fade = AnimationUtils.loadAnimation(mContext, R.anim.fade);
+        Animation scale = AnimationUtils.loadAnimation(mContext, R.anim.product_click);
+        viewHolder.productAmount.startAnimation(scale);
+
+        viewHolder.productAmount.setText(Integer.toString(amount));
+
+        Animation fade = AnimationUtils.loadAnimation(mContext, R.anim.fade_in);
         convertView.startAnimation(fade);
 
         Picasso.get()
@@ -98,5 +107,6 @@ public class ProductAdapter extends BaseAdapter {
     private static class ViewHolder {
         public ImageView productImage;
         public TextView productName;
+        public TextView productAmount;
     }
 }

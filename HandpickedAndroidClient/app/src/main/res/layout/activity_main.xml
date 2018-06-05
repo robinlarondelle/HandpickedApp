@@ -199,7 +199,7 @@
             android:layout_marginStart="128dp"
             android:layout_marginTop="128dp"
             android:animateLayoutChanges="true"
-            android:background="@color/transblack"
+            android:background="@color/nonSelectedCategory"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

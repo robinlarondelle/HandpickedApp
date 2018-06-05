@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.jan_paul.handpickedandroidclient.DataAccess.GetProductsTask;
 import com.example.jan_paul.handpickedandroidclient.DataAccess.SendOrderTask;
@@ -73,6 +74,10 @@ public class OrderFragment extends Fragment implements SendOrderTask.OnStatusAva
                     SendOrderTask sendOrderTask = new SendOrderTask(OrderFragment.this, main.getCurrentOrder());
                     sendOrderTask.execute(getString(R.string.post_order));
                 }
+                else {
+                    Toast.makeText(getActivity(), "Please add at least one product or message.",
+                            Toast.LENGTH_LONG).show();
+                }
                 //get callback from main to check for success, than show new view...
             }
         });
@@ -82,18 +87,19 @@ public class OrderFragment extends Fragment implements SendOrderTask.OnStatusAva
     @Override
     public void onStatusAvailable(int status){
         Log.i("post", Integer.toString(status));
-        if (status == 200){
+        if (status == 200) {
             //success
             main.setCurrentOrder(new Order(false));
             parent.getOrderAdapter().updateOrderItems(main.getCurrentOrder());
-            parent.updateLayout();        }
-        if (status == 401){
+        }
+        else if (status == 401){
             //slack error
 
         }
         else {
             //unknown error
         }
+            parent.updateLayout();
         parent.switchFragments(parent.getStatusFragment());
     }
 

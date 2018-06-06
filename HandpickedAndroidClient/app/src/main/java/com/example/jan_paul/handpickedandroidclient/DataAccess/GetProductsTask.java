@@ -98,6 +98,7 @@ public class GetProductsTask extends AsyncTask<String, Void, String> {
                 JSONObject category =  categories.getJSONObject(i);
                 JSONArray products = category.getJSONArray("products");
                 String categoryName = category.getString("categoryName");
+                String categoryImage = category.getString("image");
                 String[] begin = null;
                 String[] end = null;
                 String day = null;
@@ -130,7 +131,7 @@ public class GetProductsTask extends AsyncTask<String, Void, String> {
                     endTime.set(Calendar.DAY_OF_WEEK, Integer.valueOf(day) + 1);
                     }
 
-                Category currentCategory = new Category("", categoryName, new TimeRange(beginTime, endTime));
+                Category currentCategory = new Category(categoryImage, categoryName, new TimeRange(beginTime, endTime));
 
                 Log.i("is in range", currentCategory.getTimeRange().isInRange().toString());
 

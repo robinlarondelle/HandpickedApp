@@ -20,6 +20,7 @@ public class Main {
     private ArrayList<Category> categories;
     private String vergaderRuimte;
     private String availableStatus = "";
+    private Order message;
 
     public void setCurrentOrder(Order currentOrder) {
         this.currentOrder = currentOrder;
@@ -56,8 +57,16 @@ public class Main {
         return products;
     }
 
-    public Boolean validateOrder(){
-        if (currentOrder.getTotalProducts() < 1 && currentOrder.getMessage().length() < 1){
+    public Order getMessage() {
+        return message;
+    }
+
+    public void setMessage(Order message) {
+        this.message = message;
+    }
+
+    public Boolean validateOrder(Order order){
+        if (order.getTotalProducts() < 1 && order.getMessage().length() < 1){
             return false;
         }
         else {

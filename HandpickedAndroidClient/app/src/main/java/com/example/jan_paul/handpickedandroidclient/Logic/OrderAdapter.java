@@ -73,7 +73,9 @@ public class OrderAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        viewHolder.productName.setText(key);
+        String[] keyyy = key.toString().split("-");
+
+        viewHolder.productName.setText(keyyy[0]);
         viewHolder.productCounter.setText(value);
 
         TextView addButton = convertView.findViewById(R.id.order_plus);

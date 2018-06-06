@@ -63,7 +63,7 @@ public class SendOrderTask extends AsyncTask<String, Void, Integer> {
             httpConnection.connect();
 
             String body = "{\n" +
-                    "\"serialNumber\": \"" + "123456789" + "\",\n" +
+                    "\"serialNumber\": \"" + "R52H105039R" + "\",\n" +
                     "\"comment\": \"" + orderToSend.getMessage() + "\",\n" +
                     "\"datetime\": \"" + Calendar.getInstance().getTime() + "\",\n" +
                     "\"products\": [\n" +
@@ -105,10 +105,12 @@ public class SendOrderTask extends AsyncTask<String, Void, Integer> {
         Iterator it = hashmap.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry pair = (Map.Entry)it.next();
+            String[] key = pair.getKey().toString().split("-");
             out = out +
                     "{\n" +
-                    "\"naam\" : \"" + pair.getKey() + "\",\n" +
-                    "\"aantal\" : " + pair.getValue() + "\n";
+                    "\"productId\" : \"" + key[1] + "\",\n" +
+                    "\"name\" : \"" + key[0] + "\",\n" +
+                    "\"amount\" : " + pair.getValue() + "\n";
                     if(it.hasNext()){
                         out = out + "},\n";
                     }

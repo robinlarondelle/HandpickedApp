@@ -67,25 +67,29 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:scaleX="1.50"
-            android:scaleY="1.50"
+            android:scaleX="1.70"
+            android:scaleY="1.70"
             android:text="1"
             android:visibility="invisible"
             app:layout_constraintBottom_toTopOf="@+id/product_name"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            android:focusable="false"
+            android:focusableInTouchMode="false"/>
 
         <CheckBox
             android:id="@+id/product_option2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
-            android:scaleX="1.50"
-            android:scaleY="1.50"
+            android:scaleX="1.70"
+            android:scaleY="1.70"
             android:text="2"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="@+id/product_option1"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/product_option1" />
+            app:layout_constraintStart_toEndOf="@+id/product_option1"
+            android:focusable="false"
+            android:focusableInTouchMode="false"/>
     </android.support.constraint.ConstraintLayout>
 
 </com.example.jan_paul.handpickedandroidclient.Presentation.ProductGridItemLayout>

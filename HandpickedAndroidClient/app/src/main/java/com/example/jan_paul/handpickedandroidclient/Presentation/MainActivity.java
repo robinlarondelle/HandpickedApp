@@ -26,6 +26,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -71,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
 
     private TextView orderSizeNumber;
     private ImageButton orderIcon;
+    private ConstraintLayout questionContainer;
 
     private ConstraintLayout orderButton;
     private ConstraintLayout overlayHolder;
@@ -80,6 +82,8 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
     private SwipeRefreshLayout swipeRefreshLayout;
     private Fragment orderFragment;
     private Fragment statusFragment;
+    private Fragment qeustionFragment;
+    private ImageButton questionIcon;
 
     private Main main;
 
@@ -105,6 +109,7 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
 
         orderFragment = new OrderFragment();
         statusFragment = new StatusFragment();
+        qeustionFragment = new QuestionFragment();
 
         orderSizeNumber = findViewById(R.id.order_size_number);
         orderIcon = findViewById(R.id.order_icon);
@@ -119,6 +124,8 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
         mainActivityTitle = findViewById(R.id.main_activity_title);
         swipeRefreshLayout = findViewById(R.id.swiperefresh);
         outsideView = findViewById(R.id.outsideView);
+        questionContainer = findViewById(R.id.question_icon_container);
+        questionIcon = findViewById(R.id.question_icon);
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -149,6 +156,22 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
             }
         });
 
+        questionContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                outsideView.setVisibility(View.VISIBLE);
+                switchFragments(qeustionFragment);
+            }
+        });
+
+        questionIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                outsideView.setVisibility(View.VISIBLE);
+                switchFragments(qeustionFragment);
+            }
+        });
+
         orderAdapter = new OrderAdapter(MainActivity.this, getLayoutInflater(), main.getCurrentOrder(), this);
 
         productAdapter = new ProductAdapter(getApplicationContext(), getLayoutInflater(), availableProducts, main.getCurrentOrder());
@@ -157,10 +180,30 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
         productSelectionGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                main.getCurrentOrder().addOrRemoveProduct(main.getProductsPerCategory(availableCategories.get(selectedCategory).getType()).get(i).getName(), 1);
+                Product p = main.getProductsPerCategory(availableCategories.get(selectedCategory).getType()).get(i);
+                String options = "";
+
+                CheckBox checkBox1 = view.findViewById(R.id.product_option1);
+                CheckBox checkBox2 = view.findViewById(R.id.product_option2);
+
+                if(p.getOptions().size() > 0){
+                    if (checkBox1.isChecked()){
+                        options = options + " met opties: ";
+                        options = options + p.getOptions().get(0);
+                        if (p.getOptions().size() > 1 && checkBox2.isChecked()){
+                            options = options + ", ";
+                            options = options + p.getOptions().get(1);
+                        }
+                    }
+                    else if (checkBox2.isChecked()){
+                        options = options + " met opties: ";
+                        options = options + p.getOptions().get(1);
+                    }
+                }
+
+                main.getCurrentOrder().addOrRemoveProduct(p.getName() +options + "-" +  p.getProductID(), 1);
                 String result = Integer.toString(main.getCurrentOrder().getTotalProducts());
                 orderSizeNumber.setText(result);
-                Log.i("orderinfo", main.getCurrentOrder().toString());
                 Animation click = AnimationUtils.loadAnimation(MainActivity.this, R.anim.product_click);
                 view.startAnimation(click);
                 Animation bop = AnimationUtils.loadAnimation(MainActivity.this, R.anim.bop_cart);
@@ -168,7 +211,9 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
                 TextView t = view.findViewById(R.id.product_amount);
                 Animation scale = AnimationUtils.loadAnimation(MainActivity.this, R.anim.product_click);
                 t.startAnimation(scale);
-                t.setText(main.getCurrentOrder().getProducts().get(main.getProductsPerCategory(availableCategories.get(selectedCategory).getType()).get(i).getName()).toString());
+                Log.i("", main.getCurrentOrder().getProducts().toString());
+                Log.i("", main.getCurrentOrder().getProducts().get(p.getName() +options + "-" +  p.getProductID()).toString());
+                t.setText(main.getCurrentOrder().getProducts().get(p.getName() +options + "-" +  p.getProductID()).toString());
 
                 orderButton.startAnimation(bop);
                 orderAdapter.updateOrderItems(main.getCurrentOrder());
@@ -256,6 +301,12 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
         transaction.replace(R.id.overlay_holder, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
+
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 
     public Fragment getOrderFragment() {
@@ -268,6 +319,8 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
 
     public void updateLayout(){
         orderSizeNumber.setText(Integer.toString(main.getCurrentOrder().getTotalProducts()));
+        availableProducts = main.getProductsPerCategory(availableCategories.get(selectedCategory).getType());
+
         productAdapter.updateProductArrayList(availableProducts, main.getCurrentOrder());
     }
 

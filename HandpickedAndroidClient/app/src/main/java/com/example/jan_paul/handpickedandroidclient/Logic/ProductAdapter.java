@@ -86,6 +86,7 @@ public class ProductAdapter extends BaseAdapter {
 
         Log.i("", product.getOptions().toString() + " - " + Integer.toString(product.getOptions().size()));
 
+
         if (product.getOptions().size() == 1){
             viewHolder.checkBox1.setVisibility(View.VISIBLE);
             viewHolder.checkBox1.setText(product.getOptions().get(0));

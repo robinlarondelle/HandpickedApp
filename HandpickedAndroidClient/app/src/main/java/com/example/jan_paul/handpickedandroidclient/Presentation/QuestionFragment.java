@@ -67,7 +67,7 @@ public class QuestionFragment extends Fragment implements SendOrderTask.OnStatus
                     sendOrderTask.execute(getString(R.string.post_order));
                 }
                 else {
-                    Toast.makeText(getActivity(), "Please add at least one product or message.",
+                    Toast.makeText(getActivity(), "Please add a message.",
                             Toast.LENGTH_LONG).show();
                 }
                 //get callback from main to check for success, than show new view...

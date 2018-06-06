@@ -20,9 +20,7 @@ public class MainUnitTest {
 
         order.addOrRemoveProduct("Coca Cola Regular", 1);
 
-        main.setCurrentOrder(order);
-
-        actual = main.validateOrder();
+        actual = main.validateOrder(order);
 
         assertEquals("Check order product amount", expected, actual);
     }
@@ -34,9 +32,7 @@ public class MainUnitTest {
 
         order.setMessage("Test message");
 
-        main.setCurrentOrder(order);
-
-        actual = main.validateOrder();
+        actual = main.validateOrder(order);
 
         assertEquals("Check order message", expected, actual);
     }
@@ -48,9 +44,7 @@ public class MainUnitTest {
 
         // Order does not contain any products or message
 
-        main.setCurrentOrder(order);
-
-        actual = main.validateOrder();
+        actual = main.validateOrder(order);
 
         assertEquals("This test requires no product or message to be added to order", expected, actual);
     }

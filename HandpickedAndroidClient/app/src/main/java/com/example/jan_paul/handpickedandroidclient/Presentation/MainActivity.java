@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
     private SwipeRefreshLayout swipeRefreshLayout;
     private Fragment orderFragment;
     private Fragment statusFragment;
-    private Fragment qeustionFragment;
+    private Fragment questionFragment;
     private ImageButton questionIcon;
 
     private Main main;
@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
 
         orderFragment = new OrderFragment();
         statusFragment = new StatusFragment();
-        qeustionFragment = new QuestionFragment();
+        questionFragment = new QuestionFragment();
 
         orderSizeNumber = findViewById(R.id.order_size_number);
         orderIcon = findViewById(R.id.order_icon);
@@ -160,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
             @Override
             public void onClick(View view) {
                 outsideView.setVisibility(View.VISIBLE);
-                switchFragments(qeustionFragment);
+                switchFragments(questionFragment);
             }
         });
 
@@ -168,7 +168,7 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
             @Override
             public void onClick(View view) {
                 outsideView.setVisibility(View.VISIBLE);
-                switchFragments(qeustionFragment);
+                switchFragments(questionFragment);
             }
         });
 

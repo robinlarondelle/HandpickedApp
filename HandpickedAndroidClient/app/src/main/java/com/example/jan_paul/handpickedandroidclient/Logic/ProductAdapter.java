@@ -104,10 +104,9 @@ public class ProductAdapter extends BaseAdapter {
             viewHolder.checkBox2.setVisibility(View.INVISIBLE);
         }
 
-
-
         viewHolder.productName.setText(product.getName());
         int amount = 0;
+        Log.i("", product.getName());
         if (order.getProducts().containsKey(product.getName())){
             amount = order.getProducts().get(product.getName());
         }
@@ -115,7 +114,35 @@ public class ProductAdapter extends BaseAdapter {
         Animation scale = AnimationUtils.loadAnimation(mContext, R.anim.product_click);
         viewHolder.productAmount.startAnimation(scale);
 
-        viewHolder.productAmount.setText(Integer.toString(amount));
+        //.setText(main.getCurrentOrder().getProducts().get(p.getName() +options + "-" +  p.getProductID()).toString());
+
+        String options = "";
+
+        if(product.getOptions().size() > 0){
+            if (viewHolder.checkBox1.isChecked() && (viewHolder.checkBox1.getVisibility() == View.VISIBLE)){
+                options = options + " met opties: ";
+                options = options + product.getOptions().get(0);
+                if (product.getOptions().size() > 1 && viewHolder.checkBox2.isChecked()){
+                    options = options + ", ";
+                    options = options + product.getOptions().get(1);
+                }
+            }
+            else if (viewHolder.checkBox2.isChecked() && (viewHolder.checkBox2.getVisibility() == View.VISIBLE)){
+                options = options + " met opties: ";
+                options = options + product.getOptions().get(1);
+            }
+        }
+
+        Log.i("adapter", order.toString());
+        Log.i("adapter", product.toString());
+
+        String k = (product.getName() +options + "-" +  product.getProductID()).toString();
+        if (order.getProducts().containsKey(k)) {
+            viewHolder.productAmount.setText(order.getProducts().get(k).toString());
+        }
+        else {
+            viewHolder.productAmount.setText("0");
+        }
 
         Animation fade = AnimationUtils.loadAnimation(mContext, R.anim.fade_in);
         convertView.startAnimation(fade);

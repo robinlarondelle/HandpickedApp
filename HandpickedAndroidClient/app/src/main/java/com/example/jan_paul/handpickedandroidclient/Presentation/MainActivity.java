@@ -133,6 +133,7 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
                 getProductsTask = new GetProductsTask(MainActivity.this);
                 getProductsTask.execute(getString(R.string.get_products));
                 Log.i("LOADED PRODUCTS: ", main.getCategories().toString());
+                //updateLayout();
             }
         });
 
@@ -140,9 +141,9 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
             @Override
             public void onClick(View view) {
                 outsideView.setVisibility(View.INVISIBLE);
-
-                //InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                //imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                //hides keyboard
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             }
         });
 

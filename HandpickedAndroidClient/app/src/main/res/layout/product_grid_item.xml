@@ -74,7 +74,8 @@
             app:layout_constraintBottom_toTopOf="@+id/product_name"
             app:layout_constraintStart_toStartOf="parent"
             android:focusable="false"
-            android:focusableInTouchMode="false"/>
+            android:focusableInTouchMode="false"
+            android:buttonTint="@color/colorAccent"/>
 
         <CheckBox
             android:id="@+id/product_option2"
@@ -89,7 +90,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/product_option1"
             android:focusable="false"
-            android:focusableInTouchMode="false"/>
+            android:focusableInTouchMode="false"
+            android:buttonTint="@color/colorAccent"/>
     </android.support.constraint.ConstraintLayout>
 
 </com.example.jan_paul.handpickedandroidclient.Presentation.ProductGridItemLayout>

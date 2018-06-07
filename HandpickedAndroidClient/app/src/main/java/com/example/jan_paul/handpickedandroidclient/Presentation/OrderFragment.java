@@ -97,7 +97,7 @@ public class OrderFragment extends Fragment implements SendOrderTask.OnStatusAva
         else {
             //unknown error
         }
-            parent.updateLayout();
+        parent.updateLayout();
         parent.switchFragments(parent.getStatusFragment());
     }
 }

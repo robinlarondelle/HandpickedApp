@@ -10,7 +10,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorAccent">
+        android:background="@color/nonSelectedCategory">
 
         <ImageView
             android:id="@+id/splash_bg_triangle2"
@@ -29,7 +29,7 @@
     <android.support.constraint.ConstraintLayout
         android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="120dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -38,24 +38,27 @@
             android:id="@+id/main_activity_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="120dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:text="@string/main_title"
             android:textAlignment="center"
             android:textColor="@color/handpickedBlack"
-            android:textSize="60sp"
+            android:textSize="80sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/question_icon_container" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/question_icon_container"
-            android:layout_width="wrap_content"
+            android:layout_width="85dp"
             android:layout_height="0dp"
             android:layout_marginBottom="2dp"
-            android:layout_marginEnd="128dp"
+            android:layout_marginEnd="16dp"
             android:background="@color/colorPrimary"
             android:elevation="4dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/order_icon_container"
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageButton
@@ -68,6 +71,7 @@
                 android:layout_marginStart="8dp"
                 android:adjustViewBounds="true"
                 android:background="@null"
+                android:duplicateParentState="true"
                 android:padding="5dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/fa_question"
@@ -79,7 +83,7 @@
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/order_icon_container"
-            android:layout_width="wrap_content"
+            android:layout_width="85dp"
             android:layout_height="0dp"
             android:layout_marginBottom="2dp"
             android:layout_marginEnd="16dp"
@@ -146,7 +150,8 @@
             android:animateLayoutChanges="true"
             android:horizontalSpacing="15dp"
             android:numColumns="3"
-            android:verticalSpacing="15dp" />
+            android:verticalSpacing="15dp"
+            android:descendantFocusability="blocksDescendants"/>
     </android.support.v4.widget.SwipeRefreshLayout>
 
 
@@ -170,7 +175,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
         android:divider="@android:color/transparent"
-        android:dividerHeight="60dp"/>
+        android:dividerHeight="20dp"/>
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline2"
@@ -180,31 +185,32 @@
         app:layout_constraintGuide_begin="20dp" />
 
     <android.support.constraint.ConstraintLayout
-        android:id="@+id/overlay_holder"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:id="@+id/outsideView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:background="@color/transblack"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:animateLayoutChanges="true">
+        app:layout_constraintTop_toTopOf="parent">
 
-        <fragment
-            android:id="@+id/fragment_container"
-            android:name="com.example.jan_paul.handpickedandroidclient.Presentation.OrderFragment"
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/overlay_holder"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginBottom="128dp"
             android:layout_marginEnd="128dp"
             android:layout_marginStart="128dp"
             android:layout_marginTop="128dp"
+            android:animateLayoutChanges="true"
+            android:background="@color/nonSelectedCategory"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
 
+        </android.support.constraint.ConstraintLayout>
     </android.support.constraint.ConstraintLayout>
 
 </android.support.constraint.ConstraintLayout>

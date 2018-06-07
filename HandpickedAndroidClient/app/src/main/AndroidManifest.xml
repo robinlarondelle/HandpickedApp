@@ -26,9 +26,8 @@
         </activity>
         <activity
             android:name=".Presentation.MainActivity"
-            android:theme="@style/AppFullScreenTheme"></activity>
-        <activity android:name=".Presentation.SuccessActivity"
-            android:theme="@style/AppFullScreenTheme" />
+            android:theme="@style/AppFullScreenTheme"
+            ></activity>
     </application>
 
 </manifest>

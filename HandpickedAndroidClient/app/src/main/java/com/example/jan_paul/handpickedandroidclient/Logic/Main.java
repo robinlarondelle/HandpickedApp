@@ -15,12 +15,17 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 
-public class Main implements SendOrderTask.OnStatusAvailable{
+public class Main {
     private Order currentOrder;
-    private ArrayList<Order> oldOrders;
     private ArrayList<Category> categories;
     private String vergaderRuimte;
     private String availableStatus = "";
+    private Order message;
+    private String lastStatus;
+
+    public void setCurrentOrder(Order currentOrder) {
+        this.currentOrder = currentOrder;
+    }
 
     public String getAvailableStatus() {
         return availableStatus;
@@ -36,8 +41,20 @@ public class Main implements SendOrderTask.OnStatusAvailable{
 
     public Main() {
         this.currentOrder = new Order(false);
-        this.oldOrders = new ArrayList<>();
         this.categories = new ArrayList<>();
+        lastStatus = "unknown";
+    }
+
+    public void setAvailableStatus(String availableStatus) {
+        this.availableStatus = availableStatus;
+    }
+
+    public String getLastStatus() {
+        return lastStatus;
+    }
+
+    public void setLastStatus(String lastStatus) {
+        this.lastStatus = lastStatus;
     }
 
     public Order getCurrentOrder() {
@@ -54,26 +71,21 @@ public class Main implements SendOrderTask.OnStatusAvailable{
         return products;
     }
 
-    public void makenNewOrder(){
-        if(currentOrder != null) {
-            currentOrder.setOrdered(true);
-            oldOrders.add(currentOrder);
-        }
-        currentOrder = new Order(false);
+    public Order getMessage() {
+        return message;
     }
 
-    public String sendCurrentOrder(Context context){
-        String orderValidator = "";
-        if (currentOrder.getTotalProducts() < 1 && currentOrder.getMessage().length() < 1){
-            orderValidator = "Please add at least one product or message.";
-        }
-        SendOrderTask sendOrderTask = new SendOrderTask(this, currentOrder);
-        sendOrderTask.execute(context.getString(R.string.post_order));
-        return orderValidator;
+    public void setMessage(Order message) {
+        this.message = message;
     }
 
-    public ArrayList<Order> getOldOrders() {
-        return oldOrders;
+    public Boolean validateOrder(Order order){
+        if (order.getTotalProducts() < 1 && order.getMessage().length() < 1){
+            return false;
+        }
+        else {
+            return true;
+        }
     }
 
     public ArrayList<Category> getCategories() {
@@ -88,13 +100,7 @@ public class Main implements SendOrderTask.OnStatusAvailable{
     public String toString() {
         return "Main{" +
                 "currentOrder=" + currentOrder +
-                ", oldOrders=" + oldOrders +
                 ", categories=" + categories +
                 '}';
-    }
-
-    @Override
-    public void onStatusAvailable(String status){
-        Log.i("post", status);
     }
 }

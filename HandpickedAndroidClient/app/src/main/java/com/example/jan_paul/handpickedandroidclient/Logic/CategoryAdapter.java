@@ -121,13 +121,13 @@ public class CategoryAdapter  extends BaseAdapter {
             convertView.startAnimation(moveIn);
         }
 
-/*
+
         Picasso.get()
                 .load(category.getImage())
-                .resize(viewHolder.categoryImage.getLayoutParams().width, viewHolder.categoryImage.getLayoutParams().height)
-                .centerCrop()
+               // .resize(viewHolder.categoryImage.getLayoutParams().width, viewHolder.categoryImage.getLayoutParams().height)
+                //.centerCrop()
                 .into(viewHolder.categoryImage);
-                */
+
         if (category.getVisible()){
             convertView.setVisibility(View.VISIBLE);
         }

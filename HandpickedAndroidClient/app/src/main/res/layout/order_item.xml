@@ -25,6 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginTop="4dp"
+        android:fontFamily="@font/sofia_regular"
         android:text="title"
         android:textSize="36sp"
         app:layout_constraintBottom_toBottomOf="@+id/order_product_amount"
@@ -34,25 +35,27 @@
 
     <TextView
         android:id="@+id/order_minus"
-        android:layout_width="wrap_content"
+        android:layout_width="40dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
         android:text="-"
-        android:textSize="60sp"
+        android:textAlignment="center"
+        android:textSize="100sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/order_product_amount"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/order_plus"
-        android:layout_width="wrap_content"
+        android:layout_width="40dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
         android:text="+"
-        android:textSize="60sp"
+        android:textAlignment="center"
+        android:textSize="80sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

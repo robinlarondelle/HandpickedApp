@@ -21,6 +21,7 @@
             android:id="@+id/category_image"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
@@ -38,6 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
+            android:fontFamily="@font/sofia_regular"
             android:text="Cola"
             android:textSize="30sp"
             android:textStyle="bold"
@@ -52,6 +54,8 @@
             android:layout_marginEnd="16dp"
             android:layout_marginTop="16dp"
             android:background="@drawable/fa_circle"
+            android:elevation="5dp"
+            android:fontFamily="@font/sofia_regular"
             android:gravity="center"
             android:scaleType="fitCenter"
             android:text="0"
@@ -59,39 +63,40 @@
             android:textSize="28sp"
             app:layout_constraintEnd_toEndOf="@+id/category_image"
             app:layout_constraintTop_toTopOf="@+id/category_image"
-            tools:text="0"
-            android:elevation="5dp"/>
+            tools:text="0" />
 
         <CheckBox
             android:id="@+id/product_option1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
+            android:buttonTint="@color/colorAccent"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:fontFamily="@font/sofia_regular"
             android:scaleX="1.70"
             android:scaleY="1.70"
             android:text="1"
             android:visibility="invisible"
             app:layout_constraintBottom_toTopOf="@+id/product_name"
-            app:layout_constraintStart_toStartOf="parent"
-            android:focusable="false"
-            android:focusableInTouchMode="false"
-            android:buttonTint="@color/colorAccent"/>
+            app:layout_constraintStart_toStartOf="parent" />
 
         <CheckBox
             android:id="@+id/product_option2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
+            android:buttonTint="@color/colorAccent"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:fontFamily="@font/sofia_regular"
             android:scaleX="1.70"
             android:scaleY="1.70"
             android:text="2"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="@+id/product_option1"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/product_option1"
-            android:focusable="false"
-            android:focusableInTouchMode="false"
-            android:buttonTint="@color/colorAccent"/>
+            app:layout_constraintStart_toEndOf="@+id/product_option1" />
     </android.support.constraint.ConstraintLayout>
 
 </com.example.jan_paul.handpickedandroidclient.Presentation.ProductGridItemLayout>

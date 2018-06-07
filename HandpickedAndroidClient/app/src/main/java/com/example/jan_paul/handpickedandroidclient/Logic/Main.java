@@ -21,6 +21,7 @@ public class Main {
     private String vergaderRuimte;
     private String availableStatus = "";
     private Order message;
+    private String lastStatus;
 
     public void setCurrentOrder(Order currentOrder) {
         this.currentOrder = currentOrder;
@@ -41,6 +42,19 @@ public class Main {
     public Main() {
         this.currentOrder = new Order(false);
         this.categories = new ArrayList<>();
+        lastStatus = "unknown";
+    }
+
+    public void setAvailableStatus(String availableStatus) {
+        this.availableStatus = availableStatus;
+    }
+
+    public String getLastStatus() {
+        return lastStatus;
+    }
+
+    public void setLastStatus(String lastStatus) {
+        this.lastStatus = lastStatus;
     }
 
     public Order getCurrentOrder() {

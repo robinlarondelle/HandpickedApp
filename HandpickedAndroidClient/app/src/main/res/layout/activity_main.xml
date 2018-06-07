@@ -44,7 +44,7 @@
             android:text="@string/main_title"
             android:textAlignment="center"
             android:textColor="@color/handpickedBlack"
-            android:textSize="60sp"
+            android:textSize="80sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

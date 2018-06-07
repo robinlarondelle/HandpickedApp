@@ -37,8 +37,6 @@ public class OrderFragment extends Fragment implements SendOrderTask.OnStatusAva
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.order_dialog, container, false);
-
-        // Inflate the layout for this fragment
         parent = (MainActivity)getActivity();
 
         main = parent.getMain();
@@ -85,18 +83,25 @@ public class OrderFragment extends Fragment implements SendOrderTask.OnStatusAva
     @Override
     public void onStatusAvailable(int status){
         Log.i("post", Integer.toString(status));
+        String statusAsString = "unknown";
         if (status == 200) {
             //success
+            statusAsString = getString(R.string.success_order_message);
             main.setCurrentOrder(new Order(false));
             parent.getOrderAdapter().updateOrderItems(main.getCurrentOrder());
         }
         else if (status == 401){
             //slack error
-
+            statusAsString = getString(R.string.error_send_order);
+        }
+        else if (status == 412){
+            statusAsString = getString(R.string.error_send_order);
         }
         else {
             //unknown error
+            statusAsString = "unknown error";
         }
+        main.setLastStatus(statusAsString);
         parent.updateLayout();
         parent.switchFragments(parent.getStatusFragment());
     }

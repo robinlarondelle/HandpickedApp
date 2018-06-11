@@ -188,7 +188,7 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
                 CheckBox checkBox2 = view.findViewById(R.id.product_option2);
 
                 if(p.getOptions().size() > 0){
-                    if (checkBox1.isChecked()){
+                    if (checkBox1.isChecked() && checkBox1.getVisibility() == View.VISIBLE){
                         options = options + " met opties: ";
                         options = options + p.getOptions().get(0);
                         if (p.getOptions().size() > 1 && checkBox2.isChecked()){
@@ -196,7 +196,7 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
                             options = options + p.getOptions().get(1);
                         }
                     }
-                    else if (checkBox2.isChecked()){
+                    else if (checkBox2.isChecked() && checkBox2.getVisibility() == View.VISIBLE){
                         options = options + " met opties: ";
                         options = options + p.getOptions().get(1);
                     }

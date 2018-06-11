@@ -1,6 +1,7 @@
 package com.example.jan_paul.handpickedandroidclient.Logic;
 
 import android.content.Context;
+import android.support.v4.content.res.ResourcesCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -133,9 +134,6 @@ public class ProductAdapter extends BaseAdapter {
             }
         }
 
-        Log.i("adapter", order.toString());
-        Log.i("adapter", product.toString());
-
         String k = (product.getName() +options + "-" +  product.getProductID()).toString();
         if (order.getProducts().containsKey(k)) {
             viewHolder.productAmount.setText(order.getProducts().get(k).toString());
@@ -143,6 +141,8 @@ public class ProductAdapter extends BaseAdapter {
         else {
             viewHolder.productAmount.setText("0");
         }
+        viewHolder.checkBox1.setTypeface(ResourcesCompat.getFont(mContext, R.font.sofia_regular));
+        viewHolder.checkBox2.setTypeface(ResourcesCompat.getFont(mContext, R.font.sofia_regular));
 
         Animation fade = AnimationUtils.loadAnimation(mContext, R.anim.fade_in);
         convertView.startAnimation(fade);

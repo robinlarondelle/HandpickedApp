@@ -3,16 +3,16 @@
     android:interpolator="@android:anim/linear_interpolator">
     <scale
         android:fromXScale="1.0"
-        android:toXScale="1.1"
+        android:toXScale="1.05"
         android:fromYScale="1.0"
-        android:toYScale="1.1"
+        android:toYScale="1.05"
         android:pivotX="50%"
         android:pivotY="50%"
         android:duration="100"/>
     <scale
-        android:fromXScale="1.1"
+        android:fromXScale="1.05"
         android:toXScale="1.0"
-        android:fromYScale="1.1"
+        android:fromYScale="1.05"
         android:toYScale="1.0"
         android:pivotX="50%"
         android:pivotY="50%"

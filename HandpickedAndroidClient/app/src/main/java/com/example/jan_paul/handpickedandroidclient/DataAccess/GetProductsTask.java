@@ -154,7 +154,7 @@ public class GetProductsTask extends AsyncTask<String, Void, String> {
                         currentCategory.getProducts().add(currentProduct);
                     }
                 }
-                if (currentCategory.getTimeRange().isInRange()) {
+                if (currentCategory.getTimeRange().isInRange() ) {
                     productsPerCategory.add(currentCategory);
                 }
             }

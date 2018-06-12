@@ -23,10 +23,13 @@ public class Category {
         this.products = new ArrayList<>();
         this.timeRange = timeRange;
         if (!visible) {
-            this.visible = timeRange.isInRange();
+            this.visible = visible;
+        }
+        else if (timeRange.isInRange()){
+            this.visible = visible;
         }
         else {
-            this.visible = visible;
+            this.visible = timeRange.isInRange();
         }
     }
 

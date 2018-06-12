@@ -133,7 +133,6 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
                 getProductsTask = new GetProductsTask(MainActivity.this);
                 getProductsTask.execute(getString(R.string.get_products));
                 Log.i("LOADED PRODUCTS: ", main.getCategories().toString());
-                //updateLayout();
             }
         });
 
@@ -205,16 +204,16 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
                 main.getCurrentOrder().addOrRemoveProduct(p.getName() +options + "-" +  p.getProductID(), 1);
                 String result = Integer.toString(main.getCurrentOrder().getTotalProducts());
                 orderSizeNumber.setText(result);
+
+                TextView productAmount = view.findViewById(R.id.product_amount);
+                productAmount.setText(Integer.toString(p.getAmount()));
+                //productAmount.setText(Integer.toString(p.getAmount()));
                 Animation click = AnimationUtils.loadAnimation(MainActivity.this, R.anim.product_click);
                 view.startAnimation(click);
                 Animation bop = AnimationUtils.loadAnimation(MainActivity.this, R.anim.bop_cart);
 
-                TextView t = view.findViewById(R.id.product_amount);
-                Animation scale = AnimationUtils.loadAnimation(MainActivity.this, R.anim.product_click);
-                t.startAnimation(scale);
                 Log.i("", main.getCurrentOrder().getProducts().toString());
                 Log.i("", main.getCurrentOrder().getProducts().get(p.getName() +options + "-" +  p.getProductID()).toString());
-                t.setText(main.getCurrentOrder().getProducts().get(p.getName() +options + "-" +  p.getProductID()).toString());
 
                 orderButton.startAnimation(bop);
                 orderAdapter.updateOrderItems(main.getCurrentOrder());
@@ -254,6 +253,7 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
 
         SharedPreferences.Editor prefsEditor = sharedPreferences.edit();
         Gson gson = new Gson();
+        Log.i("", main.toString());
         String json = gson.toJson(main);
         prefsEditor.putString("Main", json);
         prefsEditor.commit();

@@ -12,6 +12,7 @@ public class Product {
     private Boolean visible;
     private int productID;
     private ArrayList<String> options;
+    private int amount;
 
     public Product(String name, Boolean visible, int productID, String image, ArrayList<String> options) {
         this.name = name;
@@ -19,6 +20,15 @@ public class Product {
         this.productID = productID;
         this.image = image;
         this.options = options;
+        amount = 0;
+    }
+
+    public int getAmount() {
+        return amount;
+    }
+
+    public void setAmount(int amount) {
+        this.amount = amount;
     }
 
     public ArrayList<String> getOptions() {

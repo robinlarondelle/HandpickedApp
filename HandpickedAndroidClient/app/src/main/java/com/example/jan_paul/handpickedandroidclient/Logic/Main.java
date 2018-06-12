@@ -1,22 +1,15 @@
 package com.example.jan_paul.handpickedandroidclient.Logic;
 
-import android.content.Context;
-import android.content.res.Resources;
-import android.os.Parcelable;
 import android.util.Log;
 
-import com.example.jan_paul.handpickedandroidclient.DataAccess.SendOrderTask;
 import com.example.jan_paul.handpickedandroidclient.Domain.Category;
 import com.example.jan_paul.handpickedandroidclient.Domain.Order;
 import com.example.jan_paul.handpickedandroidclient.Domain.Product;
-import com.example.jan_paul.handpickedandroidclient.R;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
 
 public class Main {
-    private Order currentOrder;
+    private transient Order currentOrder;
     private ArrayList<Category> categories;
     private String vergaderRuimte;
     private String availableStatus = "";
@@ -40,8 +33,9 @@ public class Main {
     }
 
     public Main() {
-        this.currentOrder = new Order(false);
         this.categories = new ArrayList<>();
+        this.currentOrder = new Order(this, false);
+
         lastStatus = "unknown";
     }
 
@@ -88,6 +82,18 @@ public class Main {
         }
     }
 
+    public Product getProductByName(String productName){
+        Product p = null;
+        for (Category category : categories) {
+            for (Product product: category.getProducts()) {
+                if (product.getName().equals(productName)){
+                    p = product;
+                }
+            }
+        }
+        return p;
+    }
+
     public ArrayList<Category> getCategories() {
         return categories;
     }
@@ -101,6 +107,10 @@ public class Main {
         return "Main{" +
                 "currentOrder=" + currentOrder +
                 ", categories=" + categories +
+                ", vergaderRuimte='" + vergaderRuimte + '\'' +
+                ", availableStatus='" + availableStatus + '\'' +
+                ", message=" + message +
+                ", lastStatus='" + lastStatus + '\'' +
                 '}';
     }
 }

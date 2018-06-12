@@ -36,7 +36,7 @@ public class QuestionFragment extends Fragment implements SendOrderTask.OnStatus
         parent = (MainActivity)getActivity();
 
         main = parent.getMain();
-        main.setMessage(new Order(false));
+        main.setMessage(new Order(main, false));
 
         orderSendButton = view.findViewById(R.id.order_send_button);
         orderComment = view.findViewById(R.id.order_comment);
@@ -81,7 +81,7 @@ public class QuestionFragment extends Fragment implements SendOrderTask.OnStatus
         Log.i("post", Integer.toString(status));
         if (status == 200) {
             //success
-            main.setMessage(new Order(false));
+            main.setMessage(new Order(main, false));
             orderComment.setText("");
         }
         else if (status == 401){

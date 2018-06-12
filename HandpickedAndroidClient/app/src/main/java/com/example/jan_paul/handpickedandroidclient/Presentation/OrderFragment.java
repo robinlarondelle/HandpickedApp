@@ -88,7 +88,7 @@ public class OrderFragment extends Fragment implements SendOrderTask.OnStatusAva
             //success
             statusAsString = getString(R.string.success_order_message);
             orderComment.setText("");
-            main.setCurrentOrder(new Order(false));
+            main.setCurrentOrder(new Order(main, false));
             parent.getOrderAdapter().updateOrderItems(main.getCurrentOrder());
         }
         else if (status == 401){

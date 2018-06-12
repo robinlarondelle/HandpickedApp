@@ -104,6 +104,8 @@ public class ProductAdapter extends BaseAdapter {
             viewHolder.checkBox1.setVisibility(View.INVISIBLE);
             viewHolder.checkBox2.setVisibility(View.INVISIBLE);
         }
+        viewHolder.checkBox1.setChecked(false);
+        viewHolder.checkBox2.setChecked(false);
 
         viewHolder.productName.setText(product.getName());
 

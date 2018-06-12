@@ -149,7 +149,9 @@ public class GetProductsTask extends AsyncTask<String, Void, String> {
                     }
 
                     Product currentProduct = new Product(productName, productVisible, productID, frontImage, options);
-                    currentCategory.getProducts().add(currentProduct);
+                    if (currentProduct.getVisible()) {
+                        currentCategory.getProducts().add(currentProduct);
+                    }
                 }
                 if (currentCategory.getTimeRange().isInRange()) {
                     productsPerCategory.add(currentCategory);

@@ -15,9 +15,18 @@ public class Main {
     private String availableStatus = "";
     private Order message;
     private String lastStatus;
+    private Boolean reset = false;
 
     public void setCurrentOrder(Order currentOrder) {
         this.currentOrder = currentOrder;
+    }
+
+    public Boolean getReset() {
+        return reset;
+    }
+
+    public void setReset(Boolean reset) {
+        this.reset = reset;
     }
 
     public String getAvailableStatus() {
@@ -94,12 +103,54 @@ public class Main {
         return p;
     }
 
+    public int[] getProductIndex(String productName){
+        int[] index = null;
+        for (int i = 0; i < categories.size(); i++) {
+            for (int id = 0; id < categories.get(i).getProducts().size(); id++) {
+                if (categories.get(i).getProducts().get(id).getName().equals(productName)){
+                     index = new int[]{i, id};
+                }
+            }
+        }
+        return index;
+    }
+
     public ArrayList<Category> getCategories() {
         return categories;
     }
 
-    public void setCategories(ArrayList<Category> categories) {
-        this.categories = categories;
+    public void refreshData(ArrayList<Category> newCategories){
+        Log.i("", "refreshing data with reset being: " + reset.toString());
+        ArrayList<Product> oldProducts = categoryToProductCollection(categories);
+        ArrayList<Product> newProducts = categoryToProductCollection(newCategories);
+
+        categories = new ArrayList<>(newCategories);
+            for (Product oldp : oldProducts) {
+                for (Product newp : newProducts) {
+                    if (oldp.getName().equals(newp.getName())) {
+                        int[] index = getProductIndex(oldp.getName());
+                        Log.i("", "contains same shit" + Integer.toString(index[0]) + Integer.toString(index[1]));
+
+                        if (reset) {
+                            categories.get(index[0]).getProducts().get(index[1]).setAmount(0);
+
+                        } else {
+                            categories.get(index[0]).getProducts().get(index[1]).setAmount(oldp.getAmount());
+                        }
+                    }
+                }
+            }
+        reset = false;
+    }
+
+    public ArrayList<Product> categoryToProductCollection(ArrayList<Category> categories){
+        ArrayList<Product> products = new ArrayList<>();
+        for (Category c: categories) {
+            for (Product p: c.getProducts()) {
+                products.add(p);
+            }
+        }
+        return products;
     }
 
     @Override

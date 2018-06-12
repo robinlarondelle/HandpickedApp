@@ -77,9 +77,12 @@ public class QuestionFragment extends Fragment implements SendOrderTask.OnStatus
     }
 
     @Override
-    public void onStatusAvailable(int status){
+    public void onStatusAvailable(Integer status){
         Log.i("post", Integer.toString(status));
-        if (status == 200) {
+        if (status == null){
+
+        }
+        else if (status == 200) {
             //success
             main.setMessage(new Order(main, false));
             orderComment.setText("");

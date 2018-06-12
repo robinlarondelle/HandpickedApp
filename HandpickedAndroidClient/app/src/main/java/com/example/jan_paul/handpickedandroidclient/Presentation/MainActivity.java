@@ -130,6 +130,7 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                main.setReset(false);
                 getProductsTask = new GetProductsTask(MainActivity.this);
                 getProductsTask.execute(getString(R.string.get_products));
                 Log.i("LOADED PRODUCTS: ", main.getCategories().toString());
@@ -207,13 +208,11 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
 
                 TextView productAmount = view.findViewById(R.id.product_amount);
                 productAmount.setText(Integer.toString(p.getAmount()));
-                //productAmount.setText(Integer.toString(p.getAmount()));
                 Animation click = AnimationUtils.loadAnimation(MainActivity.this, R.anim.product_click);
                 view.startAnimation(click);
                 Animation bop = AnimationUtils.loadAnimation(MainActivity.this, R.anim.bop_cart);
 
-                Log.i("", main.getCurrentOrder().getProducts().toString());
-                Log.i("", main.getCurrentOrder().getProducts().get(p.getName() +options + "-" +  p.getProductID()).toString());
+                Log.i("current order", main.getCurrentOrder().getProducts().toString());
 
                 orderButton.startAnimation(bop);
                 orderAdapter.updateOrderItems(main.getCurrentOrder());
@@ -339,7 +338,8 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
 
     @Override
     public void onProductsAvailable(ArrayList<Category> productsPerCategory) {
-        main.setCategories(productsPerCategory);
+        //main.setReset(true);
+        main.refreshData(productsPerCategory);
         availableCategories.clear();
         availableCategories = main.getCategories();
         if (selectedCategory > availableCategories.size()){

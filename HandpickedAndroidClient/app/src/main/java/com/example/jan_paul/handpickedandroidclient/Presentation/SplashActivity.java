@@ -114,7 +114,7 @@ public class SplashActivity extends AppCompatActivity implements GetProductsTask
     @Override
     public void onProductsAvailable(ArrayList<Category> productsPerCategory) {
         splashLoadingText.setText(getResources().getString(R.string.splash_connection_successful));
-        main.setCategories(productsPerCategory);
+        main.refreshData(productsPerCategory);
 
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         stopTest();

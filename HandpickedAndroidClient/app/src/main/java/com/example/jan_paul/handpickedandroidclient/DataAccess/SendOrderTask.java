@@ -97,12 +97,13 @@ public class SendOrderTask extends AsyncTask<String, Void, Integer> {
 
     // Call back interface
     public interface OnStatusAvailable {
-        void onStatusAvailable(int status);
+        void onStatusAvailable(Integer status);
     }
 
     public String hashmapToString(HashMap<String, Integer> hashmap){
         String out = "";
-        Iterator it = hashmap.entrySet().iterator();
+        HashMap<String, Integer> copy = new HashMap<>(hashmap);
+        Iterator it = copy.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry pair = (Map.Entry)it.next();
             String[] key = pair.getKey().toString().split("-");

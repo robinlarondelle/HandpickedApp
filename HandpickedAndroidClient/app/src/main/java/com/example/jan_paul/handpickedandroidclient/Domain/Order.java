@@ -50,7 +50,10 @@ public class Order {
         }
         Log.i("", split[0]);
         Product p = main.getProductByName(split[0]);
+        Log.i("add/remove", Integer.toString(p.getAmount()));
         p.setAmount(p.getAmount() + amount);
+        Log.i("add/remove", Integer.toString(p.getAmount()));
+
 
         if (products.containsKey(productName)) {
             int amountOfProducts = products.get(productName).intValue();

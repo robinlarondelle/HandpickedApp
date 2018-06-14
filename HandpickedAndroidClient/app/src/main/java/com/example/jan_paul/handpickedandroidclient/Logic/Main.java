@@ -16,6 +16,7 @@ public class Main {
     private Order message;
     private String lastStatus;
     private Boolean reset = false;
+    //private
 
     public void setCurrentOrder(Order currentOrder) {
         this.currentOrder = currentOrder;

@@ -56,7 +56,7 @@ public class TabletTask extends AsyncTask<String, Void, String> {
             httpConnection.connect();
 
             String body = "{\n" +
-                    "\t\"serialNumber\": \"" + "123456789" + "\",\n" +
+                    "\t\"serialNumber\": \"" + Build.SERIAL + "\",\n" +
                     "\t\"room\": null\n" +
                     "}";
             Log.i("tablettask body", body);

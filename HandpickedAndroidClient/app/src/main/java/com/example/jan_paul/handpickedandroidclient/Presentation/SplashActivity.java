@@ -45,6 +45,10 @@ public class SplashActivity extends AppCompatActivity implements GetProductsTask
         tabletTask = new TabletTask(this);
         tabletTask.execute(tabletUrl);
 
+        if (main == null){
+            main = new Main();
+        }
+
         handler = new Handler();
         postTablet = new Runnable() {
             @Override
@@ -56,11 +60,6 @@ public class SplashActivity extends AppCompatActivity implements GetProductsTask
                 splashLoadingText.setText(tabletStatus);
             }
         };
-
-
-        if (main == null){
-            main = new Main();
-        }
 
         Typeface barlowLight = Typeface.createFromAsset(getAssets(),"fonts/barlow_light.ttf");
         splashLoadingText.setTypeface(barlowLight);

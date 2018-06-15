@@ -32,13 +32,15 @@ import java.util.Map;
 public class SendOrderTask extends AsyncTask<String, Void, Integer> {
 
     private SendOrderTask.OnStatusAvailable listener = null;
+    private String token;
 
     private static final String TAG = GetProductsTask.class.getSimpleName();
     private  Order orderToSend;
 
-    public SendOrderTask(SendOrderTask.OnStatusAvailable listener, Order order) {
+    public SendOrderTask(SendOrderTask.OnStatusAvailable listener, Order order, String token) {
         this.listener = listener;
         this.orderToSend = order;
+        this.token = token;
     }
 
     @Override
@@ -59,11 +61,12 @@ public class SendOrderTask extends AsyncTask<String, Void, Integer> {
 
             HttpURLConnection httpConnection = (HttpURLConnection) urlConnection;
             httpConnection.setRequestProperty("Content-Type", "application/json");
+            httpConnection.setRequestProperty("x-access-token", token);
             httpConnection.setRequestMethod("POST");
             httpConnection.connect();
 
             String body = "{\n" +
-                    "\"serialNumber\": \"" + "R52H105039R" + "\",\n" +
+                    "\"serialNumber\": \"" + Build.SERIAL + "\",\n" +
                     "\"comment\": \"" + orderToSend.getMessage() + "\",\n" +
                     "\"datetime\": \"" + Calendar.getInstance().getTime() + "\",\n" +
                     "\"products\": [\n" +
@@ -97,12 +100,13 @@ public class SendOrderTask extends AsyncTask<String, Void, Integer> {
 
     // Call back interface
     public interface OnStatusAvailable {
-        void onStatusAvailable(int status);
+        void onStatusAvailable(Integer status);
     }
 
     public String hashmapToString(HashMap<String, Integer> hashmap){
         String out = "";
-        Iterator it = hashmap.entrySet().iterator();
+        HashMap<String, Integer> copy = new HashMap<>(hashmap);
+        Iterator it = copy.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry pair = (Map.Entry)it.next();
             String[] key = pair.getKey().toString().split("-");

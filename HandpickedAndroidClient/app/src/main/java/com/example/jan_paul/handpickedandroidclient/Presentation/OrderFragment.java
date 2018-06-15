@@ -67,27 +67,31 @@ public class OrderFragment extends Fragment implements SendOrderTask.OnStatusAva
             public void onClick(View view) {
                 main.getCurrentOrder().setOrderDate(Calendar.getInstance().getTime().toString());
                 if (main.validateOrder(main.getCurrentOrder())) {
-                    SendOrderTask sendOrderTask = new SendOrderTask(OrderFragment.this, main.getCurrentOrder());
+                    SendOrderTask sendOrderTask = new SendOrderTask(OrderFragment.this, main.getCurrentOrder(), main.getToken());
                     sendOrderTask.execute(getString(R.string.post_order));
                 }
                 else {
                     Toast.makeText(getActivity(), "Please add at least one product or message.",
                             Toast.LENGTH_LONG).show();
                 }
-                //get callback from main to check for success, than show new view...
             }
         });
         return view;
     }
 
     @Override
-    public void onStatusAvailable(int status){
-        Log.i("post", Integer.toString(status));
+    public void onStatusAvailable(Integer status){
         String statusAsString = "unknown";
-        if (status == 200) {
+        if (status == null){
+            statusAsString = "no connection";
+        }
+        else if (status == 200) {
             //success
             statusAsString = getString(R.string.success_order_message);
-            main.setCurrentOrder(new Order(false));
+            orderComment.setText("");
+            main.setReset(true);
+            main.refreshData(main.getCategories());
+            main.setCurrentOrder(new Order(main, false));
             parent.getOrderAdapter().updateOrderItems(main.getCurrentOrder());
         }
         else if (status == 401){
@@ -95,7 +99,7 @@ public class OrderFragment extends Fragment implements SendOrderTask.OnStatusAva
             statusAsString = getString(R.string.error_send_order);
         }
         else if (status == 412){
-            statusAsString = getString(R.string.error_send_order);
+            statusAsString = getString(R.string.error_not_registered);
         }
         else {
             //unknown error

@@ -1,6 +1,7 @@
 package com.example.jan_paul.handpickedandroidclient.Logic;
 
 import android.content.Context;
+import android.support.v4.content.res.ResourcesCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -103,18 +104,10 @@ public class ProductAdapter extends BaseAdapter {
             viewHolder.checkBox1.setVisibility(View.INVISIBLE);
             viewHolder.checkBox2.setVisibility(View.INVISIBLE);
         }
+        viewHolder.checkBox1.setChecked(false);
+        viewHolder.checkBox2.setChecked(false);
 
         viewHolder.productName.setText(product.getName());
-        int amount = 0;
-        Log.i("", product.getName());
-        if (order.getProducts().containsKey(product.getName())){
-            amount = order.getProducts().get(product.getName());
-        }
-
-        Animation scale = AnimationUtils.loadAnimation(mContext, R.anim.product_click);
-        viewHolder.productAmount.startAnimation(scale);
-
-        //.setText(main.getCurrentOrder().getProducts().get(p.getName() +options + "-" +  p.getProductID()).toString());
 
         String options = "";
 
@@ -133,16 +126,9 @@ public class ProductAdapter extends BaseAdapter {
             }
         }
 
-        Log.i("adapter", order.toString());
-        Log.i("adapter", product.toString());
-
-        String k = (product.getName() +options + "-" +  product.getProductID()).toString();
-        if (order.getProducts().containsKey(k)) {
-            viewHolder.productAmount.setText(order.getProducts().get(k).toString());
-        }
-        else {
-            viewHolder.productAmount.setText("0");
-        }
+        viewHolder.productAmount.setText(Integer.toString(product.getAmount()));
+        viewHolder.checkBox1.setTypeface(ResourcesCompat.getFont(mContext, R.font.sofia_regular));
+        viewHolder.checkBox2.setTypeface(ResourcesCompat.getFont(mContext, R.font.sofia_regular));
 
         Animation fade = AnimationUtils.loadAnimation(mContext, R.anim.fade_in);
         convertView.startAnimation(fade);

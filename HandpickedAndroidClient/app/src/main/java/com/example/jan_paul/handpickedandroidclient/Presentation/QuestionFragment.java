@@ -36,7 +36,7 @@ public class QuestionFragment extends Fragment implements SendOrderTask.OnStatus
         parent = (MainActivity)getActivity();
 
         main = parent.getMain();
-        main.setMessage(new Order(false));
+        main.setMessage(new Order(main, false));
 
         orderSendButton = view.findViewById(R.id.order_send_button);
         orderComment = view.findViewById(R.id.order_comment);
@@ -63,7 +63,7 @@ public class QuestionFragment extends Fragment implements SendOrderTask.OnStatus
             public void onClick(View view) {
                 main.getMessage().setOrderDate(Calendar.getInstance().getTime().toString());
                 if (main.validateOrder(main.getMessage())) {
-                    SendOrderTask sendOrderTask = new SendOrderTask(QuestionFragment.this, main.getMessage());
+                    SendOrderTask sendOrderTask = new SendOrderTask(QuestionFragment.this, main.getMessage(), main.getToken());
                     sendOrderTask.execute(getString(R.string.post_order));
                 }
                 else {
@@ -77,11 +77,14 @@ public class QuestionFragment extends Fragment implements SendOrderTask.OnStatus
     }
 
     @Override
-    public void onStatusAvailable(int status){
+    public void onStatusAvailable(Integer status){
         Log.i("post", Integer.toString(status));
-        if (status == 200) {
+        if (status == null){
+
+        }
+        else if (status == 200) {
             //success
-            main.setMessage(new Order(false));
+            main.setMessage(new Order(main, false));
             orderComment.setText("");
         }
         else if (status == 401){

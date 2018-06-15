@@ -98,6 +98,15 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
             main = new Main();
         }
 
+        Intent iin= getIntent();
+        Bundle b = iin.getExtras();
+
+        if(b!=null)
+        {
+            String j =(String) b.get("token");
+            main.setToken(j);
+        }
+
         mainActivityTitle = findViewById(R.id.main_activity_title);
         Typeface sofiaSemiBold = Typeface.createFromAsset(getAssets(),"fonts/sofia_semi_bold.ttf");
         mainActivityTitle.setTypeface(sofiaSemiBold);
@@ -130,10 +139,10 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                getProductsTask = new GetProductsTask(MainActivity.this);
+                main.setReset(false);
+                getProductsTask = new GetProductsTask(MainActivity.this, main.getToken());
                 getProductsTask.execute(getString(R.string.get_products));
                 Log.i("LOADED PRODUCTS: ", main.getCategories().toString());
-                //updateLayout();
             }
         });
 
@@ -188,7 +197,7 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
                 CheckBox checkBox2 = view.findViewById(R.id.product_option2);
 
                 if(p.getOptions().size() > 0){
-                    if (checkBox1.isChecked()){
+                    if (checkBox1.isChecked() && checkBox1.getVisibility() == View.VISIBLE){
                         options = options + " met opties: ";
                         options = options + p.getOptions().get(0);
                         if (p.getOptions().size() > 1 && checkBox2.isChecked()){
@@ -196,7 +205,7 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
                             options = options + p.getOptions().get(1);
                         }
                     }
-                    else if (checkBox2.isChecked()){
+                    else if (checkBox2.isChecked() && checkBox2.getVisibility() == View.VISIBLE){
                         options = options + " met opties: ";
                         options = options + p.getOptions().get(1);
                     }
@@ -205,16 +214,14 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
                 main.getCurrentOrder().addOrRemoveProduct(p.getName() +options + "-" +  p.getProductID(), 1);
                 String result = Integer.toString(main.getCurrentOrder().getTotalProducts());
                 orderSizeNumber.setText(result);
+
+                TextView productAmount = view.findViewById(R.id.product_amount);
+                productAmount.setText(Integer.toString(p.getAmount()));
                 Animation click = AnimationUtils.loadAnimation(MainActivity.this, R.anim.product_click);
                 view.startAnimation(click);
                 Animation bop = AnimationUtils.loadAnimation(MainActivity.this, R.anim.bop_cart);
 
-                TextView t = view.findViewById(R.id.product_amount);
-                Animation scale = AnimationUtils.loadAnimation(MainActivity.this, R.anim.product_click);
-                t.startAnimation(scale);
-                Log.i("", main.getCurrentOrder().getProducts().toString());
-                Log.i("", main.getCurrentOrder().getProducts().get(p.getName() +options + "-" +  p.getProductID()).toString());
-                t.setText(main.getCurrentOrder().getProducts().get(p.getName() +options + "-" +  p.getProductID()).toString());
+                Log.i("current order", main.getCurrentOrder().getProducts().toString());
 
                 orderButton.startAnimation(bop);
                 orderAdapter.updateOrderItems(main.getCurrentOrder());
@@ -239,7 +246,7 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
             }
         });
 
-        getProductsTask = new GetProductsTask(this);
+        getProductsTask = new GetProductsTask(this, main.getToken());
         getProductsTask.execute(getString(R.string.get_products));
 
         setLayout();
@@ -254,6 +261,7 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
 
         SharedPreferences.Editor prefsEditor = sharedPreferences.edit();
         Gson gson = new Gson();
+        Log.i("", main.toString());
         String json = gson.toJson(main);
         prefsEditor.putString("Main", json);
         prefsEditor.commit();
@@ -339,7 +347,8 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
 
     @Override
     public void onProductsAvailable(ArrayList<Category> productsPerCategory) {
-        main.setCategories(productsPerCategory);
+        //main.setReset(true);
+        main.refreshData(productsPerCategory);
         availableCategories.clear();
         availableCategories = main.getCategories();
         if (selectedCategory > availableCategories.size()){

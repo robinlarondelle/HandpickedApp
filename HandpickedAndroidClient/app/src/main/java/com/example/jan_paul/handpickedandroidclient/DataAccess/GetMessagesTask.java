@@ -1,15 +1,11 @@
 package com.example.jan_paul.handpickedandroidclient.DataAccess;
 
-import android.content.res.Resources;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.util.Log;
 
-import com.example.jan_paul.handpickedandroidclient.Domain.Category;
+import com.example.jan_paul.handpickedandroidclient.Domain.Message;
 import com.example.jan_paul.handpickedandroidclient.Domain.Order;
-import com.example.jan_paul.handpickedandroidclient.Domain.Product;
-import com.example.jan_paul.handpickedandroidclient.Domain.TimeRange;
-import com.example.jan_paul.handpickedandroidclient.R;
+import com.google.gson.JsonArray;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -19,23 +15,24 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.Calendar;
 
-public class TabletTask extends AsyncTask<String, Void, String> {
+public class GetMessagesTask extends AsyncTask<String, Void, String> {
 
-    private TabletTask.OnTokenAvailable listener = null;
+    private GetMessagesTask.OnMessagesAvailable listener = null;
+    private String token;
+
 
     private static final String TAG = TabletTask.class.getSimpleName();
-    private Order orderToSend;
+    private ArrayList<Message> messages;
 
-    public TabletTask(TabletTask.OnTokenAvailable listener) {
+    public GetMessagesTask(GetMessagesTask.OnMessagesAvailable listener, String token) {
         this.listener = listener;
+        this.token = token;
     }
 
     @Override
@@ -59,8 +56,7 @@ public class TabletTask extends AsyncTask<String, Void, String> {
             httpConnection.setAllowUserInteraction(false);
             httpConnection.setInstanceFollowRedirects(true);
             httpConnection.setRequestMethod("GET");
-            Log.i("serial: ", Build.SERIAL);
-            httpConnection.setRequestProperty("serialnumber", Build.SERIAL);
+            httpConnection.setRequestProperty("x-access-token", token);
             httpConnection.setConnectTimeout(3000);
             httpConnection.connect();
 
@@ -80,26 +76,28 @@ public class TabletTask extends AsyncTask<String, Void, String> {
     }
 
     protected void onPostExecute(String response) {
-        //Log.i("RESPONSE 2", response.toString());
         Log.i(TAG, "onPostExecute " + response);
 
         if(response == null || response == "") {
             Log.e(TAG, "onPostExecute kreeg een lege response!");
             return;
         }
-        String token = "";
+
         JSONObject jsonObject;
         try {
             jsonObject = new JSONObject(response);
 
-            token = jsonObject.getString("token");
+            JSONArray jsonMessages = jsonObject.getJSONArray("messages");
+            for (int i = 0; i < jsonMessages.length(); i++) {
+                JSONObject jsonMessage = jsonMessages.getJSONObject(i);
+                Message message = new Message(jsonMessage.getString("MessageContent"), jsonMessage.getString("TimeStamp"), jsonMessage.getString("SentBy"));
+                messages.add(message);
+            }
 
         } catch( JSONException ex) {
             Log.e(TAG, "onPostExecute JSONException " + ex.getLocalizedMessage());
         }
-        listener.onTokenAvailable(token);
-
-
+        listener.onMessagesAvailable(messages);
     }
 
     private static String getStringFromInputStream(InputStream is) {
@@ -129,7 +127,7 @@ public class TabletTask extends AsyncTask<String, Void, String> {
         return sb.toString();
     }
     // Call back interface
-    public interface OnTokenAvailable {
-        void onTokenAvailable(String token);
+    public interface OnMessagesAvailable {
+        void onMessagesAvailable(ArrayList<Message> messages);
     }
 }

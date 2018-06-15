@@ -32,13 +32,15 @@ import java.util.Map;
 public class SendOrderTask extends AsyncTask<String, Void, Integer> {
 
     private SendOrderTask.OnStatusAvailable listener = null;
+    private String token;
 
     private static final String TAG = GetProductsTask.class.getSimpleName();
     private  Order orderToSend;
 
-    public SendOrderTask(SendOrderTask.OnStatusAvailable listener, Order order) {
+    public SendOrderTask(SendOrderTask.OnStatusAvailable listener, Order order, String token) {
         this.listener = listener;
         this.orderToSend = order;
+        this.token = token;
     }
 
     @Override
@@ -59,6 +61,7 @@ public class SendOrderTask extends AsyncTask<String, Void, Integer> {
 
             HttpURLConnection httpConnection = (HttpURLConnection) urlConnection;
             httpConnection.setRequestProperty("Content-Type", "application/json");
+            httpConnection.setRequestProperty("x-access-token", token);
             httpConnection.setRequestMethod("POST");
             httpConnection.connect();
 

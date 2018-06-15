@@ -63,7 +63,7 @@ public class QuestionFragment extends Fragment implements SendOrderTask.OnStatus
             public void onClick(View view) {
                 main.getMessage().setOrderDate(Calendar.getInstance().getTime().toString());
                 if (main.validateOrder(main.getMessage())) {
-                    SendOrderTask sendOrderTask = new SendOrderTask(QuestionFragment.this, main.getMessage());
+                    SendOrderTask sendOrderTask = new SendOrderTask(QuestionFragment.this, main.getMessage(), main.getToken());
                     sendOrderTask.execute(getString(R.string.post_order));
                 }
                 else {

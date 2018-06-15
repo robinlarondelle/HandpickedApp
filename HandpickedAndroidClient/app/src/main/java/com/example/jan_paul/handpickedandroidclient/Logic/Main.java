@@ -16,7 +16,19 @@ public class Main {
     private Order message;
     private String lastStatus;
     private Boolean reset = false;
-    //private
+    private String token;
+
+    public void setCategories(ArrayList<Category> categories) {
+        this.categories = categories;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
 
     public void setCurrentOrder(Order currentOrder) {
         this.currentOrder = currentOrder;

@@ -5,9 +5,13 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
 
+import com.example.jan_paul.handpickedandroidclient.Domain.Category;
 import com.example.jan_paul.handpickedandroidclient.Domain.Order;
+import com.example.jan_paul.handpickedandroidclient.Domain.Product;
+import com.example.jan_paul.handpickedandroidclient.Domain.TimeRange;
 import com.example.jan_paul.handpickedandroidclient.R;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -20,15 +24,17 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.Calendar;
 
 public class TabletTask extends AsyncTask<String, Void, String> {
 
-    private TabletTask.OnStatusAvailable listener = null;
+    private TabletTask.OnTokenAvailable listener = null;
 
     private static final String TAG = TabletTask.class.getSimpleName();
     private Order orderToSend;
 
-    public TabletTask(TabletTask.OnStatusAvailable listener) {
+    public TabletTask(TabletTask.OnTokenAvailable listener) {
         this.listener = listener;
     }
 
@@ -50,29 +56,20 @@ public class TabletTask extends AsyncTask<String, Void, String> {
             }
 
             HttpURLConnection httpConnection = (HttpURLConnection) urlConnection;
-            httpConnection.setRequestProperty("Content-Type", "application/json");
-            httpConnection.setRequestMethod("POST");
-            //httpConnection.setConnectTimeout(3000);
+            httpConnection.setAllowUserInteraction(false);
+            httpConnection.setInstanceFollowRedirects(true);
+            httpConnection.setRequestMethod("GET");
+            httpConnection.setRequestProperty("serialnumber", "R52H105039R");
+            httpConnection.setConnectTimeout(3000);
             httpConnection.connect();
-
-            String body = "{\n" +
-                    "\t\"serialNumber\": \"" + Build.SERIAL + "\",\n" +
-                    "\t\"room\": null\n" +
-                    "}";
-            Log.i("tablettask body", body);
-
-            byte[] outputBytes = body.getBytes("UTF-8");
-            OutputStream os = httpConnection.getOutputStream();
-            os.write(outputBytes);
-            os.close();
 
             responsCode = httpConnection.getResponseCode();
 
-            listener.onStatusAvailable(responsCode);
 
 
-            //inputStream = httpConnection.getInputStream();
-            //response = getStringFromInputStream(inputStream);
+            inputStream = httpConnection.getInputStream();
+            response = getStringFromInputStream(inputStream);
+
         } catch (MalformedURLException e) {
             Log.e(TAG, "doInBackground MalformedURLEx " + e.getLocalizedMessage());
             return null;
@@ -84,6 +81,26 @@ public class TabletTask extends AsyncTask<String, Void, String> {
     }
 
     protected void onPostExecute(String response) {
+        //Log.i("RESPONSE 2", response.toString());
+        Log.i(TAG, "onPostExecute " + response);
+
+        if(response == null || response == "") {
+            Log.e(TAG, "onPostExecute kreeg een lege response!");
+            return;
+        }
+        String token = "";
+        JSONObject jsonObject;
+        try {
+            jsonObject = new JSONObject(response);
+
+            token = jsonObject.getString("token");
+
+        } catch( JSONException ex) {
+            Log.e(TAG, "onPostExecute JSONException " + ex.getLocalizedMessage());
+        }
+        listener.onTokenAvailable(token);
+
+
     }
 
     private static String getStringFromInputStream(InputStream is) {
@@ -113,7 +130,7 @@ public class TabletTask extends AsyncTask<String, Void, String> {
         return sb.toString();
     }
     // Call back interface
-    public interface OnStatusAvailable {
-        void onStatusAvailable(int status);
+    public interface OnTokenAvailable {
+        void onTokenAvailable(String token);
     }
 }

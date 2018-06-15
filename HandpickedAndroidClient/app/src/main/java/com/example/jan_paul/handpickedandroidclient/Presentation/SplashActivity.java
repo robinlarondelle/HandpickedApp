@@ -18,7 +18,7 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
-public class SplashActivity extends AppCompatActivity implements GetProductsTask.OnProductsAvailable, TabletTask.OnStatusAvailable{
+public class SplashActivity extends AppCompatActivity implements GetProductsTask.OnProductsAvailable, TabletTask.OnTokenAvailable{
 
     private static String TAG = "SplashActivity";
     private Main main;
@@ -39,7 +39,7 @@ public class SplashActivity extends AppCompatActivity implements GetProductsTask
         splashLoadingText = findViewById(R.id.splash_loading_text);
 
         tabletStatus = getString(R.string.post_tablet);
-        tabletUrl = getString(R.string.get_serialNumber);
+        tabletUrl = getString(R.string.get_token);
         splashLoadingText.setText(tabletStatus);
 
         tabletTask = new TabletTask(this);
@@ -69,7 +69,7 @@ public class SplashActivity extends AppCompatActivity implements GetProductsTask
             @Override
             public void run() {
                 getProductsTask.cancel(true);
-                getProductsTask = new GetProductsTask(SplashActivity.this);
+                getProductsTask = new GetProductsTask(SplashActivity.this, main.getToken());
                 getProductsTask.execute(getString(R.string.get_products));
                 handler.postDelayed(test, 5000); //wait 4 sec and run again
                 splashLoadingText.setText(getResources().getString(R.string.splash_no_connection));
@@ -84,7 +84,7 @@ public class SplashActivity extends AppCompatActivity implements GetProductsTask
     }
 
     public void startTest() {
-        getProductsTask = new GetProductsTask(SplashActivity.this);
+        getProductsTask = new GetProductsTask(SplashActivity.this, main.getToken());
         getProductsTask.execute(getString(R.string.get_products));
         handler.post(test); //wait 0 ms and run
     }
@@ -116,28 +116,26 @@ public class SplashActivity extends AppCompatActivity implements GetProductsTask
         main.refreshData(productsPerCategory);
 
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        intent.putExtra("token", main.getToken());
         stopTest();
         startActivity(intent);
     }
 
-    public void onStatusAvailable (int status){
-        Log.i("curent status", Integer.toString(status));
-        if (status == 409){
+    public void onTokenAvailable (String token){
+        Log.i("curent token", token);
+        if (token.length() > 0){
             //heeft room
             tabletStatus = getString(R.string.post_tablet_success);
 //            splashLoadingText.setText(tabletStatus);
 
             handler.removeCallbacks(postTablet);
+            main.setToken(token);
             startTest();
         }
-        else if (status == 200){
+        else {
             //mag niet door, heeft geen room
             tabletStatus = getString(R.string.post_tablet_notregistered);
       //      splashLoadingText.setText(tabletStatus);
-
         }
-        else tabletStatus = "unknown error";
-    //    splashLoadingText.setText(tabletStatus);
-
     }
 }

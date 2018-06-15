@@ -31,11 +31,12 @@ import java.util.Calendar;
 public class GetProductsTask extends AsyncTask<String, Void, String> {
 
     private OnProductsAvailable listener = null;
-
+    private String token;
     private static final String TAG = GetProductsTask.class.getSimpleName();
 
-    public GetProductsTask(OnProductsAvailable listener) {
+    public GetProductsTask(OnProductsAvailable listener, String token) {
         this.listener = listener;
+        this.token = token;
     }
 
     @Override
@@ -60,6 +61,8 @@ public class GetProductsTask extends AsyncTask<String, Void, String> {
             httpConnection.setInstanceFollowRedirects(true);
             httpConnection.setRequestMethod("GET");
             httpConnection.setConnectTimeout(3000);
+            httpConnection.setRequestProperty("x-access-token", token);
+
             httpConnection.connect();
 
             responsCode = httpConnection.getResponseCode();

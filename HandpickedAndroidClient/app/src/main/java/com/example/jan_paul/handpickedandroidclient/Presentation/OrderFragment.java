@@ -67,7 +67,7 @@ public class OrderFragment extends Fragment implements SendOrderTask.OnStatusAva
             public void onClick(View view) {
                 main.getCurrentOrder().setOrderDate(Calendar.getInstance().getTime().toString());
                 if (main.validateOrder(main.getCurrentOrder())) {
-                    SendOrderTask sendOrderTask = new SendOrderTask(OrderFragment.this, main.getCurrentOrder());
+                    SendOrderTask sendOrderTask = new SendOrderTask(OrderFragment.this, main.getCurrentOrder(), main.getToken());
                     sendOrderTask.execute(getString(R.string.post_order));
                 }
                 else {

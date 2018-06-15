@@ -98,6 +98,15 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
             main = new Main();
         }
 
+        Intent iin= getIntent();
+        Bundle b = iin.getExtras();
+
+        if(b!=null)
+        {
+            String j =(String) b.get("token");
+            main.setToken(j);
+        }
+
         mainActivityTitle = findViewById(R.id.main_activity_title);
         Typeface sofiaSemiBold = Typeface.createFromAsset(getAssets(),"fonts/sofia_semi_bold.ttf");
         mainActivityTitle.setTypeface(sofiaSemiBold);
@@ -131,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
             @Override
             public void onRefresh() {
                 main.setReset(false);
-                getProductsTask = new GetProductsTask(MainActivity.this);
+                getProductsTask = new GetProductsTask(MainActivity.this, main.getToken());
                 getProductsTask.execute(getString(R.string.get_products));
                 Log.i("LOADED PRODUCTS: ", main.getCategories().toString());
             }
@@ -237,7 +246,7 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
             }
         });
 
-        getProductsTask = new GetProductsTask(this);
+        getProductsTask = new GetProductsTask(this, main.getToken());
         getProductsTask.execute(getString(R.string.get_products));
 
         setLayout();

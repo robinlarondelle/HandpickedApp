@@ -2,7 +2,9 @@ package com.example.jan_paul.handpickedandroidclient.Logic;
 
 import android.util.Log;
 
+import com.example.jan_paul.handpickedandroidclient.DataAccess.GetMessagesTask;
 import com.example.jan_paul.handpickedandroidclient.Domain.Category;
+import com.example.jan_paul.handpickedandroidclient.Domain.Message;
 import com.example.jan_paul.handpickedandroidclient.Domain.Order;
 import com.example.jan_paul.handpickedandroidclient.Domain.Product;
 
@@ -17,6 +19,7 @@ public class Main {
     private String lastStatus;
     private Boolean reset = false;
     private String token;
+    private ArrayList<Message> messages;
 
     public void setCategories(ArrayList<Category> categories) {
         this.categories = categories;
@@ -57,8 +60,17 @@ public class Main {
     public Main() {
         this.categories = new ArrayList<>();
         this.currentOrder = new Order(this, false);
+        this.messages = new ArrayList<>();
 
         lastStatus = "unknown";
+    }
+
+    public ArrayList<Message> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(ArrayList<Message> messages) {
+        this.messages = messages;
     }
 
     public void setAvailableStatus(String availableStatus) {

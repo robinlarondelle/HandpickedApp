@@ -17,12 +17,20 @@ public class Category {
     private Boolean visible;
     private TimeRange timeRange;
 
-    public Category(String image, String type, TimeRange timeRange) {
+    public Category(String image, String type, TimeRange timeRange, Boolean visible) {
         this.image = image;
         this.type = type;
         this.products = new ArrayList<>();
         this.timeRange = timeRange;
-        this.visible = timeRange.isInRange();
+        if (!visible) {
+            this.visible = visible;
+        }
+        else if (timeRange.isInRange()){
+            this.visible = visible;
+        }
+        else {
+            this.visible = timeRange.isInRange();
+        }
     }
 
     public ArrayList<Product> getProducts() {

@@ -3,28 +3,33 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="200dp"
-    app:layout_constraintDimensionRatio="1:1"
+    android:layout_height="match_parent"
     android:background="@android:color/transparent"
-    >
+    android:maxHeight="150dp"
+    android:minHeight="150dp"
+    app:layout_constraintDimensionRatio="1:1">
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/category_holder"
-        android:elevation="8dp"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_marginEnd="64dp"
+        android:elevation="8dp"
+        android:maxHeight="150dp"
+        android:minHeight="150dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
 
         <ImageView
             android:id="@+id/category_image"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_marginBottom="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="16dp"
             android:layout_marginTop="8dp"
             android:elevation="4dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -38,10 +43,11 @@
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginTop="8dp"
+            android:fontFamily="@font/sofia_semi_bold"
             android:text="Cola"
             android:textSize="30sp"
-            app:layout_constraintBottom_toBottomOf="@+id/category_image"
-            app:layout_constraintEnd_toEndOf="@+id/category_image"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/category_image"
             app:layout_constraintTop_toTopOf="parent" />
     </android.support.constraint.ConstraintLayout>
 

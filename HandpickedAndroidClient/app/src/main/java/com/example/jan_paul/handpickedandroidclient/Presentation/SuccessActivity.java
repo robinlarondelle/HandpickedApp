@@ -17,7 +17,7 @@ public class SuccessActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_success);
+        setContentView(R.layout.send_status);
         Log.d(TAG, "onCreate: Initiated");
 
         Typeface barlowLight = Typeface.createFromAsset(getAssets(),"fonts/barlow_light.ttf");

@@ -7,6 +7,7 @@ import com.example.jan_paul.handpickedandroidclient.Domain.Category;
 import com.example.jan_paul.handpickedandroidclient.Domain.Product;
 import com.example.jan_paul.handpickedandroidclient.Domain.TimeRange;
 import com.example.jan_paul.handpickedandroidclient.Domain.Type;
+import com.google.gson.JsonArray;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,11 +31,12 @@ import java.util.Calendar;
 public class GetProductsTask extends AsyncTask<String, Void, String> {
 
     private OnProductsAvailable listener = null;
-
+    private String token;
     private static final String TAG = GetProductsTask.class.getSimpleName();
 
-    public GetProductsTask(OnProductsAvailable listener) {
+    public GetProductsTask(OnProductsAvailable listener, String token) {
         this.listener = listener;
+        this.token = token;
     }
 
     @Override
@@ -59,6 +61,8 @@ public class GetProductsTask extends AsyncTask<String, Void, String> {
             httpConnection.setInstanceFollowRedirects(true);
             httpConnection.setRequestMethod("GET");
             httpConnection.setConnectTimeout(3000);
+            httpConnection.setRequestProperty("x-access-token", token);
+
             httpConnection.connect();
 
             responsCode = httpConnection.getResponseCode();
@@ -97,6 +101,8 @@ public class GetProductsTask extends AsyncTask<String, Void, String> {
                 JSONObject category =  categories.getJSONObject(i);
                 JSONArray products = category.getJSONArray("products");
                 String categoryName = category.getString("categoryName");
+                String categoryImage = category.getString("image");
+                Boolean categoryVisible = intToBool(category.getInt("visible"));
                 String[] begin = null;
                 String[] end = null;
                 String day = null;
@@ -129,7 +135,7 @@ public class GetProductsTask extends AsyncTask<String, Void, String> {
                     endTime.set(Calendar.DAY_OF_WEEK, Integer.valueOf(day) + 1);
                     }
 
-                Category currentCategory = new Category("", categoryName, new TimeRange(beginTime, endTime));
+                Category currentCategory = new Category(categoryImage, categoryName, new TimeRange(beginTime, endTime), categoryVisible);
 
                 Log.i("is in range", currentCategory.getTimeRange().isInRange().toString());
 
@@ -139,10 +145,19 @@ public class GetProductsTask extends AsyncTask<String, Void, String> {
                     String productName = product.getString("productName");
                     boolean productVisible = intToBool(product.getInt("visible"));
                     String frontImage = product.getString("image");
-                    Product currentProduct = new Product(productName, productVisible, productID, frontImage);
-                    currentCategory.getProducts().add(currentProduct);
+                    JSONArray JSONOptions = product.getJSONArray("options");
+                    ArrayList<String> options = new ArrayList<>();
+                    for (int opt = 0; opt < JSONOptions.length(); opt++){
+                        String option = JSONOptions.getJSONObject(opt).getString("name");
+                        options.add(option);
+                    }
+
+                    Product currentProduct = new Product(productName, productVisible, productID, frontImage, options);
+                    if (currentProduct.getVisible()) {
+                        currentCategory.getProducts().add(currentProduct);
+                    }
                 }
-                if (currentCategory.getTimeRange().isInRange()) {
+                if (currentCategory.getTimeRange().isInRange() ) {
                     productsPerCategory.add(currentCategory);
                 }
             }

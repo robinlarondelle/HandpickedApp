@@ -2,34 +2,48 @@ package com.example.jan_paul.handpickedandroidclient.Presentation;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Debug;
+import android.os.Handler;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.jan_paul.handpickedandroidclient.DataAccess.GetMessagesTask;
 import com.example.jan_paul.handpickedandroidclient.DataAccess.GetProductsTask;
 import com.example.jan_paul.handpickedandroidclient.DataAccess.SendOrderTask;
+import com.example.jan_paul.handpickedandroidclient.DataAccess.TabletTask;
 import com.example.jan_paul.handpickedandroidclient.Domain.Category;
+import com.example.jan_paul.handpickedandroidclient.Domain.Message;
+import com.example.jan_paul.handpickedandroidclient.Domain.Order;
 import com.example.jan_paul.handpickedandroidclient.Domain.Product;
 import com.example.jan_paul.handpickedandroidclient.Domain.Type;
 import com.example.jan_paul.handpickedandroidclient.Logic.CategoryAdapter;
@@ -46,7 +60,7 @@ import java.util.List;
 
 import javax.security.auth.login.LoginException;
 
-public class MainActivity extends AppCompatActivity implements GetProductsTask.OnProductsAvailable {
+public class MainActivity extends AppCompatActivity implements GetProductsTask.OnProductsAvailable, GetMessagesTask.OnMessagesAvailable {
 
     private Integer selectedCategory;
 
@@ -64,16 +78,23 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
 
     private TextView orderSizeNumber;
     private ImageButton orderIcon;
+    private ConstraintLayout questionContainer;
 
     private ConstraintLayout orderButton;
-    private Button orderSendButton;
-    private TextView orderComment;
-
     private ConstraintLayout overlayHolder;
-    private ListView orderItemsList;
+    private ConstraintLayout outsideView;
 
     private TextView mainActivityTitle;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private Fragment orderFragment;
+    private Fragment statusFragment;
+    private Fragment questionFragment;
+    private ImageButton questionIcon;
+    private Handler handler;
+    private Runnable getMessages;
+    private GetMessagesTask getMessagesTask;
+    private NotificationManager notificationManager;
+private NotificationChannel mChannel;
 
     private Main main;
 
@@ -88,6 +109,15 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
             main = new Main();
         }
 
+        Intent iin= getIntent();
+        Bundle b = iin.getExtras();
+
+        if(b!=null)
+        {
+            String j =(String) b.get("token");
+            main.setToken(j);
+        }
+
         mainActivityTitle = findViewById(R.id.main_activity_title);
         Typeface sofiaSemiBold = Typeface.createFromAsset(getAssets(),"fonts/sofia_semi_bold.ttf");
         mainActivityTitle.setTypeface(sofiaSemiBold);
@@ -96,6 +126,10 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
         if(selectedCategory == null){
         Log.i("log", "selectedCategory still null");
         selectedCategory = 0;}
+
+        orderFragment = new OrderFragment();
+        statusFragment = new StatusFragment();
+        questionFragment = new QuestionFragment();
 
         orderSizeNumber = findViewById(R.id.order_size_number);
         orderIcon = findViewById(R.id.order_icon);
@@ -106,81 +140,102 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
 
         productSelectionGrid = findViewById(R.id.product_grid);
         productCategoryList = findViewById(R.id.category_list);
-        orderItemsList = findViewById(R.id.order_items_list);
         overlayHolder = findViewById(R.id.overlay_holder);
-        orderSendButton = findViewById(R.id.order_send_button);
-        orderComment = findViewById(R.id.order_comment);
         mainActivityTitle = findViewById(R.id.main_activity_title);
         swipeRefreshLayout = findViewById(R.id.swiperefresh);
+        outsideView = findViewById(R.id.outsideView);
+        questionContainer = findViewById(R.id.question_icon_container);
+        questionIcon = findViewById(R.id.question_icon);
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                getProductsTask = new GetProductsTask(MainActivity.this);
+                main.setReset(false);
+                getProductsTask = new GetProductsTask(MainActivity.this, main.getToken());
                 getProductsTask.execute(getString(R.string.get_products));
+                Log.i("LOADED PRODUCTS: ", main.getCategories().toString());
             }
         });
 
-        orderSendButton.setOnClickListener(new View.OnClickListener() {
+        outsideView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                main.getCurrentOrder().setOrderDate(Calendar.getInstance().getTime().toString());
-                main.getCurrentOrder().setMessage(orderComment.getText().toString());
-                main.sendCurrentOrder(MainActivity.this);
-                main.makenNewOrder();
-                orderAdapter.updateOrderItems(main.getCurrentOrder().getProducts());
-                Log.i("SEND", main.getCurrentOrder().getProducts().toString());
-                orderSizeNumber.setText(Integer.toString(main.getCurrentOrder().getTotalProducts()));
-                //get callback from main to check for success, than show new view...
+                outsideView.setVisibility(View.INVISIBLE);
+                //hides keyboard
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             }
         });
 
-        overlayHolder.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                overlayHolder.animate().alpha(0.0f).setDuration(250).setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        super.onAnimationEnd(animation);
-                        overlayHolder.setVisibility(View.INVISIBLE);
-                    }
-                });
-            }
-        });
+        switchFragments(orderFragment);
 
         orderIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                overlayHolder.setAlpha(0.0f);
-                overlayHolder.setVisibility(View.VISIBLE);
-                overlayHolder.animate().alpha(1.0f).setDuration(250).setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        super.onAnimationEnd(animation);
-                    }
-                });
+                outsideView.setVisibility(View.VISIBLE);
+                switchFragments(orderFragment);
             }
         });
 
-        orderAdapter = new OrderAdapter(MainActivity.this, getLayoutInflater(), main.getCurrentOrder());
-        orderItemsList.setAdapter(orderAdapter);
+        questionContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                outsideView.setVisibility(View.VISIBLE);
+                switchFragments(questionFragment);
+            }
+        });
 
-        productAdapter = new ProductAdapter(getApplicationContext(), getLayoutInflater(), availableProducts);
+        questionIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                outsideView.setVisibility(View.VISIBLE);
+                switchFragments(questionFragment);
+            }
+        });
+
+        orderAdapter = new OrderAdapter(MainActivity.this, getLayoutInflater(), main.getCurrentOrder(), this);
+
+        productAdapter = new ProductAdapter(getApplicationContext(), getLayoutInflater(), availableProducts, main.getCurrentOrder());
         productSelectionGrid.setAdapter(productAdapter);
 
         productSelectionGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                main.getCurrentOrder().addOrRemoveProduct(main.getProductsPerCategory(availableCategories.get(selectedCategory).getType()).get(i).getName(), 1);
+                Product p = main.getProductsPerCategory(availableCategories.get(selectedCategory).getType()).get(i);
+                String options = "";
+
+                CheckBox checkBox1 = view.findViewById(R.id.product_option1);
+                CheckBox checkBox2 = view.findViewById(R.id.product_option2);
+
+                if(p.getOptions().size() > 0){
+                    if (checkBox1.isChecked() && checkBox1.getVisibility() == View.VISIBLE){
+                        options = options + " met opties: ";
+                        options = options + p.getOptions().get(0);
+                        if (p.getOptions().size() > 1 && checkBox2.isChecked()){
+                            options = options + ", ";
+                            options = options + p.getOptions().get(1);
+                        }
+                    }
+                    else if (checkBox2.isChecked() && checkBox2.getVisibility() == View.VISIBLE){
+                        options = options + " met opties: ";
+                        options = options + p.getOptions().get(1);
+                    }
+                }
+
+                main.getCurrentOrder().addOrRemoveProduct(p.getName() +options + "-" +  p.getProductID(), 1);
                 String result = Integer.toString(main.getCurrentOrder().getTotalProducts());
                 orderSizeNumber.setText(result);
-                Log.i("orderinfo", main.getCurrentOrder().toString());
+
+                TextView productAmount = view.findViewById(R.id.product_amount);
+                productAmount.setText(Integer.toString(p.getAmount()));
                 Animation click = AnimationUtils.loadAnimation(MainActivity.this, R.anim.product_click);
                 view.startAnimation(click);
-                Animation shake = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake);
                 Animation bop = AnimationUtils.loadAnimation(MainActivity.this, R.anim.bop_cart);
+
+                Log.i("current order", main.getCurrentOrder().getProducts().toString());
+
                 orderButton.startAnimation(bop);
-                orderAdapter.updateOrderItems(main.getCurrentOrder().getProducts());
+                orderAdapter.updateOrderItems(main.getCurrentOrder());
             }
         });
 
@@ -197,15 +252,44 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
                     categoryAdapter.setSelectedCategory(i);
                     categoryAdapter.notifyDataSetChanged();
                     Log.i("test", main.getProductsPerCategory(availableCategories.get(selectedCategory).getType()).toString());
-                    productAdapter.updateProductArrayList(main.getProductsPerCategory(availableCategories.get(selectedCategory).getType()));
+                    productAdapter.updateProductArrayList(main.getProductsPerCategory(availableCategories.get(selectedCategory).getType()), main.getCurrentOrder());
                 }
             }
         });
 
-        getProductsTask = new GetProductsTask(this);
+        getProductsTask = new GetProductsTask(this, main.getToken());
         getProductsTask.execute(getString(R.string.get_products));
 
         setLayout();
+
+        notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+        String CHANNEL_ID = "my_channel_01";
+        CharSequence name = "my_channel";
+        String Description = "This is my channel";
+        int importance = NotificationManager.IMPORTANCE_HIGH;
+        mChannel = new NotificationChannel("CHANNEL_ID", name, importance);
+        mChannel.setDescription(Description);
+        mChannel.enableLights(true);
+        mChannel.setLightColor(Color.RED);
+        mChannel.enableVibration(true);
+        mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+        mChannel.setShowBadge(false);
+        notificationManager.createNotificationChannel(mChannel);
+
+
+        getMessagesTask = new GetMessagesTask(this, main.getToken());
+
+        handler = new Handler();
+        getMessages = new Runnable() {
+            @Override
+            public void run() {
+                getMessagesTask.cancel(true);
+                getMessagesTask = new GetMessagesTask(MainActivity.this, main.getToken());
+                getMessagesTask.execute(getString(R.string.get_messages));
+                handler.postDelayed(getMessages, 3000); //wait 4 sec and run again
+            }
+        };
+        handler.post(getMessages);
     }
 
     @Override
@@ -217,6 +301,7 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
 
         SharedPreferences.Editor prefsEditor = sharedPreferences.edit();
         Gson gson = new Gson();
+        Log.i("", main.toString());
         String json = gson.toJson(main);
         prefsEditor.putString("Main", json);
         prefsEditor.commit();
@@ -244,8 +329,7 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
 
     public void sendPushNotification(String title, String text) {
         Log.i("MainActivity", "sendPushNotification called");
-        NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
-        Notification notify = new Notification.Builder(getApplicationContext())
+        Notification notify = new Notification.Builder(MainActivity.this, "CHANNEL_ID")
                 .setContentTitle(title)
                 .setContentText(text)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
@@ -254,17 +338,80 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
         notificationManager.notify(0, notify);
     }
 
+    public Main getMain() {
+        return main;
+    }
+
+    public void switchFragments(Fragment fragment){
+        FragmentTransaction transaction;
+        transaction = getFragmentManager().beginTransaction();
+        transaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+        transaction.replace(R.id.overlay_holder, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
+    public Fragment getOrderFragment() {
+        return orderFragment;
+    }
+
+    public Fragment getStatusFragment() {
+        return statusFragment;
+    }
+
+    public void updateLayout(){
+        orderSizeNumber.setText(Integer.toString(main.getCurrentOrder().getTotalProducts()));
+        availableProducts = main.getProductsPerCategory(availableCategories.get(selectedCategory).getType());
+
+        productAdapter.updateProductArrayList(availableProducts, main.getCurrentOrder());
+    }
+
+    public ProductAdapter getProductAdapter() {
+        return productAdapter;
+    }
+
+    public CategoryAdapter getCategoryAdapter() {
+        return categoryAdapter;
+    }
+
+    public OrderAdapter getOrderAdapter() {
+        return orderAdapter;
+    }
+
     @Override
     public void onProductsAvailable(ArrayList<Category> productsPerCategory) {
-        main.setCategories(productsPerCategory);
+        //main.setReset(true);
+        main.refreshData(productsPerCategory);
         availableCategories.clear();
         availableCategories = main.getCategories();
-        mainActivityTitle.setText(availableCategories.get(selectedCategory).getType());
-        availableProducts.clear();
+        if (selectedCategory > availableCategories.size()){
+            selectedCategory = 0;
+        }
+        if (main.getCategories().size() > 0) {
+            mainActivityTitle.setText(availableCategories.get(selectedCategory).getType());
 
-        availableProducts = main.getProductsPerCategory(availableCategories.get(selectedCategory).getType());
-        productAdapter.updateProductArrayList(availableProducts);
+            availableProducts.clear();
+
+            availableProducts = main.getProductsPerCategory(availableCategories.get(selectedCategory).getType());
+        }
+        productAdapter.updateProductArrayList(availableProducts, main.getCurrentOrder());
         categoryAdapter.updateCategoryArrayList(availableCategories);
         swipeRefreshLayout.setRefreshing(false);
     }
+
+    @Override
+    public void onMessagesAvailable(ArrayList<Message> messages){
+        Message m = main.setMessages(messages);
+        if (m != null){
+            //there is a change, pushing notification
+            sendPushNotification(m.getSender(), m.getMessageContent());
+        }
+    }
 }
+

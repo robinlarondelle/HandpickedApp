@@ -2,6 +2,8 @@ package com.example.jan_paul.handpickedandroidclient.Domain;
 
 import android.util.Log;
 
+import com.example.jan_paul.handpickedandroidclient.Logic.Main;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -17,25 +19,42 @@ public class Order {
     private String orderDate;
     private String message;
     private int ID;
+    private Main main;
 
-    public Order(Boolean isOrdered, String message) {
+    public Order(Main main, Boolean isOrdered, String message) {
         this.products = new HashMap<>();
         this.isOrdered = isOrdered;
         this.orderDate = null;
         this.message = message;
         this.ID = 0;
+        this.main = main;
     }
 
-    public Order(Boolean isOrdered) {
+    public Order(Main main, Boolean isOrdered) {
         this.products = new HashMap<>();
         this.isOrdered = isOrdered;
         this.orderDate = null;
         this.message = "";
         this.ID = 0;
+        this.main = main;
     }
 
     public void addOrRemoveProduct(String productName, int amount){
         //expecting amount is always 1 or -1
+        String[] split = {productName};
+        if (productName.contains("opties")) {
+            split = productName.split(" met opties:");
+        }
+        else{
+            split = productName.split("-");
+        }
+        Log.i("", split[0]);
+        Product p = main.getProductByName(split[0]);
+        Log.i("add/remove", Integer.toString(p.getAmount()));
+        p.setAmount(p.getAmount() + amount);
+        Log.i("add/remove", Integer.toString(p.getAmount()));
+
+
         if (products.containsKey(productName)) {
             int amountOfProducts = products.get(productName).intValue();
             if (amount < 0) {

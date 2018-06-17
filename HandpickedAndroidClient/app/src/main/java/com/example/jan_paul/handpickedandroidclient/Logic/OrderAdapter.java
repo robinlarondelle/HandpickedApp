@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.jan_paul.handpickedandroidclient.Domain.Order;
+import com.example.jan_paul.handpickedandroidclient.Presentation.MainActivity;
 import com.example.jan_paul.handpickedandroidclient.R;
 
 import java.util.HashMap;
@@ -26,13 +27,15 @@ public class OrderAdapter extends BaseAdapter {
     private HashMap<String, Integer> orderItems;
     private String[] keys;
     private Order order;
+    private MainActivity mainActivity;
 
-    public OrderAdapter (Context context, LayoutInflater layoutInflater, Order order) {
+    public OrderAdapter (Context context, LayoutInflater layoutInflater, Order order, MainActivity mainActivity) {
         mContext = context;
         mInflator = layoutInflater;
         this.order = order;
         this.orderItems = order.getProducts();
         keys = orderItems.keySet().toArray(new String[orderItems.size()]);
+        this.mainActivity = mainActivity;
     }
 
     @Override
@@ -70,7 +73,9 @@ public class OrderAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        viewHolder.productName.setText(key);
+        String[] keyyy = key.toString().split("-");
+
+        viewHolder.productName.setText(keyyy[0]);
         viewHolder.productCounter.setText(value);
 
         TextView addButton = convertView.findViewById(R.id.order_plus);
@@ -80,7 +85,8 @@ public class OrderAdapter extends BaseAdapter {
             @Override
             public void onClick(View view) {
                 order.addOrRemoveProduct(keys[position], 1);
-                updateOrderItems(order.getProducts());
+                updateOrderItems(order);
+                mainActivity.updateLayout();
             }
         });
 
@@ -88,16 +94,17 @@ public class OrderAdapter extends BaseAdapter {
             @Override
             public void onClick(View view) {
                 order.addOrRemoveProduct(keys[position], -1);
-
-                updateOrderItems(order.getProducts());
+                updateOrderItems(order);
+                mainActivity.updateLayout();
             }
         });
 
         return convertView;
     }
 
-    public void updateOrderItems(HashMap<String, Integer> orderItems){
-        this.orderItems = orderItems;
+    public void updateOrderItems(Order order){
+        this.orderItems = order.getProducts();
+        this.order = order;
         this.keys = orderItems.keySet().toArray(new String[orderItems.size()]);
         notifyDataSetChanged();
     }

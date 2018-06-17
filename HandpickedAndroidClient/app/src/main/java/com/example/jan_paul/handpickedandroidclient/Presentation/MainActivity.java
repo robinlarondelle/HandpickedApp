@@ -6,12 +6,15 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Debug;
+import android.os.Handler;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -34,9 +37,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.jan_paul.handpickedandroidclient.DataAccess.GetMessagesTask;
 import com.example.jan_paul.handpickedandroidclient.DataAccess.GetProductsTask;
 import com.example.jan_paul.handpickedandroidclient.DataAccess.SendOrderTask;
+import com.example.jan_paul.handpickedandroidclient.DataAccess.TabletTask;
 import com.example.jan_paul.handpickedandroidclient.Domain.Category;
+import com.example.jan_paul.handpickedandroidclient.Domain.Message;
 import com.example.jan_paul.handpickedandroidclient.Domain.Order;
 import com.example.jan_paul.handpickedandroidclient.Domain.Product;
 import com.example.jan_paul.handpickedandroidclient.Domain.Type;
@@ -54,7 +60,7 @@ import java.util.List;
 
 import javax.security.auth.login.LoginException;
 
-public class MainActivity extends AppCompatActivity implements GetProductsTask.OnProductsAvailable {
+public class MainActivity extends AppCompatActivity implements GetProductsTask.OnProductsAvailable, GetMessagesTask.OnMessagesAvailable {
 
     private Integer selectedCategory;
 
@@ -84,6 +90,11 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
     private Fragment statusFragment;
     private Fragment questionFragment;
     private ImageButton questionIcon;
+    private Handler handler;
+    private Runnable getMessages;
+    private GetMessagesTask getMessagesTask;
+    private NotificationManager notificationManager;
+private NotificationChannel mChannel;
 
     private Main main;
 
@@ -250,6 +261,35 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
         getProductsTask.execute(getString(R.string.get_products));
 
         setLayout();
+
+        notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+        String CHANNEL_ID = "my_channel_01";
+        CharSequence name = "my_channel";
+        String Description = "This is my channel";
+        int importance = NotificationManager.IMPORTANCE_HIGH;
+        mChannel = new NotificationChannel("CHANNEL_ID", name, importance);
+        mChannel.setDescription(Description);
+        mChannel.enableLights(true);
+        mChannel.setLightColor(Color.RED);
+        mChannel.enableVibration(true);
+        mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+        mChannel.setShowBadge(false);
+        notificationManager.createNotificationChannel(mChannel);
+
+
+        getMessagesTask = new GetMessagesTask(this, main.getToken());
+
+        handler = new Handler();
+        getMessages = new Runnable() {
+            @Override
+            public void run() {
+                getMessagesTask.cancel(true);
+                getMessagesTask = new GetMessagesTask(MainActivity.this, main.getToken());
+                getMessagesTask.execute(getString(R.string.get_messages));
+                handler.postDelayed(getMessages, 3000); //wait 4 sec and run again
+            }
+        };
+        handler.post(getMessages);
     }
 
     @Override
@@ -289,8 +329,7 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
 
     public void sendPushNotification(String title, String text) {
         Log.i("MainActivity", "sendPushNotification called");
-        NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
-        Notification notify = new Notification.Builder(getApplicationContext())
+        Notification notify = new Notification.Builder(MainActivity.this, "CHANNEL_ID")
                 .setContentTitle(title)
                 .setContentText(text)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
@@ -365,4 +404,14 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
         categoryAdapter.updateCategoryArrayList(availableCategories);
         swipeRefreshLayout.setRefreshing(false);
     }
+
+    @Override
+    public void onMessagesAvailable(ArrayList<Message> messages){
+        Message m = main.setMessages(messages);
+        if (m != null){
+            //there is a change, pushing notification
+            sendPushNotification(m.getSender(), m.getMessageContent());
+        }
+    }
 }
+

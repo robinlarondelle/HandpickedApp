@@ -3,6 +3,7 @@ package com.example.jan_paul.handpickedandroidclient.Presentation;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -30,6 +31,7 @@ public class SplashActivity extends AppCompatActivity implements GetProductsTask
     TextView splashLoadingText;
     String tabletUrl;
     String tabletStatus;
+    TextView serial;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +39,9 @@ public class SplashActivity extends AppCompatActivity implements GetProductsTask
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         splashLoadingText = findViewById(R.id.splash_loading_text);
+        serial = findViewById(R.id.serial);
+
+        serial.setText(Build.SERIAL);
 
         tabletStatus = getString(R.string.post_tablet);
         tabletUrl = getString(R.string.get_token);

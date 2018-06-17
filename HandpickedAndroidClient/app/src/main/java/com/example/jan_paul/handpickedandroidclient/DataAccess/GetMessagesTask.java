@@ -1,6 +1,7 @@
 package com.example.jan_paul.handpickedandroidclient.DataAccess;
 
 import android.os.AsyncTask;
+import android.os.Build;
 import android.util.Log;
 
 import com.example.jan_paul.handpickedandroidclient.Domain.Message;
@@ -26,13 +27,13 @@ public class GetMessagesTask extends AsyncTask<String, Void, String> {
     private GetMessagesTask.OnMessagesAvailable listener = null;
     private String token;
 
-
     private static final String TAG = TabletTask.class.getSimpleName();
     private ArrayList<Message> messages;
 
     public GetMessagesTask(GetMessagesTask.OnMessagesAvailable listener, String token) {
         this.listener = listener;
         this.token = token;
+        messages = new ArrayList<>();
     }
 
     @Override
@@ -57,6 +58,8 @@ public class GetMessagesTask extends AsyncTask<String, Void, String> {
             httpConnection.setInstanceFollowRedirects(true);
             httpConnection.setRequestMethod("GET");
             httpConnection.setRequestProperty("x-access-token", token);
+            httpConnection.setRequestProperty("serialnumber", Build.SERIAL);
+
             httpConnection.setConnectTimeout(3000);
             httpConnection.connect();
 
@@ -87,7 +90,7 @@ public class GetMessagesTask extends AsyncTask<String, Void, String> {
         try {
             jsonObject = new JSONObject(response);
 
-            JSONArray jsonMessages = jsonObject.getJSONArray("messages");
+            JSONArray jsonMessages = jsonObject.getJSONArray("Messages");
             for (int i = 0; i < jsonMessages.length(); i++) {
                 JSONObject jsonMessage = jsonMessages.getJSONObject(i);
                 Message message = new Message(jsonMessage.getString("MessageContent"), jsonMessage.getString("TimeStamp"), jsonMessage.getString("SentBy"));
@@ -97,7 +100,9 @@ public class GetMessagesTask extends AsyncTask<String, Void, String> {
         } catch( JSONException ex) {
             Log.e(TAG, "onPostExecute JSONException " + ex.getLocalizedMessage());
         }
-        listener.onMessagesAvailable(messages);
+        if (messages != null) {
+            listener.onMessagesAvailable(messages);
+        }
     }
 
     private static String getStringFromInputStream(InputStream is) {

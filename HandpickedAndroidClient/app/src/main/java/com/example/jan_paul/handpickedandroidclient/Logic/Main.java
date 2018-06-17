@@ -8,7 +8,9 @@ import com.example.jan_paul.handpickedandroidclient.Domain.Message;
 import com.example.jan_paul.handpickedandroidclient.Domain.Order;
 import com.example.jan_paul.handpickedandroidclient.Domain.Product;
 
+import java.io.Console;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class Main {
     private transient Order currentOrder;
@@ -69,8 +71,30 @@ public class Main {
         return messages;
     }
 
-    public void setMessages(ArrayList<Message> messages) {
-        this.messages = messages;
+    public Message setMessages(ArrayList<Message> newMessages) {
+        if (messages.size() < 1){
+            messages = new ArrayList<>(newMessages);
+        }
+
+        Log.i("old", messages.toString());
+        Log.i("new", newMessages.toString());
+
+
+        for (int i = 0; i < newMessages.size(); i++) {
+            for (Message m: messages) {
+                Log.i("", m.getTimeStamp() + " - " + newMessages.get(i).getTimeStamp());
+                if (m.getTimeStamp().equals(newMessages.get(i).getTimeStamp())){
+                    newMessages.remove(i);
+                }
+            }
+        }
+        if (newMessages.size() > 0){
+            messages.add(newMessages.get(0));
+            return newMessages.get(0);
+        }
+        else {
+            return null;
+        }
     }
 
     public void setAvailableStatus(String availableStatus) {

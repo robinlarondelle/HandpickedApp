@@ -23,8 +23,13 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -65,10 +70,14 @@ public class SendOrderTask extends AsyncTask<String, Void, Integer> {
             httpConnection.setRequestMethod("POST");
             httpConnection.connect();
 
+            //parse time
+            Date date = Calendar.getInstance().getTime();
+            SimpleDateFormat sdf = new SimpleDateFormat("yy-MM-dd HH:mm:ss");
+
             String body = "{\n" +
                     "\"serialNumber\": \"" + Build.SERIAL + "\",\n" +
                     "\"comment\": \"" + orderToSend.getMessage() + "\",\n" +
-                    "\"datetime\": \"" + Calendar.getInstance().getTime() + "\",\n" +
+                    "\"datetime\": \"" + sdf.format(date) + "\",\n" +
                     "\"products\": [\n" +
                     hashmapToString(orderToSend.getProducts()) +
                     "]\n" +

@@ -18,6 +18,7 @@ import android.os.Build;
 import android.os.Debug;
 import android.os.Handler;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -51,6 +52,7 @@ import com.example.jan_paul.handpickedandroidclient.Domain.Product;
 import com.example.jan_paul.handpickedandroidclient.Domain.Type;
 import com.example.jan_paul.handpickedandroidclient.Logic.CategoryAdapter;
 import com.example.jan_paul.handpickedandroidclient.Logic.Main;
+import com.example.jan_paul.handpickedandroidclient.Logic.MessageAdapter;
 import com.example.jan_paul.handpickedandroidclient.Logic.OrderAdapter;
 import com.example.jan_paul.handpickedandroidclient.Logic.ProductAdapter;
 import com.example.jan_paul.handpickedandroidclient.R;
@@ -97,7 +99,8 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
     private Runnable getMessages;
     private GetMessagesTask getMessagesTask;
     private NotificationManager notificationManager;
-private NotificationChannel mChannel;
+    private MessageAdapter messageAdapter;
+    private Snackbar mySnackbar;
 
     private Main main;
 
@@ -184,6 +187,7 @@ private NotificationChannel mChannel;
             @Override
             public void onClick(View view) {
                 outsideView.setVisibility(View.VISIBLE);
+                main.setAllMessagesToSeen();
                 switchFragments(questionFragment);
             }
         });
@@ -197,10 +201,10 @@ private NotificationChannel mChannel;
         });
 
         orderAdapter = new OrderAdapter(MainActivity.this, getLayoutInflater(), main.getCurrentOrder(), this);
-
         productAdapter = new ProductAdapter(getApplicationContext(), getLayoutInflater(), availableProducts, main.getCurrentOrder());
-        productSelectionGrid.setAdapter(productAdapter);
+        messageAdapter = new MessageAdapter(this, getLayoutInflater(), main.getMessages());
 
+        productSelectionGrid.setAdapter(productAdapter);
         productSelectionGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -265,12 +269,6 @@ private NotificationChannel mChannel;
 
         setLayout();
 
-        notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
-        String CHANNEL_ID = "my_channel_01";
-        CharSequence name = "my_channel";
-        String Description = "This is my channel";
-        int importance = NotificationManager.IMPORTANCE_HIGH;
-
         getMessagesTask = new GetMessagesTask(this, main.getToken());
 
         handler = new Handler();
@@ -323,11 +321,6 @@ private NotificationChannel mChannel;
 
     public void sendPushNotification(String title, String text) {
         Log.i("MainActivity", "sendPushNotification called: " + text);
-/*
-        Intent intent = new Intent(this, AlertDetails.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
-  */
 
         PendingIntent contentIntent = PendingIntent.getActivity(
                 getApplicationContext(),
@@ -360,7 +353,7 @@ private NotificationChannel mChannel;
                 //.build();
 
         //notify.flags |= Notification.FLAG_AUTO_CANCEL;
-        notificationManager.notify(0, notification_builder.build());
+        notification_manager.notify(0, notification_builder.build());
     }
 
     public Main getMain() {
@@ -381,9 +374,12 @@ private NotificationChannel mChannel;
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
-
     public Fragment getOrderFragment() {
         return orderFragment;
+    }
+
+    public MessageAdapter getMessageAdapter() {
+        return messageAdapter;
     }
 
     public Fragment getStatusFragment() {
@@ -434,8 +430,16 @@ private NotificationChannel mChannel;
     public void onMessagesAvailable(ArrayList<Message> messages){
         Message m = main.setMessages(messages);
         if (m != null){
+            mySnackbar = Snackbar.make(findViewById(R.id.main), "message from: " + m.getSender(), Snackbar.LENGTH_LONG);
+
+            mySnackbar.show();
+
+            Animation bop = AnimationUtils.loadAnimation(MainActivity.this, R.anim.bop_cart);
+
+            questionContainer.startAnimation(bop);
             //there is a change, pushing notification
             sendPushNotification(m.getSender(), m.getMessageContent());
+            messageAdapter.updateMessageArrayList(main.getMessages());
         }
     }
 }

@@ -63,8 +63,6 @@ public class GetMessagesTask extends AsyncTask<String, Void, String> {
             httpConnection.setConnectTimeout(3000);
             httpConnection.connect();
 
-            responsCode = httpConnection.getResponseCode();
-
             inputStream = httpConnection.getInputStream();
             response = getStringFromInputStream(inputStream);
 

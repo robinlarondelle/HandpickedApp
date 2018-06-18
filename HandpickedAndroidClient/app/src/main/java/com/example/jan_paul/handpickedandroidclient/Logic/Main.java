@@ -74,6 +74,9 @@ public class Main {
     public Message setMessages(ArrayList<Message> newMessages) {
         if (messages.size() < 1){
             messages = new ArrayList<>(newMessages);
+            for (Message m: messages) {
+                m.setSeen(true);
+            }
         }
 
         Log.i("old", messages.toString());
@@ -82,6 +85,9 @@ public class Main {
 
         for (int i = 0; i < newMessages.size(); i++) {
             for (Message m: messages) {
+                if (i > newMessages.size()){
+                    break;
+                }
                 Log.i("", m.getTimeStamp() + " - " + newMessages.get(i).getTimeStamp());
                 if (m.getTimeStamp().equals(newMessages.get(i).getTimeStamp())){
                     newMessages.remove(i);
@@ -94,6 +100,12 @@ public class Main {
         }
         else {
             return null;
+        }
+    }
+
+    public void setAllMessagesToSeen(){
+        for (Message m : messages) {
+            m.setSeen(true);
         }
     }
 

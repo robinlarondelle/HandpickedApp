@@ -40,9 +40,7 @@ public class SplashActivity extends AppCompatActivity implements GetProductsTask
         setContentView(R.layout.activity_splash);
         splashLoadingText = findViewById(R.id.splash_loading_text);
         serial = findViewById(R.id.serial);
-
-
-    serial.setText(Build.SERIAL);
+        serial.setText(Build.SERIAL);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             serial.setText(Build.getSerial());
         }

@@ -8,14 +8,17 @@ import android.app.FragmentTransaction;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Debug;
 import android.os.Handler;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -267,15 +270,6 @@ private NotificationChannel mChannel;
         CharSequence name = "my_channel";
         String Description = "This is my channel";
         int importance = NotificationManager.IMPORTANCE_HIGH;
-        mChannel = new NotificationChannel("CHANNEL_ID", name, importance);
-        mChannel.setDescription(Description);
-        mChannel.enableLights(true);
-        mChannel.setLightColor(Color.RED);
-        mChannel.enableVibration(true);
-        mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
-        mChannel.setShowBadge(false);
-        notificationManager.createNotificationChannel(mChannel);
-
 
         getMessagesTask = new GetMessagesTask(this, main.getToken());
 
@@ -286,7 +280,7 @@ private NotificationChannel mChannel;
                 getMessagesTask.cancel(true);
                 getMessagesTask = new GetMessagesTask(MainActivity.this, main.getToken());
                 getMessagesTask.execute(getString(R.string.get_messages));
-                handler.postDelayed(getMessages, 3000); //wait 4 sec and run again
+                handler.postDelayed(getMessages, 5000); //wait 4 sec and run again
             }
         };
         handler.post(getMessages);
@@ -328,14 +322,45 @@ private NotificationChannel mChannel;
     }
 
     public void sendPushNotification(String title, String text) {
-        Log.i("MainActivity", "sendPushNotification called");
-        Notification notify = new Notification.Builder(MainActivity.this, "CHANNEL_ID")
+        Log.i("MainActivity", "sendPushNotification called: " + text);
+/*
+        Intent intent = new Intent(this, AlertDetails.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+  */
+
+        PendingIntent contentIntent = PendingIntent.getActivity(
+                getApplicationContext(),
+                0,
+                new Intent(), // add this
+                PendingIntent.FLAG_UPDATE_CURRENT);
+
+        NotificationCompat.Builder notification_builder;
+        NotificationManager notification_manager = (NotificationManager) this
+                .getSystemService(Context.NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            String chanel_id = "3000";
+            CharSequence name = "Channel Name";
+            String description = "Chanel Description";
+            int importance = NotificationManager.IMPORTANCE_LOW;
+            NotificationChannel mChannel = new NotificationChannel(chanel_id, name, importance);
+            mChannel.setDescription(description);
+            mChannel.enableLights(true);
+            mChannel.setLightColor(Color.BLUE);
+            notification_manager.createNotificationChannel(mChannel);
+            notification_builder = new NotificationCompat.Builder(this, chanel_id);
+        } else {
+            notification_builder = new NotificationCompat.Builder(this);
+        }
+        notification_builder.setSmallIcon(R.drawable.ic_launcher_foreground)
                 .setContentTitle(title)
                 .setContentText(text)
-                .setSmallIcon(R.drawable.ic_launcher_foreground)
-                .build();
-        notify.flags |= Notification.FLAG_AUTO_CANCEL;
-        notificationManager.notify(0, notify);
+                .setAutoCancel(true)
+                .setContentIntent(contentIntent);
+                //.build();
+
+        //notify.flags |= Notification.FLAG_AUTO_CANCEL;
+        notificationManager.notify(0, notification_builder.build());
     }
 
     public Main getMain() {

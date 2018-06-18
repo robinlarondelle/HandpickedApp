@@ -41,8 +41,11 @@ public class SplashActivity extends AppCompatActivity implements GetProductsTask
         splashLoadingText = findViewById(R.id.splash_loading_text);
         serial = findViewById(R.id.serial);
 
-        serial.setText(Build.SERIAL);
 
+    serial.setText(Build.SERIAL);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            serial.setText(Build.getSerial());
+        }
         tabletStatus = getString(R.string.post_tablet);
         tabletUrl = getString(R.string.get_token);
         splashLoadingText.setText(tabletStatus);

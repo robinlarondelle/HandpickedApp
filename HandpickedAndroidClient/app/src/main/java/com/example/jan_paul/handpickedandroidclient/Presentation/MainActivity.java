@@ -286,14 +286,14 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        SharedPreferences  sharedPreferences = getPreferences(MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("prefs", 0);
         super.onSaveInstanceState(savedInstanceState);
 
         savedInstanceState.putInt("selectedCategory", selectedCategory);
 
         SharedPreferences.Editor prefsEditor = sharedPreferences.edit();
         Gson gson = new Gson();
-        Log.i("", main.toString());
+        Log.i("SAVING MAIN: ", main.toString());
         String json = gson.toJson(main);
         prefsEditor.putString("Main", json);
         prefsEditor.commit();
@@ -301,17 +301,23 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
 
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
-        SharedPreferences  sharedPreferences = getPreferences(MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("prefs", 0);
         super.onRestoreInstanceState(savedInstanceState);
         Gson gson = new Gson();
         String json = sharedPreferences.getString("Main", "");
+        Log.i("MAIN JSON", json);
         main = gson.fromJson(json, Main.class);
+        main.getCurrentOrder().setMain(main);
+        Log.i("LOADED MAIN: ", main.toString());
+        orderAdapter.updateOrderItems(main.getCurrentOrder());
+
         selectedCategory = savedInstanceState.getInt("selectedCategory");
         setLayout();
     }
 
     public void setLayout(){
         String result = "0";
+        Log.i("checking if order is null", main.getCurrentOrder().toString());
         if (main.getCurrentOrder() != null){
             result = Integer.toString(main.getCurrentOrder().getTotalProducts());
         }
@@ -431,7 +437,13 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
         Message m = main.setMessages(messages);
         if (m != null){
             mySnackbar = Snackbar.make(findViewById(R.id.main), "message from: " + m.getSender(), Snackbar.LENGTH_LONG);
+            // get snackbar view
+            View snackbarView = mySnackbar.getView();
 
+            // change snackbar text color
+            int snackbarTextId = android.support.design.R.id.snackbar_text;
+            TextView textView = snackbarView.findViewById(snackbarTextId);
+            textView.setTextSize(40);
             mySnackbar.show();
 
             Animation bop = AnimationUtils.loadAnimation(MainActivity.this, R.anim.bop_cart);

@@ -15,27 +15,25 @@ import java.util.Map;
 
 public class Order {
     private HashMap<String, Integer> products;
-    private Boolean isOrdered;
-    private String orderDate;
+    private transient String orderDate;
     private String message;
-    private int ID;
-    private Main main;
+    private transient Main main;
 
     public Order(Main main, Boolean isOrdered, String message) {
         this.products = new HashMap<>();
-        this.isOrdered = isOrdered;
         this.orderDate = null;
         this.message = message;
-        this.ID = 0;
         this.main = main;
     }
 
     public Order(Main main, Boolean isOrdered) {
         this.products = new HashMap<>();
-        this.isOrdered = isOrdered;
         this.orderDate = null;
         this.message = "";
-        this.ID = 0;
+        this.main = main;
+    }
+
+    public void setMain(Main main) {
         this.main = main;
     }
 
@@ -94,28 +92,12 @@ public class Order {
         this.message = message;
     }
 
-    public int getID() {
-        return ID;
-    }
-
-    public void setID(int ID) {
-        this.ID = ID;
-    }
-
     public HashMap<String, Integer> getProducts() {
         return products;
     }
 
     public void setProducts(HashMap<String, Integer> products) {
         this.products = products;
-    }
-
-    public Boolean getOrdered() {
-        return isOrdered;
-    }
-
-    public void setOrdered(Boolean ordered) {
-        isOrdered = ordered;
     }
 
     public String getOrderDate() {
@@ -130,10 +112,8 @@ public class Order {
     public String toString() {
         return "Order{" +
                 "products=" + products +
-                ", isOrdered=" + isOrdered +
                 ", orderDate='" + orderDate + '\'' +
                 ", message='" + message + '\'' +
-                ", ID=" + ID +
                 '}';
     }
 }

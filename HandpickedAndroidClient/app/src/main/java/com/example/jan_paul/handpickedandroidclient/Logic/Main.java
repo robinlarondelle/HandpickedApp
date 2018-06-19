@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class Main {
-    private transient Order currentOrder;
+    private Order currentOrder;
     private ArrayList<Category> categories;
     private String vergaderRuimte;
     private String availableStatus = "";

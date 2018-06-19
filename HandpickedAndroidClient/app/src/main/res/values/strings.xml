@@ -19,7 +19,7 @@
     <string name="success_comment_message">Your comment has been send successfully.</string>
     <string name="error_send_message">Something went wrong while sending your message, please try again.</string>
     <string name="error_send_order">Something went wrong while sending your order, please try again.</string>
-
+    <string name="error_not_registered">This tablet has no room assigned, please contact your administrator.</string>
     <string name="success_return_button">Return</string>
 
 </resources>

@@ -93,6 +93,7 @@ public class QuestionFragment extends Fragment implements SendOrderTask.OnStatus
         String statusAsString = "unknown";
 
         if (status == null){
+            statusAsString = getString(R.string.error_send_message);
 
         }
         else if (status == 200) {
@@ -103,11 +104,11 @@ public class QuestionFragment extends Fragment implements SendOrderTask.OnStatus
         }
         else if (status == 401){
             //slack error
-            statusAsString = getString(R.string.success_comment_message);
+            statusAsString = getString(R.string.error_send_message);
 
         }
         else {
-            statusAsString = getString(R.string.success_comment_message);
+            statusAsString = getString(R.string.error_send_message);
 
             //unknown error
         }

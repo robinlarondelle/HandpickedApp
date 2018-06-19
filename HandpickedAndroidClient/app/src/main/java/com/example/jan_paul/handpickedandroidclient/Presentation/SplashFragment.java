@@ -11,7 +11,7 @@ import android.util.Log;
 import android.widget.TextView;
 
 import com.example.jan_paul.handpickedandroidclient.DataAccess.GetProductsTask;
-import com.example.jan_paul.handpickedandroidclient.DataAccess.TabletTask;
+import com.example.jan_paul.handpickedandroidclient.DataAccess.TabletLoginTask;
 import com.example.jan_paul.handpickedandroidclient.Domain.Category;
 import com.example.jan_paul.handpickedandroidclient.Logic.Main;
 import com.example.jan_paul.handpickedandroidclient.R;
@@ -19,12 +19,12 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
-public class SplashActivity extends AppCompatActivity implements GetProductsTask.OnProductsAvailable, TabletTask.OnTokenAvailable{
+public class SplashFragment extends AppCompatActivity implements GetProductsTask.OnProductsAvailable, TabletLoginTask.OnTokenAvailable{
 
     private static String TAG = "SplashActivity";
     private Main main;
     private GetProductsTask getProductsTask;
-    private TabletTask tabletTask;
+    private TabletLoginTask tabletTask;
     Handler handler;
     Runnable test;
     Runnable postTablet;
@@ -48,7 +48,7 @@ public class SplashActivity extends AppCompatActivity implements GetProductsTask
         tabletUrl = getString(R.string.get_token);
         splashLoadingText.setText(tabletStatus);
 
-        tabletTask = new TabletTask(this);
+        tabletTask = new TabletLoginTask(this);
         tabletTask.execute(tabletUrl);
 
         if (main == null){
@@ -60,7 +60,7 @@ public class SplashActivity extends AppCompatActivity implements GetProductsTask
             @Override
             public void run() {
                 tabletTask.cancel(true);
-                tabletTask = new TabletTask(SplashActivity.this);
+                tabletTask = new TabletLoginTask(SplashFragment.this);
                 tabletTask.execute(tabletUrl);
                 handler.postDelayed(postTablet, 5000); //wait 4 sec and run again
                 splashLoadingText.setText(tabletStatus);
@@ -75,7 +75,7 @@ public class SplashActivity extends AppCompatActivity implements GetProductsTask
             @Override
             public void run() {
                 getProductsTask.cancel(true);
-                getProductsTask = new GetProductsTask(SplashActivity.this, main.getToken());
+                getProductsTask = new GetProductsTask(SplashFragment.this, main.getToken());
                 getProductsTask.execute(getString(R.string.get_products));
                 handler.postDelayed(test, 5000); //wait 4 sec and run again
                 splashLoadingText.setText(getResources().getString(R.string.splash_no_connection));
@@ -90,7 +90,7 @@ public class SplashActivity extends AppCompatActivity implements GetProductsTask
     }
 
     public void startTest() {
-        getProductsTask = new GetProductsTask(SplashActivity.this, main.getToken());
+        getProductsTask = new GetProductsTask(SplashFragment.this, main.getToken());
         getProductsTask.execute(getString(R.string.get_products));
         handler.post(test); //wait 0 ms and run
     }

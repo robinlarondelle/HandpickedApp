@@ -1,17 +1,11 @@
 package com.example.jan_paul.handpickedandroidclient.DataAccess;
 
-import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
 
-import com.example.jan_paul.handpickedandroidclient.Domain.Category;
 import com.example.jan_paul.handpickedandroidclient.Domain.Order;
-import com.example.jan_paul.handpickedandroidclient.Domain.Product;
-import com.example.jan_paul.handpickedandroidclient.Domain.TimeRange;
-import com.example.jan_paul.handpickedandroidclient.R;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -19,22 +13,19 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.Calendar;
 
-public class TabletTask extends AsyncTask<String, Void, String> {
+public class TabletLoginTask extends AsyncTask<String, Void, String> {
 
-    private TabletTask.OnTokenAvailable listener = null;
+    private TabletLoginTask.OnTokenAvailable listener = null;
 
-    private static final String TAG = TabletTask.class.getSimpleName();
+    private static final String TAG = TabletLoginTask.class.getSimpleName();
     private Order orderToSend;
 
-    public TabletTask(TabletTask.OnTokenAvailable listener) {
+    public TabletLoginTask(TabletLoginTask.OnTokenAvailable listener) {
         this.listener = listener;
     }
 

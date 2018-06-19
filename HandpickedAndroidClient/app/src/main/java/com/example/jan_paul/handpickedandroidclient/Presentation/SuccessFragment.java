@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.example.jan_paul.handpickedandroidclient.R;
 
-public class SuccessActivity extends AppCompatActivity {
+public class SuccessFragment extends AppCompatActivity {
 
     private static String TAG = "SuccessActivity";
     private TextView successTitle;

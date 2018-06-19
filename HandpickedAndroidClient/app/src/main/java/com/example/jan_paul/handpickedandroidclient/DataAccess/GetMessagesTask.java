@@ -2,11 +2,8 @@ package com.example.jan_paul.handpickedandroidclient.DataAccess;
 
 import android.os.AsyncTask;
 import android.os.Build;
-import android.util.Log;
 
 import com.example.jan_paul.handpickedandroidclient.Domain.Message;
-import com.example.jan_paul.handpickedandroidclient.Domain.Order;
-import com.google.gson.JsonArray;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,7 +24,7 @@ public class GetMessagesTask extends AsyncTask<String, Void, String> {
     private GetMessagesTask.OnMessagesAvailable listener = null;
     private String token;
 
-    private static final String TAG = TabletTask.class.getSimpleName();
+    private static final String TAG = TabletLoginTask.class.getSimpleName();
     private ArrayList<Message> messages;
 
     public GetMessagesTask(GetMessagesTask.OnMessagesAvailable listener, String token) {

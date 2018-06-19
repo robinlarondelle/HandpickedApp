@@ -6,7 +6,6 @@ import android.util.Log;
 import com.example.jan_paul.handpickedandroidclient.Domain.Category;
 import com.example.jan_paul.handpickedandroidclient.Domain.Product;
 import com.example.jan_paul.handpickedandroidclient.Domain.TimeRange;
-import com.example.jan_paul.handpickedandroidclient.Domain.Type;
 import com.google.gson.JsonArray;
 
 import org.json.JSONArray;

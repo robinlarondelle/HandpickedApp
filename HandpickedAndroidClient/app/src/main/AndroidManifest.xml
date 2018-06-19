@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".Presentation.SplashActivity"
+            android:name=".Presentation.SplashFragment"
             android:noHistory="true"
             android:theme="@style/AppFullScreenTheme">
 

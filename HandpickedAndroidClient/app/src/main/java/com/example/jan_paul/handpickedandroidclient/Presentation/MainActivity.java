@@ -1,5 +1,7 @@
 package com.example.jan_paul.handpickedandroidclient.Presentation;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.NotificationChannel;
@@ -144,7 +146,14 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
         outsideView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                outsideView.setVisibility(View.INVISIBLE);
+                outsideView.setAlpha(1.0f);
+                outsideView.animate().alpha(0.0f).setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        outsideView.setVisibility(View.GONE);
+                    }
+                });
                 //hides keyboard
                 InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
@@ -156,8 +165,22 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
         orderIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                outsideView.setVisibility(View.VISIBLE);
-                switchFragments(orderFragment);
+                Log.i("OUTSIDE VIEW STATUS", Integer.toString(outsideView.getVisibility()));
+                if (outsideView.getVisibility() == View.GONE) {
+                    Log.i("WAS GONE!", "DOING STUFFS");
+                    outsideView.setAlpha(0.0f);
+                    outsideView.setClickable(false);
+                    outsideView.setVisibility(View.VISIBLE);
+                    outsideView.animate().alpha(1.0f).setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            outsideView.setClickable(true);
+                        }
+                    });
+                    switchFragments(orderFragment);
+
+                }
             }
         });
 

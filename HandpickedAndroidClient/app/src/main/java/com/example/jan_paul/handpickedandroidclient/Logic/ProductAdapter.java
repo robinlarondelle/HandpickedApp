@@ -133,13 +133,14 @@ public class ProductAdapter extends BaseAdapter {
         Animation fade = AnimationUtils.loadAnimation(mContext, R.anim.fade_in);
         convertView.startAnimation(fade);
 
-        Picasso.get()
-                .load(product.getImage())
-                //.resize(convertView.getLayoutParams().width, convertView.getLayoutParams().height)
-                //.centerCrop()
-                //.fit()
-                .into(viewHolder.productImage);
-
+        if (product.getImage().length() > 0) {
+            Picasso.get()
+                    .load(product.getImage())
+                    //.resize(convertView.getLayoutParams().width, convertView.getLayoutParams().height)
+                    //.centerCrop()
+                    //.fit()
+                    .into(viewHolder.productImage);
+        }
         return convertView;
     }
 

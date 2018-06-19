@@ -44,7 +44,7 @@ public class GetMessagesTask extends AsyncTask<String, Void, String> {
         String productUrl = params[0];
         String response = "";
 
-        Log.i(TAG, "doInBackground - " + productUrl);
+       // Log.i(TAG, "doInBackground - " + productUrl);
         try {
             URL url = new URL(productUrl);
             URLConnection urlConnection = url.openConnection();
@@ -63,26 +63,24 @@ public class GetMessagesTask extends AsyncTask<String, Void, String> {
             httpConnection.setConnectTimeout(3000);
             httpConnection.connect();
 
-            responsCode = httpConnection.getResponseCode();
-
             inputStream = httpConnection.getInputStream();
             response = getStringFromInputStream(inputStream);
 
         } catch (MalformedURLException e) {
-            Log.e(TAG, "doInBackground MalformedURLEx " + e.getLocalizedMessage());
+           // Log.e(TAG, "doInBackground MalformedURLEx " + e.getLocalizedMessage());
             return null;
         } catch (IOException e) {
-            Log.e("TAG", "doInBackground IOException " + e.getLocalizedMessage());
+            //Log.e("TAG", "doInBackground IOException " + e.getLocalizedMessage());
             return null;
         }
         return response;
     }
 
     protected void onPostExecute(String response) {
-        Log.i(TAG, "onPostExecute " + response);
+        //Log.i(TAG, "onPostExecute " + response);
 
         if(response == null || response == "") {
-            Log.e(TAG, "onPostExecute kreeg een lege response!");
+            //Log.e(TAG, "onPostExecute kreeg een lege response!");
             return;
         }
 
@@ -98,7 +96,7 @@ public class GetMessagesTask extends AsyncTask<String, Void, String> {
             }
 
         } catch( JSONException ex) {
-            Log.e(TAG, "onPostExecute JSONException " + ex.getLocalizedMessage());
+           // Log.e(TAG, "onPostExecute JSONException " + ex.getLocalizedMessage());
         }
         if (messages != null) {
             listener.onMessagesAvailable(messages);

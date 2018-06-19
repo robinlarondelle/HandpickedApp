@@ -16,9 +16,11 @@ import android.widget.Toast;
 import com.example.jan_paul.handpickedandroidclient.DataAccess.SendOrderTask;
 import com.example.jan_paul.handpickedandroidclient.Domain.Order;
 import com.example.jan_paul.handpickedandroidclient.Logic.Main;
+import com.example.jan_paul.handpickedandroidclient.Logic.MessageAdapter;
 import com.example.jan_paul.handpickedandroidclient.R;
 
 import java.util.Calendar;
+import java.util.List;
 
 public class QuestionFragment extends Fragment implements SendOrderTask.OnStatusAvailable{
 
@@ -26,6 +28,9 @@ public class QuestionFragment extends Fragment implements SendOrderTask.OnStatus
     private Button orderSendButton;
     private MainActivity parent;
     private TextView orderComment;
+    private ListView unreadMessageList;
+    private MessageAdapter messageAdapter;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -36,7 +41,13 @@ public class QuestionFragment extends Fragment implements SendOrderTask.OnStatus
         parent = (MainActivity)getActivity();
 
         main = parent.getMain();
+        messageAdapter = parent.getMessageAdapter();
         main.setMessage(new Order(main, false));
+
+        unreadMessageList = view.findViewById(R.id.unread_messages);
+
+
+        unreadMessageList.setAdapter(messageAdapter);
 
         orderSendButton = view.findViewById(R.id.order_send_button);
         orderComment = view.findViewById(R.id.order_comment);
@@ -79,21 +90,29 @@ public class QuestionFragment extends Fragment implements SendOrderTask.OnStatus
     @Override
     public void onStatusAvailable(Integer status){
         Log.i("post", Integer.toString(status));
+        String statusAsString = "unknown";
+
         if (status == null){
+            statusAsString = getString(R.string.error_send_message);
 
         }
         else if (status == 200) {
             //success
             main.setMessage(new Order(main, false));
+            statusAsString = getString(R.string.success_comment_message);
             orderComment.setText("");
         }
         else if (status == 401){
             //slack error
+            statusAsString = getString(R.string.error_send_message);
 
         }
         else {
+            statusAsString = getString(R.string.error_send_message);
+
             //unknown error
         }
+        main.setLastStatus(statusAsString);
         parent.updateLayout();
         parent.switchFragments(parent.getStatusFragment());
     }

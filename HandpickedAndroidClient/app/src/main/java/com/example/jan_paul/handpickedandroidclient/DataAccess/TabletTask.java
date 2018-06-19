@@ -59,8 +59,10 @@ public class TabletTask extends AsyncTask<String, Void, String> {
             httpConnection.setAllowUserInteraction(false);
             httpConnection.setInstanceFollowRedirects(true);
             httpConnection.setRequestMethod("GET");
-            Log.i("serial: ", Build.SERIAL);
             httpConnection.setRequestProperty("serialnumber", Build.SERIAL);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                httpConnection.setRequestProperty("serialnumber", Build.getSerial());
+            }
             httpConnection.setConnectTimeout(3000);
             httpConnection.connect();
 

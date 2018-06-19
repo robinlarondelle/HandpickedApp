@@ -4,11 +4,21 @@ public class Message {
     private String messageContent;
     private String timeStamp;
     private String sender;
+    private Boolean seen;
 
     public Message(String messageContent, String timeStamp, String sender) {
         this.messageContent = messageContent;
         this.timeStamp = timeStamp;
         this.sender = sender;
+        this.seen = false;
+    }
+
+    public Boolean getSeen() {
+        return seen;
+    }
+
+    public void setSeen(Boolean seen) {
+        this.seen = seen;
     }
 
     public String getMessageContent() {

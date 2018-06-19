@@ -19,7 +19,7 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
-public class SplashFragment extends AppCompatActivity implements GetProductsTask.OnProductsAvailable, TabletLoginTask.OnTokenAvailable{
+public class SplashActivity extends AppCompatActivity implements GetProductsTask.OnProductsAvailable, TabletLoginTask.OnTokenAvailable{
 
     private static String TAG = "SplashActivity";
     private Main main;
@@ -60,7 +60,7 @@ public class SplashFragment extends AppCompatActivity implements GetProductsTask
             @Override
             public void run() {
                 tabletTask.cancel(true);
-                tabletTask = new TabletLoginTask(SplashFragment.this);
+                tabletTask = new TabletLoginTask(SplashActivity.this);
                 tabletTask.execute(tabletUrl);
                 handler.postDelayed(postTablet, 5000); //wait 4 sec and run again
                 splashLoadingText.setText(tabletStatus);
@@ -75,7 +75,7 @@ public class SplashFragment extends AppCompatActivity implements GetProductsTask
             @Override
             public void run() {
                 getProductsTask.cancel(true);
-                getProductsTask = new GetProductsTask(SplashFragment.this, main.getToken());
+                getProductsTask = new GetProductsTask(SplashActivity.this, main.getToken());
                 getProductsTask.execute(getString(R.string.get_products));
                 handler.postDelayed(test, 5000); //wait 4 sec and run again
                 splashLoadingText.setText(getResources().getString(R.string.splash_no_connection));
@@ -90,7 +90,7 @@ public class SplashFragment extends AppCompatActivity implements GetProductsTask
     }
 
     public void startTest() {
-        getProductsTask = new GetProductsTask(SplashFragment.this, main.getToken());
+        getProductsTask = new GetProductsTask(SplashActivity.this, main.getToken());
         getProductsTask.execute(getString(R.string.get_products));
         handler.post(test); //wait 0 ms and run
     }

@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
     private OrderAdapter orderAdapter;
 
     private GetProductsTask getProductsTask;
+    private GetMessagesTask getMessagesTask;
 
     private TextView orderSizeNumber;
     private ImageButton orderIcon;
@@ -76,7 +77,6 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
     private ImageButton questionIcon;
     private Handler handler;
     private Runnable getMessages;
-    private GetMessagesTask getMessagesTask;
     private MessageAdapter messageAdapter;
     private Snackbar mySnackbar;
 

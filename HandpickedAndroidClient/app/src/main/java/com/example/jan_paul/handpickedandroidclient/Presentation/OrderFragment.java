@@ -53,11 +53,15 @@ public class OrderFragment extends Fragment implements SendOrderTask.OnStatusAva
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                main = parent.getMain();
+
                 main.getCurrentOrder().setMessage(orderComment.getText().toString());
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
+                main = parent.getMain();
+
                 main.getCurrentOrder().setMessage(orderComment.getText().toString());
             }
         });
@@ -65,7 +69,11 @@ public class OrderFragment extends Fragment implements SendOrderTask.OnStatusAva
         orderSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                main = parent.getMain();
+                Log.i("SENDING ORDER", main.toString());
                 main.getCurrentOrder().setOrderDate(Calendar.getInstance().getTime().toString());
+
+
                 if (main.validateOrder(main.getCurrentOrder())) {
                     SendOrderTask sendOrderTask = new SendOrderTask(OrderFragment.this, main.getCurrentOrder(), main.getToken());
                     sendOrderTask.execute(getString(R.string.post_order));
@@ -81,6 +89,8 @@ public class OrderFragment extends Fragment implements SendOrderTask.OnStatusAva
 
     @Override
     public void onStatusAvailable(Integer status){
+        main = parent.getMain();
+
         String statusAsString = "unknown";
         if (status == null){
             statusAsString = "no connection";

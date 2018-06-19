@@ -278,7 +278,7 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
                 getMessagesTask.cancel(true);
                 getMessagesTask = new GetMessagesTask(MainActivity.this, main.getToken());
                 getMessagesTask.execute(getString(R.string.get_messages));
-                handler.postDelayed(getMessages, 5000); //wait 4 sec and run again
+                handler.postDelayed(getMessages, 500000); //wait 4 sec and run again
             }
         };
         handler.post(getMessages);

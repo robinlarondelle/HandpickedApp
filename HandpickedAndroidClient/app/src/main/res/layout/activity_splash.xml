@@ -34,20 +34,20 @@
         android:id="@+id/splash_loading_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="1dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:text="@string/splash_loading_text"
         android:textColor="@color/handpickedBlack"
         android:textSize="30sp"
-        app:layout_constraintBottom_toTopOf="@+id/spin_kit"
+        app:layout_constraintBottom_toTopOf="@+id/serial"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
         android:id="@+id/splash_logo"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="240dp"
         android:layout_marginStart="240dp"
@@ -58,6 +58,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/splash_logo" />
+
+    <TextView
+        android:id="@+id/serial"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:text="serial"
+        app:layout_constraintBottom_toTopOf="@+id/spin_kit"
+        app:layout_constraintEnd_toEndOf="@+id/splash_loading_text"
+        app:layout_constraintStart_toStartOf="@+id/splash_loading_text" />
 
 
 </android.support.constraint.ConstraintLayout>

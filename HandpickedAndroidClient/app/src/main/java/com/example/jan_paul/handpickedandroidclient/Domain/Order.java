@@ -2,6 +2,8 @@ package com.example.jan_paul.handpickedandroidclient.Domain;
 
 import android.util.Log;
 
+import com.example.jan_paul.handpickedandroidclient.Logic.Main;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -13,29 +15,44 @@ import java.util.Map;
 
 public class Order {
     private HashMap<String, Integer> products;
-    private Boolean isOrdered;
-    private String orderDate;
+    private transient String orderDate;
     private String message;
-    private int ID;
+    private transient Main main;
 
-    public Order(Boolean isOrdered, String message) {
+    public Order(Main main, Boolean isOrdered, String message) {
         this.products = new HashMap<>();
-        this.isOrdered = isOrdered;
         this.orderDate = null;
         this.message = message;
-        this.ID = 0;
+        this.main = main;
     }
 
-    public Order(Boolean isOrdered) {
+    public Order(Main main, Boolean isOrdered) {
         this.products = new HashMap<>();
-        this.isOrdered = isOrdered;
         this.orderDate = null;
         this.message = "";
-        this.ID = 0;
+        this.main = main;
+    }
+
+    public void setMain(Main main) {
+        this.main = main;
     }
 
     public void addOrRemoveProduct(String productName, int amount){
         //expecting amount is always 1 or -1
+        String[] split = {productName};
+        if (productName.contains("opties")) {
+            split = productName.split(" met opties:");
+        }
+        else{
+            split = productName.split("-");
+        }
+        Log.i("", split[0]);
+        Product p = main.getProductByName(split[0]);
+        Log.i("add/remove", Integer.toString(p.getAmount()));
+        p.setAmount(p.getAmount() + amount);
+        Log.i("add/remove", Integer.toString(p.getAmount()));
+
+
         if (products.containsKey(productName)) {
             int amountOfProducts = products.get(productName).intValue();
             if (amount < 0) {
@@ -75,28 +92,12 @@ public class Order {
         this.message = message;
     }
 
-    public int getID() {
-        return ID;
-    }
-
-    public void setID(int ID) {
-        this.ID = ID;
-    }
-
     public HashMap<String, Integer> getProducts() {
         return products;
     }
 
     public void setProducts(HashMap<String, Integer> products) {
         this.products = products;
-    }
-
-    public Boolean getOrdered() {
-        return isOrdered;
-    }
-
-    public void setOrdered(Boolean ordered) {
-        isOrdered = ordered;
     }
 
     public String getOrderDate() {
@@ -111,10 +112,8 @@ public class Order {
     public String toString() {
         return "Order{" +
                 "products=" + products +
-                ", isOrdered=" + isOrdered +
                 ", orderDate='" + orderDate + '\'' +
                 ", message='" + message + '\'' +
-                ", ID=" + ID +
                 '}';
     }
 }

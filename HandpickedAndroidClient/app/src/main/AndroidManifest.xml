@@ -3,6 +3,7 @@
     package="com.example.jan_paul.handpickedandroidclient">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
         android:allowBackup="true"
@@ -26,9 +27,8 @@
         </activity>
         <activity
             android:name=".Presentation.MainActivity"
-            android:theme="@style/AppFullScreenTheme"></activity>
-        <activity android:name=".Presentation.SuccessActivity"
-            android:theme="@style/AppFullScreenTheme" />
+            android:theme="@style/AppFullScreenTheme"
+            ></activity>
     </application>
 
 </manifest>

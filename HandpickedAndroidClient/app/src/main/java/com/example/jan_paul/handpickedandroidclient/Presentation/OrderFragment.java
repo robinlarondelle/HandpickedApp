@@ -89,33 +89,32 @@ public class OrderFragment extends Fragment implements SendOrderTask.OnStatusAva
     @Override
     public void onStatusAvailable(Integer status){
         main = parent.getMain();
-
         String statusAsString = "unknown";
-        if (status == null){
-            statusAsString = "no connection";
-        }
-        else if (status == 200) {
-            //success
-            statusAsString = getString(R.string.success_order_message);
-            orderComment.setText("");
-            main.setReset(true);
-            main.refreshData(main.getCategories());
-            main.setCurrentOrder(new Order(main, false));
-            parent.getOrderAdapter().updateOrderItems(main.getCurrentOrder());
-        }
-        else if (status == 401){
-            //slack error
-            statusAsString = getString(R.string.error_send_order);
-        }
-        else if (status == 412){
-            statusAsString = getString(R.string.error_not_registered);
+        if (status != null) {
+            if (status == 200) {
+                //success
+                statusAsString = getString(R.string.success_order_message);
+                orderComment.setText("");
+                main.setReset(true);
+                main.refreshData(main.getCategories());
+                main.setCurrentOrder(new Order(main, false));
+                parent.getOrderAdapter().updateOrderItems(main.getCurrentOrder());
+            } else if (status == 401) {
+                //slack error
+                statusAsString = getString(R.string.error_send_order);
+            } else if (status == 412) {
+                statusAsString = getString(R.string.error_not_registered);
+            } else {
+                //unknown error
+                statusAsString = "unknown error";
+            }
+            main.setLastStatus(statusAsString);
+            parent.updateLayout();
+            parent.switchFragments(parent.getStatusFragment());
         }
         else {
-            //unknown error
-            statusAsString = "unknown error";
+            Toast.makeText(getActivity(), getString(R.string.no_internet),
+                    Toast.LENGTH_LONG).show();
         }
-        main.setLastStatus(statusAsString);
-        parent.updateLayout();
-        parent.switchFragments(parent.getStatusFragment());
     }
 }

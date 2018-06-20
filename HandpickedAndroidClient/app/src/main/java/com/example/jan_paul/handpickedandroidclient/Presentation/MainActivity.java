@@ -3,6 +3,7 @@ package com.example.jan_paul.handpickedandroidclient.Presentation;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -31,6 +32,7 @@ import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.jan_paul.handpickedandroidclient.DataAccess.GetMessagesTask;
 import com.example.jan_paul.handpickedandroidclient.DataAccess.GetProductsTask;
@@ -171,6 +173,7 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
                     outsideView.setAlpha(0.0f);
                     outsideView.setClickable(false);
                     outsideView.setVisibility(View.VISIBLE);
+                    switchFragments(orderFragment);
                     outsideView.animate().alpha(1.0f).setListener(new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(Animator animation) {
@@ -178,28 +181,34 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
                             outsideView.setClickable(true);
                         }
                     });
-                    switchFragments(orderFragment);
-
                 }
             }
         });
 
-        questionContainer.setOnClickListener(new View.OnClickListener() {
+        View.OnClickListener messageButtonListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                outsideView.setVisibility(View.VISIBLE);
                 main.setAllMessagesToSeen();
-                switchFragments(questionFragment);
-            }
-        });
+                if (outsideView.getVisibility() == View.GONE) {
+                    Log.i("WAS GONE!", "DOING STUFFS");
+                    outsideView.setAlpha(0.0f);
+                    outsideView.setClickable(false);
+                    outsideView.setVisibility(View.VISIBLE);
+                    switchFragments(questionFragment);
 
-        questionIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                outsideView.setVisibility(View.VISIBLE);
-                switchFragments(questionFragment);
+                    outsideView.animate().alpha(1.0f).setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            outsideView.setClickable(true);
+                        }
+                    });
+                }
             }
-        });
+        };
+
+        questionContainer.setOnClickListener(messageButtonListener);
+        questionIcon.setOnClickListener(messageButtonListener);
 
         orderAdapter = new OrderAdapter(MainActivity.this, getLayoutInflater(), main.getCurrentOrder(), this);
         productAdapter = new ProductAdapter(getApplicationContext(), getLayoutInflater(), availableProducts, main.getCurrentOrder());
@@ -370,10 +379,9 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
     public void switchFragments(Fragment fragment){
         FragmentTransaction transaction;
         transaction = getFragmentManager().beginTransaction();
-        transaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
-        transaction.replace(R.id.overlay_holder, fragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
+            transaction//.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+                    .replace(R.id.overlay_holder, fragment);
+        transaction.addToBackStack(null).commit();
 
         View view = this.getCurrentFocus();
         if (view != null) {
@@ -414,45 +422,53 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
 
     @Override
     public void onProductsAvailable(ArrayList<Category> productsPerCategory) {
-        //main.setReset(true);
-        main.refreshData(productsPerCategory);
-        availableCategories.clear();
-        availableCategories = main.getCategories();
-        if (selectedCategory > availableCategories.size()){
-            selectedCategory = 0;
-        }
-        if (main.getCategories().size() > 0) {
-            mainActivityTitle.setText(availableCategories.get(selectedCategory).getType());
+        if (productsPerCategory != null) {
+            //main.setReset(true);
+            main.refreshData(productsPerCategory);
+            availableCategories.clear();
+            availableCategories = main.getCategories();
+            if (selectedCategory > availableCategories.size()) {
+                selectedCategory = 0;
+            }
+            if (main.getCategories().size() > 0) {
+                mainActivityTitle.setText(availableCategories.get(selectedCategory).getType());
 
-            availableProducts.clear();
+                availableProducts.clear();
 
-            availableProducts = main.getProductsPerCategory(availableCategories.get(selectedCategory).getType());
+                availableProducts = main.getProductsPerCategory(availableCategories.get(selectedCategory).getType());
+            }
+            productAdapter.updateProductArrayList(availableProducts, main.getCurrentOrder());
+            categoryAdapter.updateCategoryArrayList(availableCategories);
         }
-        productAdapter.updateProductArrayList(availableProducts, main.getCurrentOrder());
-        categoryAdapter.updateCategoryArrayList(availableCategories);
+        else {
+            Toast.makeText(this, getString(R.string.no_internet),
+                    Toast.LENGTH_LONG).show();
+        }
         swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
     public void onMessagesAvailable(ArrayList<Message> messages){
-        Message m = main.setMessages(messages);
-        if (m != null){
-            mySnackbar = Snackbar.make(findViewById(R.id.main), "message from: " + m.getSender(), Snackbar.LENGTH_LONG);
-            // get snackbar view
-            View snackbarView = mySnackbar.getView();
+        if (messages != null) {
+            Message m = main.setMessages(messages);
+            if (m != null) {
+                mySnackbar = Snackbar.make(findViewById(R.id.main), "message from: " + m.getSender(), Snackbar.LENGTH_LONG);
+                // get snackbar view
+                View snackbarView = mySnackbar.getView();
 
-            // change snackbar text color
-            int snackbarTextId = android.support.design.R.id.snackbar_text;
-            TextView textView = snackbarView.findViewById(snackbarTextId);
-            textView.setTextSize(40);
-            mySnackbar.show();
+                // change snackbar text color
+                int snackbarTextId = android.support.design.R.id.snackbar_text;
+                TextView textView = snackbarView.findViewById(snackbarTextId);
+                textView.setTextSize(40);
+                mySnackbar.show();
 
-            Animation bop = AnimationUtils.loadAnimation(MainActivity.this, R.anim.bop_cart);
+                Animation bop = AnimationUtils.loadAnimation(MainActivity.this, R.anim.bop_cart);
 
-            questionContainer.startAnimation(bop);
-            //there is a change, pushing notification
-            sendPushNotification(m.getSender(), m.getMessageContent());
-            messageAdapter.updateMessageArrayList(main.getMessages());
+                questionContainer.startAnimation(bop);
+                //there is a change, pushing notification
+                sendPushNotification(m.getSender(), m.getMessageContent());
+                messageAdapter.updateMessageArrayList(main.getMessages());
+            }
         }
     }
 }

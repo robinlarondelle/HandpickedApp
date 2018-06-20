@@ -1,14 +1,18 @@
 package com.example.jan_paul.handpickedandroidclient.Presentation;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Handler;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.jan_paul.handpickedandroidclient.DataAccess.GetProductsTask;
 import com.example.jan_paul.handpickedandroidclient.DataAccess.TabletLoginTask;
@@ -42,13 +46,15 @@ public class SplashActivity extends AppCompatActivity implements GetProductsTask
         serial = findViewById(R.id.serial);
         serial.setText(Build.SERIAL);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            serial.setText(Build.getSerial());
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED ) {
+                serial.setText(Build.getSerial());
+            }
         }
         tabletStatus = getString(R.string.post_tablet);
         tabletUrl = getString(R.string.get_token);
         splashLoadingText.setText(tabletStatus);
 
-        tabletTask = new TabletLoginTask(this);
+        tabletTask = new TabletLoginTask(this, this);
         tabletTask.execute(tabletUrl);
 
         if (main == null){
@@ -60,7 +66,7 @@ public class SplashActivity extends AppCompatActivity implements GetProductsTask
             @Override
             public void run() {
                 tabletTask.cancel(true);
-                tabletTask = new TabletLoginTask(SplashActivity.this);
+                tabletTask = new TabletLoginTask(SplashActivity.this, SplashActivity.this);
                 tabletTask.execute(tabletUrl);
                 handler.postDelayed(postTablet, 5000); //wait 4 sec and run again
                 splashLoadingText.setText(tabletStatus);
@@ -118,30 +124,41 @@ public class SplashActivity extends AppCompatActivity implements GetProductsTask
 
     @Override
     public void onProductsAvailable(ArrayList<Category> productsPerCategory) {
-        splashLoadingText.setText(getResources().getString(R.string.splash_connection_successful));
-        main.refreshData(productsPerCategory);
+        if(productsPerCategory != null) {
+            splashLoadingText.setText(getResources().getString(R.string.splash_connection_successful));
+            main.refreshData(productsPerCategory);
 
-        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-        intent.putExtra("token", main.getToken());
-        stopTest();
-        startActivity(intent);
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            intent.putExtra("token", main.getToken());
+            stopTest();
+            startActivity(intent);
+        }
+        else{
+            Toast.makeText(this, getString(R.string.no_internet),
+                    Toast.LENGTH_LONG).show();
+        }
     }
 
     public void onTokenAvailable (String token){
-        Log.i("curent token", token);
-        if (token.length() > 0){
-            //heeft room
-            tabletStatus = getString(R.string.post_tablet_success);
+        if (token != null) {
+            Log.i("curent token", token);
+            if (token.length() > 0) {
+                //heeft room
+                tabletStatus = getString(R.string.post_tablet_success);
 //            splashLoadingText.setText(tabletStatus);
 
-            handler.removeCallbacks(postTablet);
-            main.setToken(token);
-            startTest();
+                handler.removeCallbacks(postTablet);
+                main.setToken(token);
+                startTest();
+            } else {
+                //mag niet door, heeft geen room
+                tabletStatus = getString(R.string.post_tablet_notregistered);
+                //      splashLoadingText.setText(tabletStatus);
+            }
         }
-        else {
-            //mag niet door, heeft geen room
-            tabletStatus = getString(R.string.post_tablet_notregistered);
-      //      splashLoadingText.setText(tabletStatus);
+        else{
+            Toast.makeText(this, getString(R.string.no_internet),
+                    Toast.LENGTH_LONG).show();
         }
     }
 }

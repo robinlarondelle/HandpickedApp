@@ -88,6 +88,7 @@ public class GetProductsTask extends AsyncTask<String, Void, String> {
 
         if(response == null || response == "") {
             Log.e(TAG, "onPostExecute kreeg een lege response!");
+            listener.onProductsAvailable(null);
             return;
         }
 

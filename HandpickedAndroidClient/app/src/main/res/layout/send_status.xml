@@ -2,10 +2,11 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/status_holder"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/nonSelectedCategory"
-    tools:context=".Presentation.SuccessFragment">
+    tools:context=".Presentation.StatusFragment">
 
     <ImageView
         android:id="@+id/splash_bg_triangle"

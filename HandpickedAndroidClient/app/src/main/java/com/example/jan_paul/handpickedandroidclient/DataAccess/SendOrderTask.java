@@ -104,7 +104,6 @@ public class SendOrderTask extends AsyncTask<String, Void, Integer> {
 
     protected void onPostExecute(Integer responseCode) {
         listener.onStatusAvailable(responseCode);
-
     }
 
     // Call back interface

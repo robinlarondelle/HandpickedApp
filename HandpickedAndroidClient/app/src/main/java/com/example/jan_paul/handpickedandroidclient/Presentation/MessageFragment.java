@@ -88,31 +88,34 @@ public class MessageFragment extends Fragment implements SendOrderTask.OnStatusA
 
     @Override
     public void onStatusAvailable(Integer status){
-        Log.i("post", Integer.toString(status));
-        String statusAsString = "unknown";
+        if (status != null) {
+            Log.i("post", Integer.toString(status));
+            String statusAsString = "unknown";
 
-        if (status == null){
-            statusAsString = getString(R.string.error_send_message);
+            if (status == null) {
+                statusAsString = getString(R.string.error_send_message);
 
-        }
-        else if (status == 200) {
-            //success
-            main.setMessage(new Order(main, false));
-            statusAsString = getString(R.string.success_comment_message);
-            orderComment.setText("");
-        }
-        else if (status == 401){
-            //slack error
-            statusAsString = getString(R.string.error_send_message);
+            } else if (status == 200) {
+                //success
+                main.setMessage(new Order(main, false));
+                statusAsString = getString(R.string.success_comment_message);
+                orderComment.setText("");
+            } else if (status == 401) {
+                //slack error
+                statusAsString = getString(R.string.error_send_message);
 
-        }
-        else {
-            statusAsString = getString(R.string.error_send_message);
+            } else {
+                statusAsString = getString(R.string.error_send_message);
 
-            //unknown error
+                //unknown error
+            }
+            main.setLastStatus(statusAsString);
+            parent.updateLayout();
+            parent.switchFragments(parent.getStatusFragment());
         }
-        main.setLastStatus(statusAsString);
-        parent.updateLayout();
-        parent.switchFragments(parent.getStatusFragment());
+        else{
+            Toast.makeText(getActivity(), getString(R.string.no_internet),
+                    Toast.LENGTH_LONG).show();
+        }
     }
 }

@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,9 +21,8 @@ import com.example.jan_paul.handpickedandroidclient.Logic.MessageAdapter;
 import com.example.jan_paul.handpickedandroidclient.R;
 
 import java.util.Calendar;
-import java.util.List;
 
-public class QuestionFragment extends Fragment implements SendOrderTask.OnStatusAvailable{
+public class MessageFragment extends Fragment implements SendOrderTask.OnStatusAvailable{
 
     private Main main;
     private Button orderSendButton;
@@ -30,7 +30,7 @@ public class QuestionFragment extends Fragment implements SendOrderTask.OnStatus
     private TextView orderComment;
     private ListView unreadMessageList;
     private MessageAdapter messageAdapter;
-
+    private ImageView backButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -45,7 +45,8 @@ public class QuestionFragment extends Fragment implements SendOrderTask.OnStatus
         main.setMessage(new Order(main, false));
 
         unreadMessageList = view.findViewById(R.id.unread_messages);
-
+        backButton = view.findViewById(R.id.back_button);
+        backButton.setOnClickListener(parent.getOnBackListener());
 
         unreadMessageList.setAdapter(messageAdapter);
 
@@ -74,7 +75,7 @@ public class QuestionFragment extends Fragment implements SendOrderTask.OnStatus
             public void onClick(View view) {
                 main.getMessage().setOrderDate(Calendar.getInstance().getTime().toString());
                 if (main.validateOrder(main.getMessage())) {
-                    SendOrderTask sendOrderTask = new SendOrderTask(QuestionFragment.this, main.getMessage(), main.getToken());
+                    SendOrderTask sendOrderTask = new SendOrderTask(MessageFragment.this, main.getMessage(), main.getToken());
                     sendOrderTask.execute(getString(R.string.post_order));
                 }
                 else {
@@ -89,31 +90,34 @@ public class QuestionFragment extends Fragment implements SendOrderTask.OnStatus
 
     @Override
     public void onStatusAvailable(Integer status){
-        Log.i("post", Integer.toString(status));
-        String statusAsString = "unknown";
+        if (status != null) {
+            Log.i("post", Integer.toString(status));
+            String statusAsString = "unknown";
 
-        if (status == null){
-            statusAsString = getString(R.string.error_send_message);
+            if (status == null) {
+                statusAsString = getString(R.string.error_send_message);
 
-        }
-        else if (status == 200) {
-            //success
-            main.setMessage(new Order(main, false));
-            statusAsString = getString(R.string.success_comment_message);
-            orderComment.setText("");
-        }
-        else if (status == 401){
-            //slack error
-            statusAsString = getString(R.string.error_send_message);
+            } else if (status == 200) {
+                //success
+                main.setMessage(new Order(main, false));
+                statusAsString = getString(R.string.success_comment_message);
+                orderComment.setText("");
+            } else if (status == 401) {
+                //slack error
+                statusAsString = getString(R.string.error_send_message);
 
-        }
-        else {
-            statusAsString = getString(R.string.error_send_message);
+            } else {
+                statusAsString = getString(R.string.error_send_message);
 
-            //unknown error
+                //unknown error
+            }
+            main.setLastStatus(statusAsString);
+            parent.updateLayout();
+            parent.switchFragments(parent.getStatusFragment());
         }
-        main.setLastStatus(statusAsString);
-        parent.updateLayout();
-        parent.switchFragments(parent.getStatusFragment());
+        else{
+            Toast.makeText(getActivity(), getString(R.string.no_internet),
+                    Toast.LENGTH_LONG).show();
+        }
     }
 }

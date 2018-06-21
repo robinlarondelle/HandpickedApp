@@ -5,7 +5,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -15,7 +14,6 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
-import android.os.Debug;
 import android.os.Handler;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
@@ -23,33 +21,24 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.jan_paul.handpickedandroidclient.DataAccess.GetMessagesTask;
 import com.example.jan_paul.handpickedandroidclient.DataAccess.GetProductsTask;
-import com.example.jan_paul.handpickedandroidclient.DataAccess.SendOrderTask;
-import com.example.jan_paul.handpickedandroidclient.DataAccess.TabletTask;
 import com.example.jan_paul.handpickedandroidclient.Domain.Category;
 import com.example.jan_paul.handpickedandroidclient.Domain.Message;
-import com.example.jan_paul.handpickedandroidclient.Domain.Order;
 import com.example.jan_paul.handpickedandroidclient.Domain.Product;
-import com.example.jan_paul.handpickedandroidclient.Domain.Type;
 import com.example.jan_paul.handpickedandroidclient.Logic.CategoryAdapter;
 import com.example.jan_paul.handpickedandroidclient.Logic.Main;
 import com.example.jan_paul.handpickedandroidclient.Logic.MessageAdapter;
@@ -57,13 +46,7 @@ import com.example.jan_paul.handpickedandroidclient.Logic.OrderAdapter;
 import com.example.jan_paul.handpickedandroidclient.Logic.ProductAdapter;
 import com.example.jan_paul.handpickedandroidclient.R;
 import com.google.gson.Gson;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-
-import javax.security.auth.login.LoginException;
 
 public class MainActivity extends AppCompatActivity implements GetProductsTask.OnProductsAvailable, GetMessagesTask.OnMessagesAvailable {
 
@@ -80,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
     private OrderAdapter orderAdapter;
 
     private GetProductsTask getProductsTask;
+    private GetMessagesTask getMessagesTask;
 
     private TextView orderSizeNumber;
     private ImageButton orderIcon;
@@ -97,10 +81,9 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
     private ImageButton questionIcon;
     private Handler handler;
     private Runnable getMessages;
-    private GetMessagesTask getMessagesTask;
-    private NotificationManager notificationManager;
     private MessageAdapter messageAdapter;
     private Snackbar mySnackbar;
+    private View.OnClickListener onBackListener;
 
     private Main main;
 
@@ -130,12 +113,12 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
         Log.d(TAG, "onCreate: mainActivityTitle changed to sofiaSemiBold");
 
         if(selectedCategory == null){
-        Log.i("log", "selectedCategory still null");
-        selectedCategory = 0;}
+            Log.i("log", "selectedCategory still null");
+            selectedCategory = 0;}
 
         orderFragment = new OrderFragment();
         statusFragment = new StatusFragment();
-        questionFragment = new QuestionFragment();
+        questionFragment = new MessageFragment();
 
         orderSizeNumber = findViewById(R.id.order_size_number);
         orderIcon = findViewById(R.id.order_icon);
@@ -163,42 +146,72 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
             }
         });
 
-        outsideView.setOnClickListener(new View.OnClickListener() {
+        onBackListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                outsideView.setVisibility(View.INVISIBLE);
+                outsideView.setAlpha(1.0f);
+                outsideView.animate().alpha(0.0f).setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        outsideView.setVisibility(View.GONE);
+                    }
+                });
                 //hides keyboard
                 InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             }
-        });
+        };
+
+        outsideView.setOnClickListener(onBackListener);
 
         switchFragments(orderFragment);
 
         orderIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                outsideView.setVisibility(View.VISIBLE);
-                switchFragments(orderFragment);
+                Log.i("OUTSIDE VIEW STATUS", Integer.toString(outsideView.getVisibility()));
+                if (outsideView.getVisibility() == View.GONE) {
+                    Log.i("WAS GONE!", "DOING STUFFS");
+                    outsideView.setAlpha(0.0f);
+                    outsideView.setClickable(false);
+                    outsideView.setVisibility(View.VISIBLE);
+                    switchFragments(orderFragment);
+                    outsideView.animate().alpha(1.0f).setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            outsideView.setClickable(true);
+                        }
+                    });
+                }
             }
         });
 
-        questionContainer.setOnClickListener(new View.OnClickListener() {
+        View.OnClickListener messageButtonListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                outsideView.setVisibility(View.VISIBLE);
                 main.setAllMessagesToSeen();
-                switchFragments(questionFragment);
-            }
-        });
+                if (outsideView.getVisibility() == View.GONE) {
+                    Log.i("WAS GONE!", "DOING STUFFS");
+                    outsideView.setAlpha(0.0f);
+                    outsideView.setClickable(false);
+                    outsideView.setVisibility(View.VISIBLE);
+                    switchFragments(questionFragment);
 
-        questionIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                outsideView.setVisibility(View.VISIBLE);
-                switchFragments(questionFragment);
+                    outsideView.animate().alpha(1.0f).setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            outsideView.setClickable(true);
+                        }
+                    });
+                }
             }
-        });
+        };
+
+        questionContainer.setOnClickListener(messageButtonListener);
+        questionIcon.setOnClickListener(messageButtonListener);
 
         orderAdapter = new OrderAdapter(MainActivity.this, getLayoutInflater(), main.getCurrentOrder(), this);
         productAdapter = new ProductAdapter(getApplicationContext(), getLayoutInflater(), availableProducts, main.getCurrentOrder());
@@ -278,7 +291,7 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
                 getMessagesTask.cancel(true);
                 getMessagesTask = new GetMessagesTask(MainActivity.this, main.getToken());
                 getMessagesTask.execute(getString(R.string.get_messages));
-                handler.postDelayed(getMessages, 500000); //wait 4 sec and run again
+                handler.postDelayed(getMessages, 5000); //wait 4 sec and run again
             }
         };
         handler.post(getMessages);
@@ -362,6 +375,10 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
         notification_manager.notify(0, notification_builder.build());
     }
 
+    public View.OnClickListener getOnBackListener() {
+        return onBackListener;
+    }
+
     public Main getMain() {
         return main;
     }
@@ -369,10 +386,9 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
     public void switchFragments(Fragment fragment){
         FragmentTransaction transaction;
         transaction = getFragmentManager().beginTransaction();
-        transaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
-        transaction.replace(R.id.overlay_holder, fragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
+            transaction//.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+                    .replace(R.id.overlay_holder, fragment);
+        transaction.addToBackStack(null).commit();
 
         View view = this.getCurrentFocus();
         if (view != null) {
@@ -413,45 +429,53 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
 
     @Override
     public void onProductsAvailable(ArrayList<Category> productsPerCategory) {
-        //main.setReset(true);
-        main.refreshData(productsPerCategory);
-        availableCategories.clear();
-        availableCategories = main.getCategories();
-        if (selectedCategory > availableCategories.size()){
-            selectedCategory = 0;
-        }
-        if (main.getCategories().size() > 0) {
-            mainActivityTitle.setText(availableCategories.get(selectedCategory).getType());
+        if (productsPerCategory != null) {
+            //main.setReset(true);
+            main.refreshData(productsPerCategory);
+            availableCategories.clear();
+            availableCategories = main.getCategories();
+            if (selectedCategory > availableCategories.size()) {
+                selectedCategory = 0;
+            }
+            if (main.getCategories().size() > 0) {
+                mainActivityTitle.setText(availableCategories.get(selectedCategory).getType());
 
-            availableProducts.clear();
+                availableProducts.clear();
 
-            availableProducts = main.getProductsPerCategory(availableCategories.get(selectedCategory).getType());
+                availableProducts = main.getProductsPerCategory(availableCategories.get(selectedCategory).getType());
+            }
+            productAdapter.updateProductArrayList(availableProducts, main.getCurrentOrder());
+            categoryAdapter.updateCategoryArrayList(availableCategories);
         }
-        productAdapter.updateProductArrayList(availableProducts, main.getCurrentOrder());
-        categoryAdapter.updateCategoryArrayList(availableCategories);
+        else {
+            Toast.makeText(this, getString(R.string.no_internet),
+                    Toast.LENGTH_LONG).show();
+        }
         swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
     public void onMessagesAvailable(ArrayList<Message> messages){
-        Message m = main.setMessages(messages);
-        if (m != null){
-            mySnackbar = Snackbar.make(findViewById(R.id.main), "message from: " + m.getSender(), Snackbar.LENGTH_LONG);
-            // get snackbar view
-            View snackbarView = mySnackbar.getView();
+        if (messages != null) {
+            Message m = main.setMessages(messages);
+            if (m != null) {
+                mySnackbar = Snackbar.make(findViewById(R.id.main), "message from: " + m.getSender(), Snackbar.LENGTH_LONG);
+                // get snackbar view
+                View snackbarView = mySnackbar.getView();
 
-            // change snackbar text color
-            int snackbarTextId = android.support.design.R.id.snackbar_text;
-            TextView textView = snackbarView.findViewById(snackbarTextId);
-            textView.setTextSize(40);
-            mySnackbar.show();
+                // change snackbar text color
+                int snackbarTextId = android.support.design.R.id.snackbar_text;
+                TextView textView = snackbarView.findViewById(snackbarTextId);
+                textView.setTextSize(40);
+                mySnackbar.show();
 
-            Animation bop = AnimationUtils.loadAnimation(MainActivity.this, R.anim.bop_cart);
+                Animation bop = AnimationUtils.loadAnimation(MainActivity.this, R.anim.bop_cart);
 
-            questionContainer.startAnimation(bop);
-            //there is a change, pushing notification
-            sendPushNotification(m.getSender(), m.getMessageContent());
-            messageAdapter.updateMessageArrayList(main.getMessages());
+                questionContainer.startAnimation(bop);
+                //there is a change, pushing notification
+                sendPushNotification(m.getSender(), m.getMessageContent());
+                messageAdapter.updateMessageArrayList(main.getMessages());
+            }
         }
     }
 }

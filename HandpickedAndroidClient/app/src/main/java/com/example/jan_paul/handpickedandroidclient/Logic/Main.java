@@ -15,8 +15,6 @@ import java.util.Iterator;
 public class Main {
     private Order currentOrder;
     private ArrayList<Category> categories;
-    private String vergaderRuimte;
-    private String availableStatus = "";
     private Order message;
     private String lastStatus;
     private Boolean reset = false;
@@ -47,23 +45,10 @@ public class Main {
         this.reset = reset;
     }
 
-    public String getAvailableStatus() {
-        return availableStatus;
-    }
-
-    public String getVergaderRuimte() {
-        return vergaderRuimte;
-    }
-
-    public void setVergaderRuimte(String vergaderRuimte) {
-        this.vergaderRuimte = vergaderRuimte;
-    }
-
     public Main() {
         this.categories = new ArrayList<>();
         this.currentOrder = new Order(this, false);
         this.messages = new ArrayList<>();
-
         lastStatus = "unknown";
     }
 
@@ -81,7 +66,6 @@ public class Main {
 
         Log.i("old", messages.toString());
         Log.i("new", newMessages.toString());
-
 
         for (int i = 0; i < newMessages.size(); i++) {
             for (Message m: messages) {
@@ -107,10 +91,6 @@ public class Main {
         for (Message m : messages) {
             m.setSeen(true);
         }
-    }
-
-    public void setAvailableStatus(String availableStatus) {
-        this.availableStatus = availableStatus;
     }
 
     public String getLastStatus() {
@@ -219,8 +199,6 @@ public class Main {
         return "Main{" +
                 "currentOrder=" + currentOrder +
                 ", categories=" + categories +
-                ", vergaderRuimte='" + vergaderRuimte + '\'' +
-                ", availableStatus='" + availableStatus + '\'' +
                 ", message=" + message +
                 ", lastStatus='" + lastStatus + '\'' +
                 '}';

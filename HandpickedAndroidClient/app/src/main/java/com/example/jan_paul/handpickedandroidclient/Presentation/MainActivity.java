@@ -83,6 +83,7 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
     private Runnable getMessages;
     private MessageAdapter messageAdapter;
     private Snackbar mySnackbar;
+    private View.OnClickListener onBackListener;
 
     private Main main;
 
@@ -145,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
             }
         });
 
-        outsideView.setOnClickListener(new View.OnClickListener() {
+        onBackListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 outsideView.setAlpha(1.0f);
@@ -160,7 +161,9 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
                 InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             }
-        });
+        };
+
+        outsideView.setOnClickListener(onBackListener);
 
         switchFragments(orderFragment);
 
@@ -370,6 +373,10 @@ public class MainActivity extends AppCompatActivity implements GetProductsTask.O
 
         //notify.flags |= Notification.FLAG_AUTO_CANCEL;
         notification_manager.notify(0, notification_builder.build());
+    }
+
+    public View.OnClickListener getOnBackListener() {
+        return onBackListener;
     }
 
     public Main getMain() {

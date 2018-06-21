@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,7 +30,7 @@ public class MessageFragment extends Fragment implements SendOrderTask.OnStatusA
     private TextView orderComment;
     private ListView unreadMessageList;
     private MessageAdapter messageAdapter;
-
+    private ImageView backButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -44,7 +45,8 @@ public class MessageFragment extends Fragment implements SendOrderTask.OnStatusA
         main.setMessage(new Order(main, false));
 
         unreadMessageList = view.findViewById(R.id.unread_messages);
-
+        backButton = view.findViewById(R.id.back_button);
+        backButton.setOnClickListener(parent.getOnBackListener());
 
         unreadMessageList.setAdapter(messageAdapter);
 

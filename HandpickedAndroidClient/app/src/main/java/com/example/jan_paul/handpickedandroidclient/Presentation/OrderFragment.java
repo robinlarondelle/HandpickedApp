@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -32,6 +33,7 @@ public class OrderFragment extends Fragment implements SendOrderTask.OnStatusAva
     private MainActivity parent;
     private TextView orderComment;
     private ListView orderItemsList;
+    private ImageView backButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -44,6 +46,10 @@ public class OrderFragment extends Fragment implements SendOrderTask.OnStatusAva
         orderComment = view.findViewById(R.id.order_comment);
         orderItemsList = view.findViewById(R.id.order_items_list);
         orderItemsList.setAdapter(parent.getOrderAdapter());
+
+        backButton = view.findViewById(R.id.back_button);
+        backButton.setOnClickListener(parent.getOnBackListener());        backButton = view.findViewById(R.id.back_button);
+        backButton.setOnClickListener(parent.getOnBackListener());
 
         orderComment.addTextChangedListener(new TextWatcher() {
             @Override

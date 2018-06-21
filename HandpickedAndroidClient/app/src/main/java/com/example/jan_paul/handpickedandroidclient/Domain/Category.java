@@ -1,10 +1,6 @@
 package com.example.jan_paul.handpickedandroidclient.Domain;
 
-import com.example.jan_paul.handpickedandroidclient.DataAccess.TabletTask;
-
-import java.sql.Time;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 /**
  * Created by jan-paul on 5/22/2018.

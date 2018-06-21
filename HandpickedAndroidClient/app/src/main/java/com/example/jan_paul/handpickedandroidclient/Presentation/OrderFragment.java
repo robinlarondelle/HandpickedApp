@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -32,6 +33,7 @@ public class OrderFragment extends Fragment implements SendOrderTask.OnStatusAva
     private MainActivity parent;
     private TextView orderComment;
     private ListView orderItemsList;
+    private ImageView backButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -44,6 +46,10 @@ public class OrderFragment extends Fragment implements SendOrderTask.OnStatusAva
         orderComment = view.findViewById(R.id.order_comment);
         orderItemsList = view.findViewById(R.id.order_items_list);
         orderItemsList.setAdapter(parent.getOrderAdapter());
+
+        backButton = view.findViewById(R.id.back_button);
+        backButton.setOnClickListener(parent.getOnBackListener());        backButton = view.findViewById(R.id.back_button);
+        backButton.setOnClickListener(parent.getOnBackListener());
 
         orderComment.addTextChangedListener(new TextWatcher() {
             @Override
@@ -73,7 +79,6 @@ public class OrderFragment extends Fragment implements SendOrderTask.OnStatusAva
                 Log.i("SENDING ORDER", main.toString());
                 main.getCurrentOrder().setOrderDate(Calendar.getInstance().getTime().toString());
 
-
                 if (main.validateOrder(main.getCurrentOrder())) {
                     SendOrderTask sendOrderTask = new SendOrderTask(OrderFragment.this, main.getCurrentOrder(), main.getToken());
                     sendOrderTask.execute(getString(R.string.post_order));
@@ -90,33 +95,32 @@ public class OrderFragment extends Fragment implements SendOrderTask.OnStatusAva
     @Override
     public void onStatusAvailable(Integer status){
         main = parent.getMain();
-
         String statusAsString = "unknown";
-        if (status == null){
-            statusAsString = "no connection";
-        }
-        else if (status == 200) {
-            //success
-            statusAsString = getString(R.string.success_order_message);
-            orderComment.setText("");
-            main.setReset(true);
-            main.refreshData(main.getCategories());
-            main.setCurrentOrder(new Order(main, false));
-            parent.getOrderAdapter().updateOrderItems(main.getCurrentOrder());
-        }
-        else if (status == 401){
-            //slack error
-            statusAsString = getString(R.string.error_send_order);
-        }
-        else if (status == 412){
-            statusAsString = getString(R.string.error_not_registered);
+        if (status != null) {
+            if (status == 200) {
+                //success
+                statusAsString = getString(R.string.success_order_message);
+                orderComment.setText("");
+                main.setReset(true);
+                main.refreshData(main.getCategories());
+                main.setCurrentOrder(new Order(main, false));
+                parent.getOrderAdapter().updateOrderItems(main.getCurrentOrder());
+            } else if (status == 401) {
+                //slack error
+                statusAsString = getString(R.string.error_send_order);
+            } else if (status == 412) {
+                statusAsString = getString(R.string.error_not_registered);
+            } else {
+                //unknown error
+                statusAsString = "unknown error";
+            }
+            main.setLastStatus(statusAsString);
+            parent.updateLayout();
+            parent.switchFragments(parent.getStatusFragment());
         }
         else {
-            //unknown error
-            statusAsString = "unknown error";
+            Toast.makeText(getActivity(), getString(R.string.no_internet),
+                    Toast.LENGTH_LONG).show();
         }
-        main.setLastStatus(statusAsString);
-        parent.updateLayout();
-        parent.switchFragments(parent.getStatusFragment());
     }
 }

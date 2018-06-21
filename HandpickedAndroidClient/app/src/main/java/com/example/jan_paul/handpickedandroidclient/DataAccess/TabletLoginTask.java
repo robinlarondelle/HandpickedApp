@@ -1,17 +1,15 @@
 package com.example.jan_paul.handpickedandroidclient.DataAccess;
 
-import android.content.res.Resources;
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
-import com.example.jan_paul.handpickedandroidclient.Domain.Category;
 import com.example.jan_paul.handpickedandroidclient.Domain.Order;
-import com.example.jan_paul.handpickedandroidclient.Domain.Product;
-import com.example.jan_paul.handpickedandroidclient.Domain.TimeRange;
-import com.example.jan_paul.handpickedandroidclient.R;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -19,23 +17,22 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.Calendar;
 
-public class TabletTask extends AsyncTask<String, Void, String> {
+public class TabletLoginTask extends AsyncTask<String, Void, String> {
 
-    private TabletTask.OnTokenAvailable listener = null;
+    private TabletLoginTask.OnTokenAvailable listener = null;
 
-    private static final String TAG = TabletTask.class.getSimpleName();
+    private static final String TAG = TabletLoginTask.class.getSimpleName();
     private Order orderToSend;
+    private Context context;
 
-    public TabletTask(TabletTask.OnTokenAvailable listener) {
+    public TabletLoginTask(TabletLoginTask.OnTokenAvailable listener, Context context) {
         this.listener = listener;
+        this.context = context;
     }
 
     @Override
@@ -61,12 +58,12 @@ public class TabletTask extends AsyncTask<String, Void, String> {
             httpConnection.setRequestMethod("GET");
             httpConnection.setRequestProperty("serialnumber", Build.SERIAL);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                httpConnection.setRequestProperty("serialnumber", Build.getSerial());
+                if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED ) {
+                    httpConnection.setRequestProperty("serialnumber", Build.getSerial());
+                }
             }
             httpConnection.setConnectTimeout(3000);
             httpConnection.connect();
-
-            responsCode = httpConnection.getResponseCode();
 
             inputStream = httpConnection.getInputStream();
             response = getStringFromInputStream(inputStream);
@@ -87,6 +84,7 @@ public class TabletTask extends AsyncTask<String, Void, String> {
 
         if(response == null || response == "") {
             Log.e(TAG, "onPostExecute kreeg een lege response!");
+            listener.onTokenAvailable(null);
             return;
         }
         String token = "";
@@ -100,8 +98,6 @@ public class TabletTask extends AsyncTask<String, Void, String> {
             Log.e(TAG, "onPostExecute JSONException " + ex.getLocalizedMessage());
         }
         listener.onTokenAvailable(token);
-
-
     }
 
     private static String getStringFromInputStream(InputStream is) {

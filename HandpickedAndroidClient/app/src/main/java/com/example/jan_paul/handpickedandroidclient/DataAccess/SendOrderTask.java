@@ -72,7 +72,7 @@ public class SendOrderTask extends AsyncTask<String, Void, Integer> {
 
             //parse time
             Date date = Calendar.getInstance().getTime();
-            SimpleDateFormat sdf = new SimpleDateFormat("yy-MM-dd HH:mm:ss");
+            SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yy HH:mm:ss");
 
             String body = "{\n" +
                     "\"serialNumber\": \"" + Build.SERIAL + "\",\n" +
@@ -104,7 +104,6 @@ public class SendOrderTask extends AsyncTask<String, Void, Integer> {
 
     protected void onPostExecute(Integer responseCode) {
         listener.onStatusAvailable(responseCode);
-
     }
 
     // Call back interface
